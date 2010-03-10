@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ ! -d "$DINGOO_SDK" ]; then
+	echo "DINGOO_SDK environment variable not set/valid."
+	exit 0
+fi
+
+if [ ! -d "$MIPSTOOLS" ]; then
+	echo "MIPSTOOLS environment variable not set/valid."
+	exit 0
+fi
+
+cd $DINGOO_SDK/src/libc && make
+cd $DINGOO_SDK/src/fgl && make
+cp $MIPSTOOLS/lib/gcc/mipsel-linux/*/libgcc.a $DINGOO_SDK/lib/
+
+if [ -d "$WINDIR" ]; then
+	$DINGOO_SDK/tools/mipstools_fix/mipstools_fix
+else
+	cc $DINGOO_SDK/tools/elf2app/src/elf2app.c -o $DINGOO_SDK/tools/elf2app/elf2app
+	cc $DINGOO_SDK/tools/bin2h/src/bin2h.c -o $DINGOO_SDK/tools/bin2h/bin2h
+fi
+
+echo "Dingoo SDK installed."
