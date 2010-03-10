@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Coding for the Dingoo A-320</title>
+
+<link rel="stylesheet" href="../css/wiki.css">
+<script type="text/javascript" src="../js/stuff.js"></script>
+
+
+
+
+
+</head>
+
+<body>
+
+<h1>Coding for the Dingoo A-320</h1>
+
+<h2>Introduction</h2>
+
+<p>The Dingoo A320 is a Chinese handheld game console, using a form
+factor very much like the GBA Micro, but running on a 360 MHz
+MIPS-derivative processor, JZ4732. It has a 320*240 LCD screen
+and stereo speakers, and internal flash memory and a mini-SD slot
+for storing files and games.</p>
+
+<p>This page contains what information I have been able to collect
+about building your own applications for it using the built-in
+&mu;C/OS-II operating system. It is also possible to install Linux
+on it and write applications under that, but that will not be
+covered here.</p>
+
+<p>This document is very unfinished. It will be updated whenever
+I have time to work on writing code for the Dingoo.</p>
+
+<h2>Building applications</h2>
+
+<p>The Dingoo will run native applications stored as files with the
+extension &quot;.app&quot; stored in the internal memory or on a mini-SD
+card. To run applications, select the &quot;3D Game&quot; option in the
+main menu.</p>
+
+<h3>Compiler</h3>
+
+<p>The mipsel-linux-gcc toolchain can be used to build applications
+for &mu;C/OS-II, if the final linking step is done by a separate
+application. Ingenic, the makers of the JZ4732 processor,
+apparently supply pre-built executables for Windows and Linux.</p>
+
+<p>I use Mac OS X, and built a cross-compiling gcc for the mipsel-linux
+target from scratch. This seems to require disabling quite a few
+modules, but it is doable.</p>
+
+<h3>Executable format</h3>
+
+<p>I have yet to delve deeper into the executable format used by &mu;C/OS-II, but apparently it uses simple import and export sections for functions. The import section specifies a jump table and strings naming the functions to import into the jump table. The user application then jumps to entries in the jump table, which the loader fills in at load time, from a static list of imported functions contained in the The Dingoo &mu;C/OS-II kernel.</p>
+
+<p>There are different ways to set this up. The official SDK uses a somewhat unflexible tool named dlmake.exe that only runs on Windows. An Italian going by the name zaxxon has written an alternative linker in Python which is available here: <a href="http://a320.forumfree.net/">http://a320.forumfree.net/</a></p>
+
+<p>I use a <a href="../dingoo/elf2app.py">slightly modified version</a> of this (with the external tools it calls changed to the mipsel-linux ones).</p>
+
+<p>Both use special sections in the ELF file to store the jump tables and function name strings, and special libraries to link with when building to supply these to the linker, but they are not compatible with each other, and you have to pick one or the other to use.</p>
+
+<h3>Exported OS functions</h3>
+
+<p>To use a function exported by the kernel, you need a jump table entry for it, and a C prototype. <a href="../dingoo/libdingoo.a">libdingoo.a</a> provides jump tables for all the exported functions. There is no complete list of function prototypes, however. I have created a header file named <a href="../dingoo/Dingoo.h">Dingoo.h</a> by compiling information from various sources, which supplies some prototypes for the more commonly used functions.</p>
+
+<p>This forum thread also has some more information about the various functions that are available for import from the OS: <a href="http://forum.openhandhelds.org/viewtopic.php?f=35&amp;t=981">http://forum.openhandhelds.org/viewtopic.php?f=35&amp;t=981</a></p>
+
+<h3>&mu;C/OS-II</h3>
+
+<p>Some of the exported functions originate in the original &mu;C/OS-II and some are custom functions added by the Dingoo developers. For the &mu;C/OS-II functions (the ones prefixed with <code>OS</code>), the <a href="http://www.ece.ualberta.ca/~cmpe401/docs/uC_Functions.html">&mu;C/OS-II documentation</a> may be of use.</p>
+
+<h3>Hardware register definitions</h3>
+
+<p>The JZ4732 processor contains a large amount of integrated hardware that is accessed through memory-mapped registers. <a href="../dingoo/JZ4740.h">JZ4740.h</a> is a C header file that defines hardware registers, constants and other useful functions for accessing all this hardware. This file is a slightly modified version of a header file from the JZ4740 &mu;C/OS-II port.</p>
+
+<p>Processor data sheets that would actually explain what the registers do seem to be very hard to come by, for some reason, but there does actually seem to be a set of them here: <a href="http://www.amebasystems.com/downloads/hardware/datasheets/ben-nanonote/Ingenic-SOC-JZ4720/Jz4740-PM/">http://www.amebasystems.com/downloads/hardware/datasheets/ben-nanonote/Ingenic-SOC-JZ4720/Jz4740-PM/</a></p>
+
+<h3>Housekeeping</h3>
+
+<p>The OS wants to do some event processing of its own while your application runs, but this has to be explicitly invoked. The function <code>sys_judge_event()</code> does this processing. It should be called regularly. It returns some kind of return code that can signal that your application should quit, but I have not found out exactly how this works yet.</p>
+
+<p>Doing this enables the user to shut down the console by holding the power button. If you do not call <code>sys_judge_event()</code>, this functionality will not work, which will annoy the user.</p>
+
+<h2>Driving the display</h2>
+
+<p>The Dingoo uses a display controller tightly integrated with the JZ4732 processor to drive the display. The display controller uses its own internal framebuffer for storing the image that is displayed on the screen. To update the screen, the pixel data to be displayed has to be copied to this internal framebuffer.</p>
+
+<p>The display uses 16-bit RGB 5:6:5 pixels. It may be possible to reconfigure this, but this is yet unexplored.</p>
+
+<h3>OS functions</h3>
+
+<p>There are two OS function that handle transmitting images to the display:</p>
+
+<ul>
+<li><code>lcd_get_frame()</code> is a function that returns a pointer to a pre-allocated temporary framebuffer of size <code>320*240*2</code> bytes.</li>
+<li><code>lcd_set_frame()</code> updates the display with the data from the temporary framebuffer using a DMA transfer.</li>
+</ul>
+
+<p>(There are also functions named <code>_lcd_get_frame()</code> and <code>_lcd_set_frame()</code> but those only call the above functions internally.)</p>
+
+<p>To use these function, simply use the <code>lcd_get_frame()</code> to get a pointer to the pre-allocated temporary framebuffer, then draw your graphics in this buffer, and
+finally call <code>lcd_set_frame()</code> to copy the temporary framebuffer to the display.</p>
+
+<p>The problem with these functions is that they do not provide a way to do proper double buffering, as there is only one static buffer that can be written to. Most programs solve this by using further temporary framebuffers and copying them to the one returned by <code>lcd_get_frame()</code>. However, this seems needlessly wasteful. It is possible to do the screen update manually, without relying on the OS.</p>
+
+<h3>FIFO</h3>
+
+<p>The internal framebuffer used by the Smart LCD controller is not memory-mapped, but instead data is transferred to it through a FIFO register. Each write to the SLCD_FIFO register will transfer a single pixel to the framebuffer.</p>
+
+<p>It is possible to use this to manually update the screen. Here is a very simple and silly example that fills the screen with noise:</p>
+
+<pre><code>for(int y=0;y&lt;240;y++)
+for(int x=0;x&lt;320;x++)
+{
+	REG_SLCD_FIFO=rand();
+}
+</code></pre>
+
+<h3>DMA</h3>
+
+<p>However, normally data is moved through the FIFO using a DMA transfer. The built-in <code>lcd_set_frame()</code> function just sets up a DMA transfer from the temporary framebuffer to the FIFO. We can do the same thing ourselves. <code>lcd_set_frame()</code> does something mostly equivalent to the following code:</p>
+
+<pre><code>void SendLCDFrame(uint16_t *frame)
+{
+	// Wait for transfer terminated bit
+	while(!(REG_DMAC_DCCSR(0)&amp;DMAC_DCCSR_TT));
+
+	// Enable DMA on the SLCD.
+	REG_SLCD_CTRL=1;
+
+	// Disable DMA channel while configuring.
+	REG_DMAC_DCCSR(0)=0;
+
+	// DMA request source is SLCD.
+	REG_DMAC_DRSR(0)=DMAC_DRSR_RS_SLCD;
+
+	// Set source, target and count.
+	REG_DMAC_DSAR(0)=((uint32_t)frame)&amp;0x1fffffff;
+	REG_DMAC_DTAR(0)=SLCD_FIFO&amp;0x1fffffff;
+	REG_DMAC_DTCR(0)=320*240*2/16;
+
+	// Source address increment, source width 32 bit,
+	// destination width 16 bit, data unit size 16 bytes,
+	// block transfer mode, no interrupt.
+	REG_DMAC_DCMD(0)=DMAC_DCMD_SAI|DMAC_DCMD_SWDH_32|
+	DMAC_DCMD_DWDH_16|DMAC_DCMD_DS_16BYTE|DMAC_DCMD_TM;
+
+	__dcache_writeback_all();
+
+	// No DMA descriptor used.
+	REG_DMAC_DCCSR(0)|=DMAC_DCCSR_NDES;
+
+	// Set enable bit to start DMA.
+	REG_DMAC_DCCSR(0)|=DMAC_DCCSR_EN;
+}
+</code></pre>
+
+<p><code>lcd_set_frame()</code> also uses an interrupt to detect when the transfer is done, but this is not actually necessary, and the OS supplies no way for applications to install their own interrupt handlers. (It might be possible to replace the entire interrupt handling infrastructure with your own, but this has not been explored yet.)</p>
+
+<p>The advantage of this function is that it takes a pointer to the framebuffer to send to the display. The pointer returned from <code>lcd_get_frame()</code> can be passed in, in which case it will behave almost exactly like <code>lcd_set_frame()</code>, or you can <code>malloc()</code> your own framebuffer (of size <code>320*240*2</code>) to do double buffering. Using <code>lcd_get_frame()</code> for one buffer and allocing a second one is recommended, to save a bit of memory, since the OS-supplied buffer will always be allocated.</p>
+
+
+
+<h2>Audio output</h2>
+
+<p>The JZ4732 contains built-in hardware for driving an audio codec. This hardware uses DMA transfers to a FIFO to send PCM data to the codec, similarly to how the Smart LCD controller works.</p>
+
+<p>The kernel provides a set of functions prefixed <code>waveout_</code> to handle audio output. I have not yet investigated these, but the <code>Dingoo.h</code> header provides prototypes and some data structures for them.</p>
+
+<p>(Here again there are duplicate functions prefixed with a single underscore, but these also just call the un-prefixed versions internally, and should be ignored.)</p>
+
+
+<h2>Reading buttons</h2>
+
+<p>The Dingoo kernel provides a few functions for reading the state of the buttons on the device.</p>
+
+<ul>
+<li><code>kbd_get_key()</code> returns the state of the buttons as a 32-bit integer bit string.</li>
+<li><code>kbd_get_status()</code> takes a pointer to a structure of 3 32-bit integers (defined as a <code>KeyStatus</code> in <code>Dingoo.h</code>) and writes which keys have been pressed, released or are being held into these three integers. The third value is the same as the value returned by <code>kbd_get_key()</code>.</li>
+</ul>
+
+<p>The bits in these bit strings are arranged as follows:</p>
+
+<table>
+<tr><td><strong>Button:</strong></td><td>Up</td><td>Down</td><td>Left</td><td>Right</td><td>A</td><td>B</td><td>X</td><td>Y</td><td>L</td><td>R</td><td>Select</td><td>Start</td><td>Power</td></tr>
+<tr><td><strong>Bit:</strong></td><td>20</td><td>27</td><td>28</td><td>18</td><td>31</td><td>21</td><td>16</td><td>6</td><td>8</td><td>29</td><td>10</td><td>11</td><td>7</td></tr>
+</table>
+
+<p>On my hardware, at least, it seems it is not possible to press Y and B at the same time, although most other combinations seem to work.</p>
+
+<h2>Timing</h2>
+
+<p>The kernel exports a number of (somewhat redundant) functions useful for timing and waiting:</p>
+
+<ul>
+<li><code>udelay()</code> runs a simple busy-loop for as many microseconds as requested.</li>
+<li><code>mdelay()</code> runs a simple busy-loop for as many milliseconds as requested.</li>
+<li><code>delay_ms()</code> runs yet another simple busy-loop for as many milliseconds (I think?) as requested.</li>
+<li><code>OSTimeGet()</code> returns the number of timeslices since system startup. Timeslices are approximately 10 milliseconds long (Actually 328/32768 seconds, which makes about 10.01 milliseconds, or 99.9 Hz).</li>
+<li><code>OSTimeDly()</code> suspends your task for the given number of timeslices.</li>
+<li><code>GetTickCount()</code> is apparently supposed to return a running timer value, in microseconds. However, what it actually does is return the timeslice count multiplied by 10000, plus the value of another hardware timer. That timer is not synchronized with the timeslice timer, and it only counts up to 520 or so, not to 9999. This means that the low digits of the value returned are largely nonsensical, and that sometimes a smaller value than the previous one will be returned.</li>
+</ul>
+
+
+<p>Due to the problems with <code>GetTickCount()</code>, <code>OSTimeGet()</code> seems to be the best choice for doing timing. Its resolution is somewhat low, though. The only way to get better timing is to set up one of the eight TCU timers to do timing for you, but since there is no reliable way to install interrupts, and these timers are limited to 16 bits, this might also be somewhat tricky to get right.</p>
+
+<p>Also, I have not investigated which of the TCU timers are actually free for use.</p>
+
+
+
+<h2>Accessing the filesystem</h2>
+
+<p>The Dingoo kernel provides functions for accessing the filesystem on the internal memory and any external mini-SD card. These functions are familiar POSIX-like functions, with some extensions. However, all functions are prefixed with <code>fsys_</code>. So <code>fopen()</code> is actually <code>fsys_fopen()</code>.</p>
+
+<p>Confusingly, the kernel also provides non-prefixed versions of some calls, like <code>fread()</code> and <code>printf()</code>, but these only use the built-in serial port (which is as far as I know not externally accessible at all, unless you solder wires onto the circuit board for it). Avoid these functions.</p>
+
+
+
+<h2>Others</h2>
+
+<ul>
+<li><code>spin_lock_irqsave()</code> disables interrupts and returns the old status register value.</li>
+<li><code>spin_lock_irqrestore()</code> restores the interrupt status to what it was previously using the value returned from <code>spin_lock_irqsave()</code>.</li>
+<li><code>OSCPUSaveSR()</code> and <code>OSCPURestoreSR()</code> do the exact same things as the above two functions.</li>
+<li><code>LCD_Color2Index()</code> converts a 24-bit BGR value to a 16-bit RGB value for use on the screen.</li>
+</ul>
+
+
+<hr />
+
+<footer>
+
+
+<p class="date">Created by
+<a href="javascript:send_mail()">Dag &Aring;gren/WAHa.06x36</a>
+on Sun 27 Sep 2009,
+and last modified on Mon 15 Feb 2010.</p>
+
+
+
+<p class="tags">Filed under
+<a class="tag" href="tags/dingoo.html">dingoo</a>, <a class="tag" href="tags/coding.html">coding</a>, <a class="tag" href="tags/information.html">information</a>.
+</p>
+
+
+
+</footer>
+
+</body>
+</html>
