@@ -1,0 +1,51 @@
+Astro Lander 1.0.0
+By Flatmush (aka Ben Brewer)
+
+INSTRUCTIONS
+
+Try to land your craft on the green landing pad.
+Bonuses are given for:
+	- Landing close to the center of the pad.
+	- Landing gently.
+	- Landing quickly.
+	- Landing using less fuel.
+There are multiple hud elements to help you:
+	- The red bar is your health, you will die if it empties.
+	- The yellow bar is your fuel, you will die if it empties.
+	- The green squares are you lives.
+	- The blue triangle/square is the target indicator,
+		it indicates the direction of the landing pad.
+
+
+
+CONTROLS
+
+Left/Right     = Horizontal thrusters.
+A Button       = Vertical Thruster
+Start          = Pause
+Select         = Screenshot
+Start + Select = Quit
+
+
+
+SOURCE
+
+This game is open source, the source can be downloaded from:
+http://flatmush.juliusparishy.com/a320/
+
+
+
+LICENSE
+
+This game is free to copy and distribute, but should not be charged for.
+I welcome people to modify it and make their own versions, as long as credit is given to me.
+
+
+
+CONTACT
+
+If you have any questions then you can contact me at:
+EMail: flatmush@hotmail.com
+MSN:   flatmush@hotmail.com
+AIM:   flatmushrooms
+Or I am registered as flatmush on any of the dingoo forums.
