@@ -18,4 +18,17 @@ extern int        fsys_fwrite(const void*, size_t, size_t, FSYS_FILE*);
 
 extern int        fsys_remove(const char*);
 
+typedef struct {
+	unsigned int  handle;
+	unsigned int  size;
+	unsigned int  attributes;
+	unsigned int  time;
+	short         padding;
+	char          filename[544];
+} findData;
+
+extern int        fsys_findfirst(const char*, int, findData*);
+extern int        fsys_findnext(findData*);
+extern int        fsys_findclose(findData*);
+
 #endif
