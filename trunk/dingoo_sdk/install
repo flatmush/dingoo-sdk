@@ -21,4 +21,27 @@ else
 	cc $DINGOO_SDK/tools/bin2h/src/bin2h.c -o $DINGOO_SDK/tools/bin2h/bin2h
 fi
 
+echo "ENTRY(AppMain)
+OUTPUT_FORMAT("elf32-tradlittlemips")
+SECTIONS { .dingoo 0x80A00000 : { $DINGOO_SDK/lib/dingoo.o (.text)
+                                  *(.text*)
+                                  *(.rodata*)
+                                  *(.data*)
+                                  *(.eh_frame*)
+                                  *(.gcc_except_table*)
+                                  *(.lit8)
+                                  *(.lit4)
+                                  *(.sdata)
+                                  _fbss = .;
+                                  *(.sbss)
+                                  *(.scommon)
+                                  *(.bss)
+                                  *(COMMON)
+                                  _end = . ;
+                              }
+           /DISCARD/ : { *(*) }
+         }
+
+" > $DINGOO_SDK/lib/dingoo.xn
+
 echo "Dingoo SDK installed."
