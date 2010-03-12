@@ -44,10 +44,10 @@ char* gamePathInit(const char* inPath) {
 void drawFiles()
 {
 	char tempString[256];
-	findData fData;
+	fsys_file_info_t fData;
 
 	sprintf(tempString, "%s*", gamePath);
-	int ret = fsys_findfirst(tempString, 0x0, &fData); // change 0x0 to 0x10 to list folders
+	int ret = fsys_findfirst(tempString, FSYS_FIND_FILE, &fData); // change FSYS_FIND_FILE to FSYS_FIND_DIR to list folders
 
 	if (ret != 0)
 	{
@@ -57,7 +57,7 @@ void drawFiles()
 
 	int i = 0;
 	do {
-		gfx_font_print(50, 20 + i * 10, gameFont, fData.filename);
+		gfx_font_print(50, 20 + i * 10, gameFont, fData.name);
 		i++;
 	} while (fsys_findnext(&fData) == 0);
 
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
 	char tempString[256];
 	sprintf(tempString, "%sfont.tga", gamePath);
 	gameFont = gfx_tex_load_tga(tempString);
-	
+
 	drawFiles();
 	display_flip(gameDisplay);
 

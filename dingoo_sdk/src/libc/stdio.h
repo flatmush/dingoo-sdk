@@ -11,6 +11,8 @@ typedef long int fpos_t;
 #define SEEK_CUR FSYS_SEEK_CUR
 #define SEEK_END FSYS_SEEK_END
 
+#define FILENAME_MAX FSYS_FILENAME_MAX
+
 extern FILE* stdin;
 extern FILE* stdout;
 extern FILE* stderr;
