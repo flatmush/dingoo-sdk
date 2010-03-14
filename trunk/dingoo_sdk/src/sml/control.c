@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <dingoo/keyboard.h>
-#include "control.h"
-#include "timer.h"
+#include <sml/control.h>
+#include <sml/timer.h>
 
 KEY_STATUS _control_status[2];
 uint32_t   _control_duration[32] = {

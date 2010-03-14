@@ -10,7 +10,7 @@ CPP       = mipsel-linux-g++
 CC        = mipsel-linux-gcc
 LD        = mipsel-linux-ld
 
-SOURCE    = . ./lib
+SOURCE    = .
 
 INCLUDE   = -I$(DINGOO_SDK)/include -I../lib -I$(MIPSTOOLS)/mipsel-linux/include -I$
 
@@ -20,7 +20,7 @@ CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG
 CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
 
 LIB_PATH  = $(DINGOO_SDK)/lib
-LIBS      = -lfgl -lc -lgcc
+LIBS      = -lfgl -lsml -lc -lgcc
 
 LD_SCRIPT = $(DINGOO_SDK)/lib/dingoo.xn
 LD_OPTS   = -nodefaultlibs --script $(LD_SCRIPT) -L$(LIB_PATH) $(LIBS) -o $(APP_NAME).elf
