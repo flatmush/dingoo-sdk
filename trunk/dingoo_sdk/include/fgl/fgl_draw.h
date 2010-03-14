@@ -13,6 +13,7 @@
 #define FGL_TRIANGLES      5
 #define FGL_TRIANGLE_STRIP 6
 #define FGL_TRIANGLE_FAN   7
+#define FGL_SPRITES        8
 
 extern void fgl_draw_array(uint8_t inType, fgl_vertex_t* inVerts, uintptr_t inVertCount);
 
