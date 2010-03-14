@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <fgl/fgl_fixmath.h>
 
 typedef uint16_t fgl_color_t;
 typedef uint32_t fgl_color_pair_t;
@@ -13,9 +14,22 @@ typedef uint32_t fgl_color_pair_t;
 
 #define fgl_color_rgb(inRed, inGreen, inBlue) (((inRed) << 11) | ((inGreen) << 5) | (inBlue))
 
+#define FGL_COLOR_WHITE 0xFFFF
+#define FGL_COLOR_BLACK 0x0000
+
 extern fgl_color_t _fgl_color;
 
 extern fgl_color_t fgl_color_halfblend(fgl_color_t inColor0, fgl_color_t inColor1);
 extern fgl_color_t fgl_color_multiply(fgl_color_t inColor0, fgl_color_t inColor1);
+
+extern void fgl_color_set(fgl_color_t inColor);
+extern void fgl_color_set_3f(fgl_fix16_t inRed, fgl_fix16_t inGreen, fgl_fix16_t inBlue);
+extern void fgl_color_set_3ub(uint8_t inRed, uint8_t inGreen, uint8_t inBlue);
+extern void fgl_color_set_3uh(uint16_t inRed, uint16_t inGreen, uint16_t inBlue);
+
+extern void fgl_color_get(fgl_color_t* outColor);
+extern void fgl_color_get_3f(fgl_fix16_t* outRed, fgl_fix16_t* outGreen, fgl_fix16_t* outBlue);
+extern void fgl_color_get_3ub(uint8_t* outRed, uint8_t* outGreen, uint8_t* outBlue);
+extern void fgl_color_get_3uh(uint16_t* outRed, uint16_t* outGreen, uint16_t* outBlue);
 
 #endif
