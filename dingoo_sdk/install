@@ -11,6 +11,7 @@ if [ ! -d "$MIPSTOOLS" ]; then
 fi
 
 cd $DINGOO_SDK/src/libc && make
+cd $DINGOO_SDK/src/sml && make
 cd $DINGOO_SDK/src/fgl && make
 cp $MIPSTOOLS/lib/gcc/mipsel-linux/*/libgcc.a $DINGOO_SDK/lib/
 

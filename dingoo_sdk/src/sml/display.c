@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <dingoo/slcd.h>
 #include <dingoo/cache.h>
-#include "display.h"
+#include <sml/display.h>
 
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240

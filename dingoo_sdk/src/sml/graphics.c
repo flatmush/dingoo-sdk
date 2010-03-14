@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <dingoo/fsys.h>
-#include "graphics.h"
-#include "display.h"
-#include "fixmath.h"
+#include <sml/graphics.h>
+#include <sml/display.h>
+#include <sml/fixmath.h>
 
 #define _GFX_CLIP_NONE 0
 #define _GFX_CLIP_PART 1

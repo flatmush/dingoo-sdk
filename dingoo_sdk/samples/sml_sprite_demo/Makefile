@@ -1,6 +1,6 @@
 # Define the applications properties here:
 
-APP_NAME = fgl_sprite_demo
+APP_NAME = sml_sprite_sample
 
 
 

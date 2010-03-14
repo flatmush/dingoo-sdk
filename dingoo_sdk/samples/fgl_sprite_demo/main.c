@@ -8,9 +8,9 @@
 
 #include <fgl/fgl.h>
 
-#include "lib/display.h"
-#include "lib/timer.h"
-#include "lib/control.h"
+#include <sml/display.h>
+#include <sml/timer.h>
+#include <sml/control.h>
 
 
 

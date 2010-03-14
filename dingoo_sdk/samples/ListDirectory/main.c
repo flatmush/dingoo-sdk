@@ -8,11 +8,11 @@
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 
-#include "lib/graphics.h"
-#include "lib/display.h"
-#include "lib/control.h"
-#include "lib/timer.h"
-#include "lib/fixmath.h"
+#include <sml/graphics.h>
+#include <sml/display.h>
+#include <sml/control.h>
+#include <sml/timer.h>
+#include <sml/fixmath.h>
 
 #define max(x, y) (x > y ? x : y)
 #define min(x, y) (x < y ? x : y)
@@ -107,8 +107,8 @@ int main(int argc, char** argv) {
 		}
 		control_poll();
 
-		if (control_pressed_once(CONTROL_BUTTON_A) || control_pressed_once(CONTROL_BUTTON_B) ||
-			control_pressed_once(CONTROL_BUTTON_START || control_pressed_once(CONTROL_BUTTON_SELECT)))
+		if (control_just_pressed(CONTROL_BUTTON_A) || control_just_pressed(CONTROL_BUTTON_B) ||
+			control_just_pressed(CONTROL_BUTTON_START) || control_just_pressed(CONTROL_BUTTON_SELECT))
 		{
 			gameRunning = false;
 		}

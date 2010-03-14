@@ -1,6 +1,6 @@
 # Define the applications properties here:
 
-APP_NAME = fgl_sprite_demo
+LIB_NAME = sml
 
 
 
@@ -8,11 +8,11 @@ APP_NAME = fgl_sprite_demo
 
 CPP       = mipsel-linux-g++
 CC        = mipsel-linux-gcc
-LD        = mipsel-linux-ld
+AR        = mipsel-linux-ar
 
 SOURCE    = .
 
-INCLUDE   = -I$(DINGOO_SDK)/include -I../lib -I$(MIPSTOOLS)/mipsel-linux/include -I$
+INCLUDE   = -I.. -I./include -I$(DINGOO_SDK)/include
 
 W_OPTS    = -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions
 CPP_OPTS  = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
@@ -20,10 +20,6 @@ CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG
 CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
 
 LIB_PATH  = $(DINGOO_SDK)/lib
-LIBS      = -lfgl -lsml -lc -lgcc
-
-LD_SCRIPT = $(DINGOO_SDK)/lib/dingoo.xn
-LD_OPTS   = -nodefaultlibs --script $(LD_SCRIPT) -L$(LIB_PATH) $(LIBS) -o $(APP_NAME).elf
 
 
 
@@ -32,9 +28,9 @@ LD_OPTS   = -nodefaultlibs --script $(LD_SCRIPT) -L$(LIB_PATH) $(LIBS) -o $(APP_
 SRC_CPP = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.cpp))
 SRC_C   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.c))
 SRC_S   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.S))
-OBJ_CPP = $(patsubst %.cpp, %.o, $(SRC_CPP))
-OBJ_C   = $(patsubst %.c, %.o, $(SRC_C))
-OBJ_S   = $(patsubst %.S, %.o, $(SRC_S))
+OBJ_CPP = $(notdir $(patsubst %.cpp, %.o, $(SRC_CPP)))
+OBJ_C   = $(notdir $(patsubst %.c, %.o, $(SRC_C)))
+OBJ_S   = $(notdir $(patsubst %.S, %.o, $(SRC_S)))
 OBJ     = $(OBJ_CPP) $(OBJ_C) $(OBJ_S)
 
 
@@ -43,13 +39,14 @@ OBJ     = $(OBJ_CPP) $(OBJ_C) $(OBJ_S)
 
 .PHONY : all
 
-all : $(APP_NAME).app
+all : lib$(LIB_NAME).a
 
-$(APP_NAME).app : $(APP_NAME).elf
-	$(DINGOO_SDK)/tools/elf2app/elf2app $(APP_NAME)
-
-$(APP_NAME).elf : $(OBJ)
-	$(LD) $(OBJ) $(LD_OPTS)
+lib$(LIB_NAME).a : $(OBJ)
+	$(AR) rcs lib$(LIB_NAME).a *.o
+	cp lib$(LIB_NAME).a $(LIB_PATH)/.
+	mkdir $(DINGOO_SDK)/include/$(LIB_NAME)
+	cp *.h $(DINGOO_SDK)/include/$(LIB_NAME)/
+	make clean
 
 $(OBJ_CPP) : %.o : %.cpp
 	$(CPP) $(CPP_OPTS) -o $@ $<
@@ -67,4 +64,4 @@ $(OBJ_S) : %.o : %.S
 .PHONY : clean
 
 clean :
-	rm -f $(OBJ) $(APP_NAME).elf $(APP_NAME).bin $(APP_NAME).app
+	rm -f $(OBJ) lib$(LIB_NAME).a
