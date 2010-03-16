@@ -112,6 +112,8 @@ gfx_texture* gfx_tex_load_tga(const char* inPath) {
 	fsys_fread(&tga_bpp, 1, 1, tempFile);
 	fsys_fread(&tga_descriptor, 1, 1, tempFile);
 
+	bool upside_down = (tga_descriptor & 0x20) > 0;
+
 	gfx_texture* tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (tga_width * tga_height * 2));
 	if(tempTexture == NULL) {
 		fsys_fclose(tempFile);
@@ -128,7 +130,7 @@ gfx_texture* gfx_tex_load_tga(const char* inPath) {
 		fsys_fread(&tempColor[2], 1, 1, tempFile);
 		fsys_fread(&tempColor[1], 1, 1, tempFile);
 		fsys_fread(&tempColor[0], 1, 1, tempFile);
-		tempTexPtr[i] = gfx_color_rgb(tempColor[0], tempColor[1], tempColor[2]);
+		tempTexPtr[upside_down ? i : ((tga_height - 1 - (i / tga_width)) * tga_width + i % tga_width)] = gfx_color_rgb(tempColor[0], tempColor[1], tempColor[2]);
 	}
 	fsys_fclose(tempFile);
 
