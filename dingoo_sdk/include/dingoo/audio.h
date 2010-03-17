@@ -25,6 +25,17 @@
 #define PCM_GET_SAMPLE_MAX  16
 #define PCM_SET_RECORD_FM   17
 
+// Some parts here are thanks to Orion and Alekmaul.
+typedef struct
+{
+   unsigned int    frequency;
+   unsigned short  bits;
+   unsigned char   channels;
+   unsigned char   volume;
+} waveout_open;
+
+typedef void* waveout_handle;
+
 // The following are found in the ingenic ucosii source.
 extern int   pcm_ioctl(unsigned int cmd, unsigned long arg);
 extern int   pcm_can_write();
@@ -33,16 +44,16 @@ extern int   pcm_read(char* buffer, int count);
 extern int   pcm_write(char* buffer, int count);
 
 // The following come from joyrider and from disassembly.
-extern void* waveout_open(void*);
-extern int   waveout_write(void*, char* buffer, int count);
-extern int   waveout_close(void*);
-extern void  waveout_close_at_once(void*);
-extern void  waveout_reset();
-extern int   waveout_ioctl(void*, unsigned int cmd, unsigned long arg);
-extern int   waveout_can_write();
-extern int   waveout_set_volume(unsigned int vol);
-extern int   waveout_get_volume(unsigned int);
-extern void  codec_ticker_handler();
+extern waveout_handle* waveout_open(waveout_open*);
+extern int             waveout_write(waveout_handle*, char* buffer, int count);
+extern int             waveout_close(waveout_handle*);
+extern void            waveout_close_at_once(void*);
+extern void            waveout_reset();
+extern int             waveout_ioctl(void*, unsigned int cmd, unsigned long arg);
+extern int             waveout_can_write();
+extern int             waveout_set_volume(unsigned int vol);
+extern int             waveout_get_volume(unsigned int);
+extern void            codec_ticker_handler();
 
 // The following values are educated guesses.
 extern void* wavein_open(void*);
