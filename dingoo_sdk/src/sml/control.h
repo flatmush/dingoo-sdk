@@ -36,9 +36,9 @@ extern void          control_poll();
 extern control_state control_check(uint32_t inControl);
 extern void          control_lock(uint32_t inDuration);
 
-#define control_just_pressed(inControl) (control_check(inControl).pressed && control_check(inControl).changed)
-#define control_just_released(inControl) (!control_check(inControl).pressed && control_check(inControl).changed)
-#define control_still_pressed(inControl) (control_check(inControl).pressed && !control_check(inControl).changed)
+#define control_just_pressed(inControl)   ( control_check(inControl).pressed &&  control_check(inControl).changed)
+#define control_just_released(inControl)  (!control_check(inControl).pressed &&  control_check(inControl).changed)
+#define control_still_pressed(inControl)  ( control_check(inControl).pressed && !control_check(inControl).changed)
 #define control_still_released(inControl) (!control_check(inControl).pressed && !control_check(inControl).changed)
 
 #endif

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include <dingoo/fsys.h>
 
 #include <sml/fixmath.h>
@@ -69,7 +70,7 @@ void wav_error(const char* inError, const uint32_t inNumber) {
 	}
 }
 
-wav_buffer* wav_load(char* inFile) {
+sound_t* wav_load(char* inFile) {
 	if(inFile == NULL)
 		return NULL;
 
@@ -83,7 +84,7 @@ wav_buffer* wav_load(char* inFile) {
 	uint32_t tempLen = fsys_ftell(tempFile);
 	fsys_fseek(tempFile, 0, FSYS_SEEK_SET);
 
-	wav_buffer* tempOut = NULL;
+	sound_t* tempOut = NULL;
 
 	wavRiffChunk tempRiffChunk;
 	fsys_fread(tempRiffChunk.wrcChunkID, 1, 4, tempFile);
@@ -150,12 +151,12 @@ wav_buffer* wav_load(char* inFile) {
 	uint32_t tempSampleSize = ((tempFmtChunk.wfcBitsPerSample * tempFmtChunk.wfcNumChannels) >> 3);
 	uint32_t tempSampleSkip = tempFmtChunk.wfcBlockAlign - tempSampleSize;
 
-	tempOut = (wav_buffer*)malloc(sizeof(wav_buffer) + (tempSampleCount * tempSampleSize));
+	tempOut = (sound_t*)malloc(sizeof(sound_t) + (tempSampleCount * tempSampleSize));
 	if(tempOut == NULL) {
 		wav_error("Unable to allocate wav buffer.", 11);
 		goto wav_load_end;
 	}
-	tempOut->data         = (void*)((uintptr_t)tempOut + sizeof(wav_buffer));
+	tempOut->data         = (int16_t*)((uintptr_t)tempOut + sizeof(sound_t));
 	tempOut->sample_count = tempSampleCount;
 	tempOut->sample_rate  = tempFmtChunk.wfcSampleRate;
 	tempOut->sample_bits  = tempFmtChunk.wfcBitsPerSample;
@@ -164,7 +165,7 @@ wav_buffer* wav_load(char* inFile) {
 	uint32_t i;
 	uint8_t* tempSamplePtr;
 	if(tempSampleSkip > 0) {
-		tempSamplePtr = tempOut->data;
+		tempSamplePtr = (uint8_t*)tempOut->data;
 		for(i = 0; i < tempSampleCount; i++, tempSamplePtr += tempSampleSize) {
 			fsys_fread(tempSamplePtr, tempSampleSize, 1, tempFile);
 			fsys_fseek(tempFile, tempSampleSkip, FSYS_SEEK_CUR);
@@ -178,6 +179,6 @@ wav_load_end:
 	return tempOut;
 }
 
-void wav_delete(wav_buffer* inBuffer) {
+void wav_delete(sound_t* inBuffer) {
 	free(inBuffer);
 }
