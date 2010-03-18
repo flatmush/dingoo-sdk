@@ -1,5 +1,5 @@
-#ifndef __audio_h__
-#define __audio_h__
+#ifndef __dingoo_audio_h__
+#define __dingoo_audio_h__
 
 /* Audio Sample Format */
 #define	AFMT_U8			8
@@ -25,17 +25,6 @@
 #define PCM_GET_SAMPLE_MAX  16
 #define PCM_SET_RECORD_FM   17
 
-// Some parts here are thanks to Orion and Alekmaul.
-typedef struct
-{
-   unsigned int    frequency;
-   unsigned short  bits;
-   unsigned char   channels;
-   unsigned char   volume;
-} waveout_open;
-
-typedef void* waveout_handle;
-
 // The following are found in the ingenic ucosii source.
 extern int   pcm_ioctl(unsigned int cmd, unsigned long arg);
 extern int   pcm_can_write();
@@ -43,17 +32,27 @@ extern int   pcm_can_read();
 extern int   pcm_read(char* buffer, int count);
 extern int   pcm_write(char* buffer, int count);
 
+
+// Waveout types.
+typedef struct {
+	uint32_t sample_rate;
+	uint16_t format;
+	uint8_t  channel;
+	uint8_t  volume;
+} waveout_args;
+
+typedef void waveout_inst;
+
 // The following come from joyrider and from disassembly.
-extern waveout_handle* waveout_open(waveout_open*);
-extern int             waveout_write(waveout_handle*, char* buffer, int count);
-extern int             waveout_close(waveout_handle*);
-extern void            waveout_close_at_once(void*);
-extern void            waveout_reset();
-extern int             waveout_ioctl(void*, unsigned int cmd, unsigned long arg);
-extern int             waveout_can_write();
-extern int             waveout_set_volume(unsigned int vol);
-extern int             waveout_get_volume(unsigned int);
-extern void            codec_ticker_handler();
+extern void* waveout_open(waveout_args*);
+extern int   waveout_write(waveout_inst*, char* buffer, int count);
+extern int   waveout_close(waveout_inst*);
+extern void  waveout_close_at_once(waveout_inst*);
+extern void  waveout_reset();
+extern int   waveout_ioctl(void*, unsigned int cmd, unsigned long arg);
+extern int   waveout_can_write();
+extern int   waveout_set_volume(unsigned int vol);
+extern int   waveout_get_volume(unsigned int);
 
 // The following values are educated guesses.
 extern void* wavein_open(void*);

@@ -1,6 +1,8 @@
 #ifndef __fsys_h__
 #define __fsys_h__
 
+#include <dingoo/entry.h>
+
 typedef void FSYS_FILE;
 
 #define FSYS_SEEK_SET 0
@@ -16,8 +18,8 @@ extern int        fsys_ferror(FSYS_FILE*);
 extern int        fsys_feof(FSYS_FILE*);
 extern int        fsys_fwrite(const void*, size_t, size_t, FSYS_FILE*);
 
-extern int        fsys_remove(const char*);
-
+extern int        fsys_removeW(const wchar_t*);
+#define fsys_remove(inFile) fsys_removeW(__to_unicode_le(inFile))
 
 
 #define FSYS_FILENAME_MAX 544
