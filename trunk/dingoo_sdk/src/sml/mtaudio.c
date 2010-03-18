@@ -39,8 +39,6 @@ void _audio_thread(void* inDummy) {
 			continue;
 		}
 		waveout_write(_audio_inst, _audio_buffer, _audio_buffer_size);
-		//uint32_t tempTime = ((_audio_buffer_size << 3) * OS_TICKS_PER_SEC) / (_audio_buffer_rate * _audio_buffer_bits * _audio_buffer_channels);
-		//OSTimeDly(tempTime - 1);
 	}
 	_audio_thread_kill = false;
 	OSTaskDel(_audio_thread_id);
@@ -131,6 +129,6 @@ void mtaudio_buffer_set(void* inBuffer, uintptr_t inSize, uint8_t inChannels, ui
 		_audio_buffer_volume = inVolume;
 	}
 
-	_audio_buffer          = inBuffer;
-	_audio_buffer_size     = inSize;
+	_audio_buffer      = inBuffer;
+	_audio_buffer_size = inSize;
 }
