@@ -21,6 +21,10 @@ extern void kbd_get_status(KEY_STATUS* ks);
 #define _kbd_get_status kbd_get_status
 */
 
+extern wchar_t* __to_unicode_le(char*);
+extern char*    __to_locale_ansi(wchar_t*);
+
+
 extern unsigned int GetTickCount();
 
 #endif

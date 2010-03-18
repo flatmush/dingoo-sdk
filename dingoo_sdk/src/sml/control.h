@@ -4,17 +4,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define CONTROL_POWER         7
-
 #define CONTROL_BUTTON_A      31
 #define CONTROL_BUTTON_B      21
-#define CONTROL_BUTTON_X      16 // Gemei X760+ triangle
-#define CONTROL_BUTTON_Y      6  // Gemei X760+ X
-#define CONTROL_BUTTON_START  11 // Does not exist on the Gemei X760+
-#define CONTROL_BUTTON_SELECT 10 // Does not exist on the Gemei X760+
+#define CONTROL_BUTTON_X      16
+#define CONTROL_BUTTON_Y      6
+#define CONTROL_BUTTON_START  11
+#define CONTROL_BUTTON_SELECT 10
 
-#define CONTROL_TRIGGER_LEFT  8  // Does not exist on the Gemei X760+
-#define CONTROL_TRIGGER_RIGHT 29 // Does not exist on the Gemei X760+
+#define CONTROL_TRIGGER_LEFT  8
+#define CONTROL_TRIGGER_RIGHT 29
 
 #define CONTROL_DPAD_UP       20
 #define CONTROL_DPAD_DOWN     27
