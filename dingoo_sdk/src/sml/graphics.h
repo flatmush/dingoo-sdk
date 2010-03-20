@@ -25,6 +25,7 @@ extern bool         gfx_render_target_set(gfx_texture* inTexture);
 extern void         gfx_render_target_clear(gfx_color inColor);
 extern void         gfx_render_target_swap();
 
+extern gfx_texture* gfx_tex_allocate(uint32_t width, uint32_t height);
 extern gfx_texture* gfx_tex_load_tga(const char* inPath);
 extern gfx_texture* gfx_tex_load_tga_from_buffer(uint8_t* buffer);
 extern bool         gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture);

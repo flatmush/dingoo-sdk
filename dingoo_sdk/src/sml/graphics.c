@@ -77,6 +77,20 @@ void gfx_render_target_swap() {
 }
 
 
+gfx_texture* gfx_tex_allocate(uint32_t width, uint32_t height)
+{
+	gfx_texture* tempTexture = NULL;
+	tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (width * height * 2));
+	if (tempTexture == NULL)
+	{
+		return NULL;
+	}
+	tempTexture->address = (void*)((uintptr_t)tempTexture + sizeof(gfx_texture));
+	tempTexture->width = width;
+	tempTexture->height = height;
+
+	return tempTexture;
+}
 
 gfx_texture* gfx_tex_load_tga(const char* inPath) {
 	if(inPath == NULL)
