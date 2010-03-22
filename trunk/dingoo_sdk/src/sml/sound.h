@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 typedef struct {
-	int16_t* data;
+	int16_t* sample_data;
 	uint32_t sample_count;
 	uint32_t sample_rate;
 	uint8_t  sample_bits;
@@ -15,6 +15,7 @@ typedef struct {
 extern bool sound_init();
 extern void sound_term();
 
-extern bool sound_play(sound_t inSound);
+extern uintptr_t sound_play(sound_t inSound, bool inLoop);
+extern void      sound_stop(uintptr_t inSound);
 
 #endif

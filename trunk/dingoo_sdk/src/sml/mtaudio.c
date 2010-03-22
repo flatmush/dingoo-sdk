@@ -90,6 +90,7 @@ void mtaudio_term() {
 	_audio_thread_kill = true;
 	while(_audio_thread_kill)
 		OSTimeDly(1);
+
 	free(_audio_thread_stack);
 	_audio_thread_stack = NULL;
 

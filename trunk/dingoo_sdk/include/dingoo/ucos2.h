@@ -5,8 +5,8 @@
 
 #define OS_TICKS_PER_SEC 100
 
-#define OS_DEL_NO_PEND
-#define OS_DEL_ALWAYS
+#define OS_DEL_NO_PEND 0
+#define OS_DEL_ALWAYS  1
 
 #define OS_NO_ERR 0x0
 
