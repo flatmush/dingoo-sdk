@@ -3,11 +3,11 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
+
 #include <dingoo/fsys.h>
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 #include <dingoo/audio.h>
-
 
 #include <sml/graphics.h>
 #include <sml/display.h>
@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
 
 		control_poll();
 		if(control_just_pressed(CONTROL_BUTTON_A))
-			sound_play(*sound_wav);
+			sound_play(*sound_wav, false);
 		if(control_check(CONTROL_BUTTON_START).pressed)
 			break;
 	}
