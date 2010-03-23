@@ -30,4 +30,6 @@ extern ldiv_t ldiv(long int numerator, long int denominator);
 extern void     srand(unsigned int inSeed);
 extern int      rand();
 
+extern void qsort(void* base, size_t num, size_t size, int(* comparator) (const void*, const void*));
+
 #endif
