@@ -15,10 +15,13 @@ extern char* strncpy(char* outDest, const char* inSrc, size_t inLength);
 extern int   _strcmp(const char* inStr0, const char* inStr1);
 extern int   strncmp(const char* inStr0, const char* inStr1, size_t inLength);
 
+extern char* strcat(char* outDest, const char* inSrc);
+
 extern void* memchr (void* inPtr, int inChar, size_t inLength);
 extern void* _memcpy(void* outDest, const void* inSrc, size_t inLength);
 extern void* memmove(void* outDest, const void* inSrc, size_t inLength);
 extern void* _memset(void* outDest, int inValue, size_t inLength);
+extern int   memcmp (const void *s1, const void *s2, size_t n);
 
 #define strcmp(inStr0, inStr1) _strcmp(inStr0, inStr1)
 #define memcpy(outDest, inSrc, inLength) _memcpy(outDest, inSrc, inLength)
