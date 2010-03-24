@@ -1,0 +1,20 @@
+#ifndef __fgl_model_h__
+#define __fgl_model_h__
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <fgl/fgl_fixmath.h>
+#include <fgl/fgl_vertex.h>
+
+typedef struct {
+	uintptr_t     frame_count;
+	uintptr_t     vert_count;
+	fgl_vertex_t* vert_data;
+} fgl_model;
+
+extern fgl_model* fgl_model_load_md2(const char* inPath);
+extern void       fgl_model_delete(fgl_model* inModel);
+
+extern void       fgl_model_draw(fgl_model* inModel, fgl_fix16_t inFrame);
+
+#endif
