@@ -13,11 +13,14 @@ extern const fgl_fix16_t fgl_fix16_pi;
 extern const fgl_fix16_t fgl_fix16_e;
 extern const fgl_fix16_t fgl_fix16_one;
 
-extern double      fgl_fix16_to_dbl(fgl_fix16_t inVal);
-extern fgl_fix16_t fgl_fix16_from_dbl(double inVal);
+extern double      fgl_fix16_to_dbl(const fgl_fix16_t inVal);
+extern fgl_fix16_t fgl_fix16_from_dbl(const double inVal);
 
-extern int32_t fgl_fix16_to_int(fgl_fix16_t inVal);
-extern fgl_fix16_t fgl_fix16_from_int(int32_t inVal);
+extern float       fgl_fix16_to_float(const fgl_fix16_t inVal);
+extern fgl_fix16_t fgl_fix16_from_float(const float inVal);
+
+extern int32_t fgl_fix16_to_int(const fgl_fix16_t inVal);
+extern fgl_fix16_t fgl_fix16_from_int(const int32_t inVal);
 
 extern fgl_fix16_t fgl_fix16_sadd(fgl_fix16_t inArg0, fgl_fix16_t inArg1);
 extern fgl_fix16_t fgl_fix16_mul(fgl_fix16_t inArg0, fgl_fix16_t inArg1);
@@ -35,6 +38,8 @@ extern fgl_fix16_t fgl_fix16_atan(fgl_fix16_t inValue);
 extern fgl_fix16_t fgl_fix16_atan2(fgl_fix16_t inY, fgl_fix16_t inX);
 
 extern fgl_fix16_t fgl_fix16_sqrt(fgl_fix16_t inValue);
+
+extern fgl_fix16_t fgl_fix16_lerp16(fgl_fix16_t inArg0, fgl_fix16_t inArg1, uint16_t inFract);
 
 typedef uint32_t fgl_fract32_t;
 
