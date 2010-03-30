@@ -8,6 +8,8 @@ CONTENTS
 1 Installation
 	1.1 Windows Installation
 	1.2 Unix Installation
+	1.3 Updating
+
 2 Compiling the sample programs
 	
 
@@ -52,7 +54,6 @@ Now for the final step, open up cygwin from the icon in your start menu or deskt
 	- Type "./install"
 
 The dingoo SDK is now installed.
-	
 
 
 
@@ -64,6 +65,14 @@ Linux users will need to download and install the inegenic MIPS compiler tools t
 	- Type "cd $DINGOO_SDK && ./install"
 
 The dingoo SDK is now installed.
+
+
+
+1.3 - Updating
+
+Delete your current SDK directory and replace it with the newly downloaded SDK, then simply re-run the install script.
+
+For minor library changes it is possible to just re-make each of the new libs, but a full re-install is advised.
 
 
 
