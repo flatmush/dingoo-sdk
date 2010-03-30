@@ -36,38 +36,8 @@ typedef struct {
 
 
 
-int _strncmp(const char* inStr0, const char* inStr1, size_t inLength) {
-	if(inStr0 == NULL) {
-		if(inStr1 == NULL)
-			return 0;
-		return -inStr1[0];
-	}
-	if(inStr1 == NULL)
-		return (unsigned char)inStr0[0];
-	uintptr_t i;
-	for(i = 0; (i < inLength) && ((inStr0[i] != '\0') || (inStr1[i] != '\0')); i++) {
-		if(inStr0[i] != inStr1[i])
-			return (inStr0[i] - inStr1[i]);
-	}
-	return 0;
-}
-
-void draw_sine_wave(fix16_t inFrequency);
-
 void wav_error(const char* inError, const uint32_t inNumber) {
-	/*FILE* tempFile = fsys_fopen("b:\\wav_error.txt", "wb");
-	if(tempFile == NULL)
-		return;
-	fsys_fwrite(inError, 1, strlen(inError), tempFile);
-	fsys_fclose(tempFile);*/
-	gfx_render_target_clear(gfx_color_rgb(0x00, 0x00, 0x00));
-	draw_sine_wave(fix16_from_int(inNumber));
-	gfx_render_target_swap();
-	while(true) {
-		control_poll();
-		if(control_check(CONTROL_BUTTON_A).pressed)
-			break;
-	}
+	// TODO - Report error somehow.
 }
 
 sound_t* wav_load(char* inFile) {
@@ -91,11 +61,11 @@ sound_t* wav_load(char* inFile) {
 	fsys_fread(&tempRiffChunk.wrcChunkSize, 4, 1, tempFile);
 	fsys_fread(tempRiffChunk.wrcFormat, 1, 4, tempFile);
 
-	if(_strncmp(tempRiffChunk.wrcChunkID, "RIFF", 4) != 0) {
+	if(strncmp(tempRiffChunk.wrcChunkID, "RIFF", 4) != 0) {
 		wav_error("Not RIFF file.", 3);
 		goto wav_load_end;
 	}
-	if(_strncmp(tempRiffChunk.wrcFormat, "WAVE", 4) != 0) {
+	if(strncmp(tempRiffChunk.wrcFormat, "WAVE", 4) != 0) {
 		wav_error("Not wave file.", 4);
 		goto wav_load_end;
 	}
@@ -114,7 +84,7 @@ sound_t* wav_load(char* inFile) {
 	fsys_fread(&tempFmtChunk.wfcBlockAlign, 2, 1, tempFile);
 	fsys_fread(&tempFmtChunk.wfcBitsPerSample, 2, 1, tempFile);
 
-	if(_strncmp(tempFmtChunk.wfcSubchunk1ID, "fmt ", 4) != 0) {
+	if(strncmp(tempFmtChunk.wfcSubchunk1ID, "fmt ", 4) != 0) {
 		wav_error("No fmt chunk detected.", 6);
 		goto wav_load_end;
 	}
@@ -128,13 +98,13 @@ sound_t* wav_load(char* inFile) {
 	fsys_fread(tempDataChunk.wdcSubchunk2ID, 1, 4, tempFile);
 	fsys_fread(&tempDataChunk.wdcSubchunk2Size, 4, 1, tempFile);
 
-	if(_strncmp(tempDataChunk.wdcSubchunk2ID, "fact", 4) == 0) {
+	if(strncmp(tempDataChunk.wdcSubchunk2ID, "fact", 4) == 0) {
 		fsys_fseek(tempFile, tempDataChunk.wdcSubchunk2Size, FSYS_SEEK_CUR);
 		fsys_fread(tempDataChunk.wdcSubchunk2ID, 1, 4, tempFile);
 		fsys_fread(&tempDataChunk.wdcSubchunk2Size, 4, 1, tempFile);
 	}
 
-	if(_strncmp(tempDataChunk.wdcSubchunk2ID, "data", 4) != 0) {
+	if(strncmp(tempDataChunk.wdcSubchunk2ID, "data", 4) != 0) {
 		wav_error("No data chunk detected.", 8);
 		goto wav_load_end;
 	}
