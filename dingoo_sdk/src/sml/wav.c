@@ -156,7 +156,7 @@ sound_t* wav_load(char* inFile) {
 		wav_error("Unable to allocate wav buffer.", 11);
 		goto wav_load_end;
 	}
-	tempOut->data         = (int16_t*)((uintptr_t)tempOut + sizeof(sound_t));
+	tempOut->sample_data  = (int16_t*)((uintptr_t)tempOut + sizeof(sound_t));
 	tempOut->sample_count = tempSampleCount;
 	tempOut->sample_rate  = tempFmtChunk.wfcSampleRate;
 	tempOut->sample_bits  = tempFmtChunk.wfcBitsPerSample;
@@ -165,13 +165,13 @@ sound_t* wav_load(char* inFile) {
 	uint32_t i;
 	uint8_t* tempSamplePtr;
 	if(tempSampleSkip > 0) {
-		tempSamplePtr = (uint8_t*)tempOut->data;
+		tempSamplePtr = (uint8_t*)tempOut->sample_data;
 		for(i = 0; i < tempSampleCount; i++, tempSamplePtr += tempSampleSize) {
 			fsys_fread(tempSamplePtr, tempSampleSize, 1, tempFile);
 			fsys_fseek(tempFile, tempSampleSkip, FSYS_SEEK_CUR);
 		}
 	} else {
-		fsys_fread(tempOut->data, tempSampleSize, tempSampleCount, tempFile);
+		fsys_fread(tempOut->sample_data, tempSampleSize, tempSampleCount, tempFile);
 	}
 
 wav_load_end:

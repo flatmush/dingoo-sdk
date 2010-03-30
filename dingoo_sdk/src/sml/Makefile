@@ -27,6 +27,7 @@ LIB_PATH  = $(DINGOO_SDK)/lib
 
 SRC_CPP = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.cpp))
 SRC_C   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.c))
+SRC_H   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.h))
 SRC_S   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.S))
 OBJ_CPP = $(notdir $(patsubst %.cpp, %.o, $(SRC_CPP)))
 OBJ_C   = $(notdir $(patsubst %.c, %.o, $(SRC_C)))
@@ -39,14 +40,13 @@ OBJ     = $(OBJ_CPP) $(OBJ_C) $(OBJ_S)
 
 .PHONY : all
 
-all : lib$(LIB_NAME).a
+all : $(LIB_PATH)/lib$(LIB_NAME).a
 
-lib$(LIB_NAME).a : $(OBJ)
-	$(AR) rcs lib$(LIB_NAME).a *.o
-	cp lib$(LIB_NAME).a $(LIB_PATH)/.
+$(LIB_PATH)/lib$(LIB_NAME).a : $(OBJ)
+	$(AR) rcs $(LIB_PATH)/lib$(LIB_NAME).a *.o
+	rm -rf $(DINGOO_SDK)/include/$(LIB_NAME)
 	mkdir $(DINGOO_SDK)/include/$(LIB_NAME)
-	cp *.h $(DINGOO_SDK)/include/$(LIB_NAME)/
-	make clean
+	cp $(SRC_H) $(DINGOO_SDK)/include/$(LIB_NAME)/
 
 $(OBJ_CPP) : %.o : %.cpp
 	$(CPP) $(CPP_OPTS) -o $@ $<
@@ -64,4 +64,6 @@ $(OBJ_S) : %.o : %.S
 .PHONY : clean
 
 clean :
-	rm -f $(OBJ) lib$(LIB_NAME).a
+	rm -f $(OBJ)
+	rm -f $(LIB_PATH)/lib$(LIB_NAME).a
+	rm -rf $(DINGOO_SDK)/include/$(LIB_NAME)
