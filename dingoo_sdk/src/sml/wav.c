@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <dingoo/fsys.h>
-
 #include <sml/fixmath.h>
 #include <sml/graphics.h>
 #include <sml/control.h>
@@ -44,22 +42,22 @@ sound_t* wav_load(char* inFile) {
 	if(inFile == NULL)
 		return NULL;
 
-	FILE* tempFile = fsys_fopen(inFile, "rb");
+	FILE* tempFile = fopen(inFile, "rb");
 	if(tempFile == NULL) {
 		wav_error("Unable to open file.", 2);
 		return NULL;
 	}
 
-	fsys_fseek(tempFile, 0, FSYS_SEEK_END);
-	uint32_t tempLen = fsys_ftell(tempFile);
-	fsys_fseek(tempFile, 0, FSYS_SEEK_SET);
+	fseek(tempFile, 0, SEEK_END);
+	uint32_t tempLen = ftell(tempFile);
+	fseek(tempFile, 0, SEEK_SET);
 
 	sound_t* tempOut = NULL;
 
 	wavRiffChunk tempRiffChunk;
-	fsys_fread(tempRiffChunk.wrcChunkID, 1, 4, tempFile);
-	fsys_fread(&tempRiffChunk.wrcChunkSize, 4, 1, tempFile);
-	fsys_fread(tempRiffChunk.wrcFormat, 1, 4, tempFile);
+	fread(tempRiffChunk.wrcChunkID, 1, 4, tempFile);
+	fread(&tempRiffChunk.wrcChunkSize, 4, 1, tempFile);
+	fread(tempRiffChunk.wrcFormat, 1, 4, tempFile);
 
 	if(strncmp(tempRiffChunk.wrcChunkID, "RIFF", 4) != 0) {
 		wav_error("Not RIFF file.", 3);
@@ -75,14 +73,14 @@ sound_t* wav_load(char* inFile) {
 	}
 
 	wavFmtChunk tempFmtChunk;
-	fsys_fread(tempFmtChunk.wfcSubchunk1ID, 1, 4, tempFile);
-	fsys_fread(&tempFmtChunk.wfcSubchunk1Size, 4, 1, tempFile);
-	fsys_fread(&tempFmtChunk.wfcAudioFormat, 2, 1, tempFile);
-	fsys_fread(&tempFmtChunk.wfcNumChannels, 2, 1, tempFile);
-	fsys_fread(&tempFmtChunk.wfcSampleRate, 4, 1, tempFile);
-	fsys_fread(&tempFmtChunk.wfcByteRate, 4, 1, tempFile);
-	fsys_fread(&tempFmtChunk.wfcBlockAlign, 2, 1, tempFile);
-	fsys_fread(&tempFmtChunk.wfcBitsPerSample, 2, 1, tempFile);
+	fread(tempFmtChunk.wfcSubchunk1ID, 1, 4, tempFile);
+	fread(&tempFmtChunk.wfcSubchunk1Size, 4, 1, tempFile);
+	fread(&tempFmtChunk.wfcAudioFormat, 2, 1, tempFile);
+	fread(&tempFmtChunk.wfcNumChannels, 2, 1, tempFile);
+	fread(&tempFmtChunk.wfcSampleRate, 4, 1, tempFile);
+	fread(&tempFmtChunk.wfcByteRate, 4, 1, tempFile);
+	fread(&tempFmtChunk.wfcBlockAlign, 2, 1, tempFile);
+	fread(&tempFmtChunk.wfcBitsPerSample, 2, 1, tempFile);
 
 	if(strncmp(tempFmtChunk.wfcSubchunk1ID, "fmt ", 4) != 0) {
 		wav_error("No fmt chunk detected.", 6);
@@ -92,16 +90,16 @@ sound_t* wav_load(char* inFile) {
 		wav_error("Incompatible audio format.", 7);
 		goto wav_load_end;
 	}
-	fsys_fseek(tempFile, (tempFmtChunk.wfcSubchunk1Size - 16), FSYS_SEEK_CUR);
+	fseek(tempFile, (tempFmtChunk.wfcSubchunk1Size - 16), SEEK_CUR);
 
 	wavDataChunk tempDataChunk;
-	fsys_fread(tempDataChunk.wdcSubchunk2ID, 1, 4, tempFile);
-	fsys_fread(&tempDataChunk.wdcSubchunk2Size, 4, 1, tempFile);
+	fread(tempDataChunk.wdcSubchunk2ID, 1, 4, tempFile);
+	fread(&tempDataChunk.wdcSubchunk2Size, 4, 1, tempFile);
 
 	if(strncmp(tempDataChunk.wdcSubchunk2ID, "fact", 4) == 0) {
-		fsys_fseek(tempFile, tempDataChunk.wdcSubchunk2Size, FSYS_SEEK_CUR);
-		fsys_fread(tempDataChunk.wdcSubchunk2ID, 1, 4, tempFile);
-		fsys_fread(&tempDataChunk.wdcSubchunk2Size, 4, 1, tempFile);
+		fseek(tempFile, tempDataChunk.wdcSubchunk2Size, SEEK_CUR);
+		fread(tempDataChunk.wdcSubchunk2ID, 1, 4, tempFile);
+		fread(&tempDataChunk.wdcSubchunk2Size, 4, 1, tempFile);
 	}
 
 	if(strncmp(tempDataChunk.wdcSubchunk2ID, "data", 4) != 0) {
@@ -137,15 +135,15 @@ sound_t* wav_load(char* inFile) {
 	if(tempSampleSkip > 0) {
 		tempSamplePtr = (uint8_t*)tempOut->sample_data;
 		for(i = 0; i < tempSampleCount; i++, tempSamplePtr += tempSampleSize) {
-			fsys_fread(tempSamplePtr, tempSampleSize, 1, tempFile);
-			fsys_fseek(tempFile, tempSampleSkip, FSYS_SEEK_CUR);
+			fread(tempSamplePtr, tempSampleSize, 1, tempFile);
+			fseek(tempFile, tempSampleSkip, SEEK_CUR);
 		}
 	} else {
-		fsys_fread(tempOut->sample_data, tempSampleSize, tempSampleCount, tempFile);
+		fread(tempOut->sample_data, tempSampleSize, tempSampleCount, tempFile);
 	}
 
 wav_load_end:
-	fsys_fclose(tempFile);
+	fclose(tempFile);
 	return tempOut;
 }
 

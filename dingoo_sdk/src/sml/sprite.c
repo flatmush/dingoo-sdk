@@ -2,8 +2,8 @@
 #include <sml/graphics.h>
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
-#include <dingoo/fsys.h>
 
 #define _min(x, y) ((x) < (y) ? (x) : (y))
 
@@ -108,27 +108,27 @@ sprite* sprite_load(const char* inPath) {
 	if(inPath == NULL)
 		return NULL;
 
-	FSYS_FILE* tempFile = fsys_fopen(inPath, "rb");
+	FILE* tempFile = fopen(inPath, "rb");
 	if(tempFile == NULL)
 		return NULL;
 
 	char tempMagic[8];
-	fsys_fread(tempMagic, 1, 8,tempFile);
+	fread(tempMagic, 1, 8,tempFile);
 	if(strncmp(tempMagic, "dsprite\0", 8) != 0) {
-		fsys_fclose(tempFile);
+		fclose(tempFile);
 		return NULL;
 	}
 
 	uint16_t tempWidth, tempHeight, tempFrames;
-	fsys_fread(&tempWidth, 2, 1, tempFile);
-	fsys_fread(&tempHeight, 2, 1, tempFile);
-	fsys_fread(&tempFrames, 2, 1, tempFile);
+	fread(&tempWidth, 2, 1, tempFile);
+	fread(&tempHeight, 2, 1, tempFile);
+	fread(&tempFrames, 2, 1, tempFile);
 
-	fsys_fseek(tempFile, 2, FSYS_SEEK_CUR);
+	fseek(tempFile, 2, SEEK_CUR);
 
 	sprite* tempSprite = sprite_create(tempWidth, tempHeight);
 	if(tempSprite == NULL) {
-		fsys_fclose(tempFile);
+		fclose(tempFile);
 		return NULL;
 	}
 
@@ -137,30 +137,30 @@ sprite* sprite_load(const char* inPath) {
 	uint16_t* tempFrame;
 	sprite* tempSpriteAdd;
 	for(i = 0; i < tempFrames; i++) {
-		fsys_fread(&tempFrameLen, 4, 1, tempFile);
+		fread(&tempFrameLen, 4, 1, tempFile);
 		tempFrame = (uint16_t*)malloc(tempFrameLen << 1);
 		if(tempFrame == NULL) {
 			sprite_delete(tempSprite);
-			fsys_fclose(tempFile);
+			fclose(tempFile);
 			return NULL;
 		}
-		if(fsys_fread(tempFrame, 2, tempFrameLen, tempFile) != tempFrameLen) {
+		if(fread(tempFrame, 2, tempFrameLen, tempFile) != tempFrameLen) {
 			free(tempFrame);
 			sprite_delete(tempSprite);
-			fsys_fclose(tempFile);
+			fclose(tempFile);
 			return NULL;
 		}
 		tempSpriteAdd = sprite_frame_add(tempSprite, tempFrame);
 		if(tempSpriteAdd == NULL) {
 			free(tempFrame);
 			sprite_delete(tempSprite);
-			fsys_fclose(tempFile);
+			fclose(tempFile);
 			return NULL;
 		}
 		tempSprite = tempSpriteAdd;
 	}
 
-	fsys_fclose(tempFile);
+	fclose(tempFile);
 
 	return tempSprite;
 }
@@ -169,27 +169,27 @@ bool sprite_save(sprite* inSprite, const char* inPath) {
 	if((inSprite == NULL) || (inPath == NULL))
 		return false;
 
-	FSYS_FILE* tempFile = fsys_fopen(inPath, "wb");
+	FILE* tempFile = fopen(inPath, "wb");
 	if(tempFile == NULL)
 		return false;
 
 	char tempMagic[8] = { 'd', 's', 'p', 'r', 'i', 't', 'e', '\0' };
 	uint16_t tempPad = 0;
-	fsys_fwrite(tempMagic, 1, 8, tempFile);
-	fsys_fwrite(&(inSprite->width), 2, 1, tempFile);
-	fsys_fwrite(&(inSprite->height), 2, 1, tempFile);
-	fsys_fwrite(&(inSprite->frame_count), 2, 1, tempFile);
-	fsys_fwrite(&tempPad, 2, 1, tempFile);
+	fwrite(tempMagic, 1, 8, tempFile);
+	fwrite(&(inSprite->width), 2, 1, tempFile);
+	fwrite(&(inSprite->height), 2, 1, tempFile);
+	fwrite(&(inSprite->frame_count), 2, 1, tempFile);
+	fwrite(&tempPad, 2, 1, tempFile);
 
 	uintptr_t i;
 	uint32_t tempFrameLen;
 	for(i = 0; i < inSprite->frame_count; i++) {
 		tempFrameLen = sprite_frame_len(inSprite, i);
-		fsys_fwrite(&tempFrameLen, 4, 1, tempFile);
-		fsys_fwrite(inSprite->frame_data[i], 2, tempFrameLen, tempFile);
+		fwrite(&tempFrameLen, 4, 1, tempFile);
+		fwrite(inSprite->frame_data[i], 2, tempFrameLen, tempFile);
 	}
 
-	fsys_fclose(tempFile);
+	fclose(tempFile);
 	return true;
 }
 

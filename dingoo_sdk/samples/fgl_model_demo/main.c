@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <dingoo/fsys.h>
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 
@@ -14,40 +13,29 @@
 
 
 
-
 display* appDisplay  = NULL;
 timer*   appTimer    = NULL;
 uint32_t appTickRate = (timer_resolution / 30);
 bool     appRunning  = true;
-char     appPath[256];
 
-char* appPathInit(const char* inPath) {
-	uintptr_t i, j;
-	for(i = 0, j = 0; inPath[i] != '\0'; i++) {
-		if((inPath[i] == '\\') || (inPath[i] == '/'))
-			j = i + 1;
-	}
-	strncpy(appPath, inPath, j);
-	return appPath;
-}
+
 
 void appScreenshot() {
 	char tempString[256];
 	unsigned long int tempNumber = 0;
 	FILE* tempFile;
 	while(true) {
-		sprintf(tempString, "%sscreenshot%lu.tga", appPath, tempNumber);
-		tempFile = fsys_fopen(tempString, "rb");
+		sprintf(tempString, "screenshot%lu.tga", tempNumber);
+		tempFile = fopen(tempString, "rb");
 		if(tempFile == NULL)
 			break;
-		fsys_fclose(tempFile);
+		fclose(tempFile);
 		tempNumber++;
 	}
 	fgl_texture_save_tga(tempString, fgl_draw_buffer_get());
 }
 
 int main(int argc, char** argv) {
-	appPathInit(argv[0]);
 	int ref = EXIT_SUCCESS;
 	srand(OSTimeGet());
 	control_init();
@@ -83,12 +71,8 @@ int main(int argc, char** argv) {
 	fgl_rotate_x(-fgl_fix16_pi >> 1);
 	fgl_rotate_y(-fgl_fix16_pi >> 1);
 
-	char tempString[256];
-	sprintf(tempString, "%smodel.md2", appPath);
-	fgl_model* tempModel = fgl_model_load_md2(tempString);
-
-	sprintf(tempString, "%sskin.tga", appPath);
-	fgl_texture* tempTexture = fgl_texture_load_tga(tempString);
+	fgl_model* tempModel = fgl_model_load_md2("model.md2");
+	fgl_texture* tempTexture = fgl_texture_load_tga("skin.tga");
 
 	fgl_texture_bind(tempTexture);
 	fgl_enable(FGL_TEXTURE_2D);

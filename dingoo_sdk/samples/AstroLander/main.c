@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <dingoo/fsys.h>
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 
@@ -81,7 +80,6 @@ typedef struct {
 
 
 
-char* gamePathInit(const char* inPath);
 void  gameScreenshot();
 void  gameDialog(char* inMessage);
 
@@ -160,30 +158,19 @@ display* gameDisplay  = NULL;
 timer*   gameTimer    = NULL;
 uint32_t gameTickRate = (timer_resolution / 30);
 bool     gameRunning  = true;
-char     gamePath[256];
 
 
-
-char* gamePathInit(const char* inPath) {
-	uintptr_t i, j;
-	for(i = 0, j = 0; inPath[i] != '\0'; i++) {
-		if((inPath[i] == '\\') || (inPath[i] == '/'))
-			j = i + 1;
-	}
-	strncpy(gamePath, inPath, j);
-	return gamePath;
-}
 
 void gameScreenshot() {
 	char tempString[256];
 	unsigned long int tempNumber = 0;
 	FILE* tempFile;
 	while(true) {
-		sprintf(tempString, "%sscreenshot%lu.tga", gamePath, tempNumber);
-		tempFile = fsys_fopen(tempString, "rb");
+		sprintf(tempString, "screenshot%lu.tga", tempNumber);
+		tempFile = fopen(tempString, "rb");
 		if(tempFile == NULL)
 			break;
-		fsys_fclose(tempFile);
+		fclose(tempFile);
 		tempNumber++;
 	}
 	gfx_tex_save_tga(tempString, gfx_render_target);
@@ -736,7 +723,7 @@ score_list* scoreListLoad(const char* inPath) {
 	if(inPath == NULL)
 		return tempList;
 
-	FILE* tempFile = fsys_fopen(inPath, "rb");
+	FILE* tempFile = fopen(inPath, "rb");
 	if(tempFile == NULL)
 		return tempList;
 
@@ -744,14 +731,14 @@ score_list* scoreListLoad(const char* inPath) {
 	uint32_t tempDifficulty;
 	uint32_t tempLevel;
 	char     tempName[16];
-	while(!fsys_feof(tempFile)) {
-		fsys_fread(&tempTotal, 4, 1, tempFile);
-		fsys_fread(&tempDifficulty, 4, 1, tempFile);
-		fsys_fread(&tempLevel, 4, 1, tempFile);
-		fsys_fread(tempName, 4, 4, tempFile);
+	while(!feof(tempFile)) {
+		fread(&tempTotal, 4, 1, tempFile);
+		fread(&tempDifficulty, 4, 1, tempFile);
+		fread(&tempLevel, 4, 1, tempFile);
+		fread(tempName, 4, 4, tempFile);
 		scoreListAdd(tempList, scoreCreate(tempTotal, tempLevel, tempDifficulty, tempName));
 	}
-	fsys_fclose(tempFile);
+	fclose(tempFile);
 	return tempList;
 }
 
@@ -759,18 +746,18 @@ bool scoreListSave(const char* inPath, score_list* inList) {
 	if((inPath == NULL) || (inList == NULL))
 		return false;
 
-	FILE* tempFile = fsys_fopen(inPath, "wb");
+	FILE* tempFile = fopen(inPath, "wb");
 	if(tempFile == NULL)
 		return false;
 
 	uintptr_t i;
 	for(i = 0; i < inList->count; i++) {
-		fsys_fwrite(&inList->scores[i]->total, 4, 1, tempFile);
-		fsys_fwrite(&inList->scores[i]->difficulty, 4, 1, tempFile);
-		fsys_fwrite(&inList->scores[i]->level, 4, 1, tempFile);
-		fsys_fwrite(inList->scores[i]->name, 4, 4, tempFile);
+		fwrite(&inList->scores[i]->total, 4, 1, tempFile);
+		fwrite(&inList->scores[i]->difficulty, 4, 1, tempFile);
+		fwrite(&inList->scores[i]->level, 4, 1, tempFile);
+		fwrite(inList->scores[i]->name, 4, 4, tempFile);
 	}
-	fsys_fclose(tempFile);
+	fclose(tempFile);
 	return true;
 }
 
@@ -936,7 +923,6 @@ void gameRestart() {
 }
 
 int main(int argc, char** argv) {
-	gamePathInit(argv[0]);
 	int ref = EXIT_SUCCESS;
 
 	srand(OSTimeGet());
@@ -955,12 +941,10 @@ int main(int argc, char** argv) {
 	control_lock(timer_resolution / 4);
 
 	char tempString[256];
-	sprintf(tempString, "%sfont.tga", gamePath);
-	gameFont = gfx_tex_load_tga(tempString);
-	sprintf(tempString, "%ssplash.tga", gamePath);
-	gameSplash = gfx_tex_load_tga(tempString);
-	sprintf(tempString, "%sscores.dat", gamePath);
-	gameScores = scoreListLoad(tempString);
+
+	gameFont   = gfx_tex_load_tga("font.tga");
+	gameSplash = gfx_tex_load_tga("splash.tga");
+	gameScores = scoreListLoad("scores.dat");
 
 	gameTimer   = timer_create();
 
@@ -1115,8 +1099,7 @@ int main(int argc, char** argv) {
 	}
 
 
-	sprintf(tempString, "%sscores.dat", gamePath);
-	scoreListSave(tempString, gameScores);
+	scoreListSave("scores.dat", gameScores);
 	scoreListDelete(gameScores);
 
 	levelDelete(gameLevel);
