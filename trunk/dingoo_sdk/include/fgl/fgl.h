@@ -11,6 +11,7 @@
 #include <fgl/fgl_clip.h>
 #include <fgl/fgl_draw.h>
 #include <fgl/fgl_attrib.h>
+#include <fgl/fgl_sphere.h>
 #include <fgl/fgl_model.h>
 
 #endif
