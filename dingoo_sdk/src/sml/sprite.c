@@ -65,7 +65,7 @@ sprite* sprite_frame_add_bitmap(sprite* inSprite, uint16_t* inBitmap, uint16_t i
 	uint16_t* tempBitmapEnd = &inBitmap[inSprite->width * inSprite->height];
 	uint32_t  tempChunk;
 	while(tempBitmapPtr < tempBitmapEnd) {
-		tempChunk = _rle_chunk(tempBitmapPtr, inKey, _min(65535, ((uintptr_t)tempBitmapEnd - (uintptr_t)tempBitmapPtr)));
+		tempChunk = _rle_chunk(tempBitmapPtr, inKey, _min(32767, (((uintptr_t)tempBitmapEnd - (uintptr_t)tempBitmapPtr) >> 1)));
 		*(tempFramePtr++) = tempChunk;
 		if((tempChunk & 0x8000) != 0) {
 			memcpy(tempFramePtr, tempBitmapPtr, ((tempChunk & 0x7FFF) << 1));
@@ -79,7 +79,10 @@ sprite* sprite_frame_add_bitmap(sprite* inSprite, uint16_t* inBitmap, uint16_t i
 	if(tempFrameAlloc != NULL)
 		tempFrame = tempFrameAlloc;
 
-	return sprite_frame_add(inSprite, tempFrame);
+	sprite* tempOut = sprite_frame_add(inSprite, tempFrame);
+	if(tempOut == NULL)
+		free(tempFrame);
+	return tempOut;
 }
 
 

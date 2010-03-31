@@ -10,6 +10,15 @@ uintptr_t _dma_block_const[6]  = { DMAC_DCMD_DS_8BIT, DMAC_DCMD_DS_16BIT, DMAC_D
 
 
 
+uintptr_t dma_free() {
+	uintptr_t i;
+	for(i = 0; i < MAX_DMA_NUM; i++) {
+		if(REG_DMAC_DCCSR(i) & DMAC_DCCSR_TT)
+			return i;
+	}
+	return i;
+}
+
 bool dma_wait(uintptr_t inChannel, uintptr_t inTimeout) {
 	if(inChannel >= MAX_DMA_NUM)
 		return false;
@@ -24,7 +33,7 @@ bool dma_wait(uintptr_t inChannel, uintptr_t inTimeout) {
 
 bool dma_copy(uintptr_t inChannel, void* inDest, void* inSource, uintptr_t inSize) {
 	if(inChannel >= MAX_DMA_NUM)
-		return false;
+		return false; // TODO - Initialize software DMA thread.
 	if(!(REG_DMAC_DCCSR(inChannel) & DMAC_DCCSR_TT))
 		return false;
 	if(inSize == 0)
