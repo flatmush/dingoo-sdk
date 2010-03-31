@@ -42,7 +42,7 @@ sprite* sprite_frame_add(sprite* inSprite, uint16_t* inData) {
 	return tempSprite;
 }
 
-uint16_t _rle_chunk(uint16_t* inBitmap, uint16_t inKey, uint32_t tempMax) {
+uint16_t _rle_chunk(uint16_t* inBitmap, gfx_color inKey, uint32_t tempMax) {
 	uint16_t i = 0;
 	if(*inBitmap == inKey) {
 		for(i = 1; (i < tempMax) && (inBitmap[i] == inKey); i++);
@@ -52,7 +52,7 @@ uint16_t _rle_chunk(uint16_t* inBitmap, uint16_t inKey, uint32_t tempMax) {
 	return (0x8000 | i);
 }
 
-sprite* sprite_frame_add_bitmap(sprite* inSprite, uint16_t* inBitmap, uint16_t inKey) {
+sprite* sprite_frame_add_bitmap(sprite* inSprite, uint16_t* inBitmap, gfx_color inKey) {
 	if((inSprite == NULL) || (inBitmap == NULL))
 		return NULL;
 
@@ -194,6 +194,44 @@ bool sprite_save(sprite* inSprite, const char* inPath) {
 
 	fclose(tempFile);
 	return true;
+}
+
+sprite* sprite_load_from_tga(const char* inPath, gfx_color inKey) {
+	gfx_texture* tempTexture = gfx_tex_load_tga(inPath);
+
+	if (tempTexture == NULL)
+		return NULL;
+
+	sprite* tempSprite = sprite_create(tempTexture->width, tempTexture->height);
+
+	if (tempSprite == NULL) {
+		free(tempTexture);
+		return NULL;
+	}
+
+	tempSprite = sprite_frame_add_bitmap(tempSprite, tempTexture->address, inKey);
+	
+	free(tempTexture);
+	return tempSprite;
+}
+
+sprite* sprite_load_from_tga_buffer(uint8_t* tgaFileData, gfx_color inKey) {
+	gfx_texture* tempTexture = gfx_tex_load_tga_from_buffer(tgaFileData);
+
+	if (tempTexture == NULL)
+		return NULL;
+
+	sprite* tempSprite = sprite_create(tempTexture->width, tempTexture->height);
+
+	if (tempSprite == NULL) {
+		free(tempTexture);
+		return NULL;
+	}
+
+	tempSprite = sprite_frame_add_bitmap(tempSprite, tempTexture->address, inKey);
+	
+	free(tempTexture);
+	return tempSprite;
 }
 
 
