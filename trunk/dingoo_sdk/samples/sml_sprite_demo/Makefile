@@ -1,6 +1,6 @@
 # Define the applications properties here:
 
-APP_NAME = sml_sprite_sample
+APP_NAME = sml_sprite_demo
 
 
 

@@ -3,13 +3,16 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <time.h>
+
+
 
 typedef struct {
 	uint32_t start;
 	uint32_t last;
 } timer;
 
-#define timer_resolution 1000000
+#define timer_resolution CLOCKS_PER_SEC
 
 extern timer*   timer_create();
 extern void     timer_delete(timer* inTimer);

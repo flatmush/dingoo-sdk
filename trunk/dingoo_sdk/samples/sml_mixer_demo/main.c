@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <dingoo/fsys.h>
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 #include <dingoo/audio.h>
@@ -21,7 +20,6 @@
 
 display* main_display = NULL;
 sound_t* sound_wav = NULL;
-char     appPath[256];
 
 
 
@@ -41,16 +39,6 @@ void draw_sine_wave(fix16_t inFrequency) {
 
 
 
-char* appPathInit(const char* inPath) {
-	uintptr_t i, j;
-	for(i = 0, j = 0; inPath[i] != '\0'; i++) {
-		if((inPath[i] == '\\') || (inPath[i] == '/'))
-			j = i + 1;
-	}
-	strncpy(appPath, inPath, j);
-	return appPath;
-}
-
 int main(int argc, char** argv) {
 	int ref = EXIT_SUCCESS;
 	srand(OSTimeGet());
@@ -62,10 +50,7 @@ int main(int argc, char** argv) {
 		return ref;
 	gfx_init(main_display);
 
-	appPathInit(argv[0]);
-	char tempPath[512];
-	sprintf(tempPath, "%s/test.wav", appPath);
-	sound_wav = wav_load(tempPath);
+	sound_wav = wav_load("test.wav");
 
 	sound_init();
 

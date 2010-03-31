@@ -17,17 +17,6 @@ extern FILE* stdin;
 extern FILE* stdout;
 extern FILE* stderr;
 
-//#define printf(...) fprintf(stdout, __VA_ARGS__)
-//#define eprintf(...) fprintf(stderr, __VA_ARGS__)
-
-extern FILE* _fopen(char* filename, char* mode);
-#define fopen(filename, mode) _fopen(filename, mode)
-
-extern void _fclose(FILE* stream);
-#define fclose(stream) _fclose(stream)
-
-#define remove(filename) fsys_remove(filename)
-
 extern int    fprintf(FILE*, const char*, ...);
 extern int    printf(const char*, ...);
 extern int    sprintf(char*, const char*, ...);
@@ -37,5 +26,30 @@ extern size_t fwrite(const void*, size_t, size_t, FILE*);
 extern int    fseek(FILE*, long int, int);
 
 extern void   perror(const char* prefix);
+
+//#define printf(...) fprintf(stdout, __VA_ARGS__)
+//#define eprintf(...) fprintf(stderr, __VA_ARGS__)
+
+extern FILE* _fopen(const char* filename, const char* mode);
+extern void  _fclose(FILE* stream);
+
+extern int      _fseek(FILE* stream, long int offset, int origin);
+extern long int _ftell(FILE* stream);
+extern int      _ferror(FILE* stream);
+extern int      _feof(FILE* stream);
+extern int      _fread(void* ptr, size_t size, size_t count, FILE* stream);
+extern int      _fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
+
+#define fopen(filename, mode) _fopen((filename), (mode))
+#define fclose(stream) _fclose(stream)
+#define fseek(stream, offset, origin) _fseek((stream), (offset), (origin))
+#define ftell(stream) _ftell(stream)
+#define ferror(stream) _ferror(stream)
+#define feof(stream) _feof(stream)
+#define fread(ptr, size, count, stream) _fread((ptr), (size), (count), (stream))
+#define fwrite(ptr, size, count, stream) _fwrite((ptr), (size), (count), (stream))
+
+// TODO - Make a function for remove that parses paths correctly.
+#define remove(filename) fsys_remove(filename)
 
 #endif

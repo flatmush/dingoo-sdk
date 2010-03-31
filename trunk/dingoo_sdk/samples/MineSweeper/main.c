@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <dingoo/fsys.h>
+
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 
@@ -15,7 +15,6 @@
 #define max(x, y) (x > y ? x : y)
 #define min(x, y) (x < y ? x : y)
 
-char* gamePathInit(const char* inPath);
 void  gameScreenshot();
 void  gameDialog(char* inMessage);
 
@@ -57,30 +56,19 @@ uint32_t gameTime     = 0;
 uint32_t gameTickRate = (timer_resolution / 50);
 bool     gameRunning  = true;
 uint32_t gameLevel	  = 0;
-char     gamePath[256];
 
 
-
-char* gamePathInit(const char* inPath) {
-	uintptr_t i, j;
-	for(i = 0, j = 0; inPath[i] != '\0'; i++) {
-		if((inPath[i] == '\\') || (inPath[i] == '/'))
-			j = i + 1;
-	}
-	strncpy(gamePath, inPath, j);
-	return gamePath;
-}
 
 void gameScreenshot() {
 	char tempString[256];
 	unsigned long int tempNumber = 0;
 	FILE* tempFile;
 	while(true) {
-		sprintf(tempString, "%sscreenshot%lu.tga", gamePath, tempNumber);
-		tempFile = fsys_fopen(tempString, "rb");
+		sprintf(tempString, "screenshot%lu.tga", tempNumber);
+		tempFile = fopen(tempString, "rb");
 		if(tempFile == NULL)
 			break;
-		fsys_fclose(tempFile);
+		fclose(tempFile);
 		tempNumber++;
 	}
 	gfx_tex_save_tga(tempString, gfx_render_target);
@@ -427,7 +415,6 @@ void hudDraw() {
 }
 
 int main(int argc, char** argv) {
-	gamePathInit(argv[0]);
 	int ref = EXIT_SUCCESS;
 
 	srand(OSTimeGet());
@@ -442,9 +429,7 @@ int main(int argc, char** argv) {
 	gfx_render_target_clear(gfx_color_rgb(0x00, 0x00, 0x00));
 	gfx_render_target_swap();
 
-	char tempString[256];
-	sprintf(tempString, "%sfont.tga", gamePath);
-	fontDefault = gfx_tex_load_tga(tempString);
+	fontDefault = gfx_tex_load_tga("font.tga");
 
 	gameTimer = timer_create();
 	gameLevel = 1;

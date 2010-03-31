@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <dingoo/fsys.h>
+
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 
@@ -22,31 +22,16 @@
 #define VERSION_REVISION 0
 
 
-char* gamePathInit(const char* inPath);
 
 gfx_texture* gameFont     = NULL;
 display*     gameDisplay  = NULL;
 timer*       gameTimer    = NULL;
 uint32_t     gameTickRate = (timer_resolution / 30);
 bool         gameRunning  = true;
-char         gamePath[256];
-
-
-
-char* gamePathInit(const char* inPath) {
-	uintptr_t i, j;
-	for(i = 0, j = 0; inPath[i] != '\0'; i++) {
-		if((inPath[i] == '\\') || (inPath[i] == '/'))
-			j = i + 1;
-	}
-	strncpy(gamePath, inPath, j);
-	return gamePath;
-}
 
 
 
 int main(int argc, char** argv) {
-	gamePathInit(argv[0]);
 	int ref = EXIT_SUCCESS;
 
 	srand(OSTimeGet());
@@ -63,19 +48,18 @@ int main(int argc, char** argv) {
 	display_flip(gameDisplay);
 	control_lock(timer_resolution / 4);
 
-	char tempString[256];
-	sprintf(tempString, "%sfont.tga", gamePath);
-	gameFont = gfx_tex_load_tga(tempString);
+	gameFont = gfx_tex_load_tga("font.tga");
 
 	gfx_texture* tempSpriteBmp[4];
 	sprite* tempSprite;
 	uintptr_t i;
 
-	sprintf(tempString, "%ssprite.spt", gamePath);
-	FSYS_FILE* tempFile = fsys_fopen(tempString, "rb");
+	char tempString[FILENAME_MAX];
+
+	FILE* tempFile = fopen("sprite.spt", "rb");
 	if(tempFile == NULL) {
 		for(i = 0; i < 4; i++) {
-			sprintf(tempString, "%ssprite%i.tga", gamePath, i);
+			sprintf(tempString, "sprite%i.tga", i);
 			tempSpriteBmp[i] = gfx_tex_load_tga(tempString);
 		}
 		tempSprite = sprite_create(tempSpriteBmp[0]->width, tempSpriteBmp[0]->height);
@@ -83,11 +67,10 @@ int main(int argc, char** argv) {
 			tempSprite = sprite_frame_add_bitmap(tempSprite, tempSpriteBmp[i]->address, gfx_color_rgb(0xFF, 0x00, 0xFF));
 			free(tempSpriteBmp[i]);
 		}
-		sprintf(tempString, "%ssprite.spt", gamePath);
-		sprite_save(tempSprite, tempString);
+		sprite_save(tempSprite, "sprite.spt");
 	} else {
-		fsys_fclose(tempFile);
-		tempSprite = sprite_load(tempString);
+		fclose(tempFile);
+		tempSprite = sprite_load("sprite.spt");
 	}
 
 	gameTimer = timer_create();

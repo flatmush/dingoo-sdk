@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <dingoo/fsys.h>
+#include <stdio.h>
 #include <sml/graphics.h>
 #include <sml/display.h>
 #include <sml/fixmath.h>
@@ -96,7 +96,7 @@ gfx_texture* gfx_tex_load_tga(const char* inPath) {
 	if(inPath == NULL)
 		return NULL;
 
-	FSYS_FILE* tempFile = fsys_fopen(inPath, "rb");
+	FILE* tempFile = fopen(inPath, "rb");
 	if(tempFile == NULL)
 		return NULL;
 
@@ -113,24 +113,24 @@ gfx_texture* gfx_tex_load_tga(const char* inPath) {
 	uint8_t  tga_bpp;
 	uint8_t  tga_descriptor;
 
-	fsys_fread(&tga_ident_size, 1, 1, tempFile);
-	fsys_fread(&tga_color_map_type, 1, 1, tempFile);
-	fsys_fread(&tga_image_type, 1, 1, tempFile);
-	fsys_fread(&tga_color_map_start, 2, 1, tempFile);
-	fsys_fread(&tga_color_map_length, 2, 1, tempFile);
-	fsys_fread(&tga_color_map_bpp, 1, 1, tempFile);
-	fsys_fread(&tga_origin_x, 2, 1, tempFile);
-	fsys_fread(&tga_origin_y, 2, 1, tempFile);
-	fsys_fread(&tga_width, 2, 1, tempFile);
-	fsys_fread(&tga_height, 2, 1, tempFile);
-	fsys_fread(&tga_bpp, 1, 1, tempFile);
-	fsys_fread(&tga_descriptor, 1, 1, tempFile);
+	fread(&tga_ident_size, 1, 1, tempFile);
+	fread(&tga_color_map_type, 1, 1, tempFile);
+	fread(&tga_image_type, 1, 1, tempFile);
+	fread(&tga_color_map_start, 2, 1, tempFile);
+	fread(&tga_color_map_length, 2, 1, tempFile);
+	fread(&tga_color_map_bpp, 1, 1, tempFile);
+	fread(&tga_origin_x, 2, 1, tempFile);
+	fread(&tga_origin_y, 2, 1, tempFile);
+	fread(&tga_width, 2, 1, tempFile);
+	fread(&tga_height, 2, 1, tempFile);
+	fread(&tga_bpp, 1, 1, tempFile);
+	fread(&tga_descriptor, 1, 1, tempFile);
 
 	bool upside_down = (tga_descriptor & 0x20) > 0;
 
 	gfx_texture* tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (tga_width * tga_height * 2));
 	if(tempTexture == NULL) {
-		fsys_fclose(tempFile);
+		fclose(tempFile);
 		return NULL;
 	}
 	tempTexture->address = (void*)((uintptr_t)tempTexture + sizeof(gfx_texture));
@@ -141,12 +141,12 @@ gfx_texture* gfx_tex_load_tga(const char* inPath) {
 	uint8_t tempColor[3];
 	uint16_t* tempTexPtr = tempTexture->address;
 	for(i = 0; i < (tga_width * tga_height); i++) {
-		fsys_fread(&tempColor[2], 1, 1, tempFile);
-		fsys_fread(&tempColor[1], 1, 1, tempFile);
-		fsys_fread(&tempColor[0], 1, 1, tempFile);
+		fread(&tempColor[2], 1, 1, tempFile);
+		fread(&tempColor[1], 1, 1, tempFile);
+		fread(&tempColor[0], 1, 1, tempFile);
 		tempTexPtr[upside_down ? i : ((tga_height - 1 - (i / tga_width)) * tga_width + i % tga_width)] = gfx_color_rgb(tempColor[0], tempColor[1], tempColor[2]);
 	}
-	fsys_fclose(tempFile);
+	fclose(tempFile);
 
 	return tempTexture;
 }
@@ -211,7 +211,7 @@ bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {
 	if((inPath == NULL) || (inTexture == NULL) || (inTexture->address == NULL))
 		return false;
 
-	FSYS_FILE* tempFile = fsys_fopen(inPath, "wb");
+	FILE* tempFile = fopen(inPath, "wb");
 	if(tempFile == NULL)
 		return false;
 
@@ -228,18 +228,18 @@ bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {
 	uint8_t  tga_bpp = 24;
 	uint8_t  tga_descriptor = 0x20;
 
-	fsys_fwrite(&tga_ident_size, 1, 1, tempFile);
-	fsys_fwrite(&tga_color_map_type, 1, 1, tempFile);
-	fsys_fwrite(&tga_image_type, 1, 1, tempFile);
-	fsys_fwrite(&tga_color_map_start, 2, 1, tempFile);
-	fsys_fwrite(&tga_color_map_length, 2, 1, tempFile);
-	fsys_fwrite(&tga_color_map_bpp, 1, 1, tempFile);
-	fsys_fwrite(&tga_origin_x, 2, 1, tempFile);
-	fsys_fwrite(&tga_origin_y, 2, 1, tempFile);
-	fsys_fwrite(&tga_width, 2, 1, tempFile);
-	fsys_fwrite(&tga_height, 2, 1, tempFile);
-	fsys_fwrite(&tga_bpp, 1, 1, tempFile);
-	fsys_fwrite(&tga_descriptor, 1, 1, tempFile);
+	fwrite(&tga_ident_size, 1, 1, tempFile);
+	fwrite(&tga_color_map_type, 1, 1, tempFile);
+	fwrite(&tga_image_type, 1, 1, tempFile);
+	fwrite(&tga_color_map_start, 2, 1, tempFile);
+	fwrite(&tga_color_map_length, 2, 1, tempFile);
+	fwrite(&tga_color_map_bpp, 1, 1, tempFile);
+	fwrite(&tga_origin_x, 2, 1, tempFile);
+	fwrite(&tga_origin_y, 2, 1, tempFile);
+	fwrite(&tga_width, 2, 1, tempFile);
+	fwrite(&tga_height, 2, 1, tempFile);
+	fwrite(&tga_bpp, 1, 1, tempFile);
+	fwrite(&tga_descriptor, 1, 1, tempFile);
 
 	uintptr_t i;
 	uint8_t tempColor[3];
@@ -251,11 +251,11 @@ bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {
 		tempColor[1] |= (tempColor[1] >> 6);
 		tempColor[2]  = ((tempTexPtr[i] << 3) & 0xF8);
 		tempColor[2] |= (tempColor[2] >> 5);
-		fsys_fwrite(&tempColor[2], 1, 1, tempFile);
-		fsys_fwrite(&tempColor[1], 1, 1, tempFile);
-		fsys_fwrite(&tempColor[0], 1, 1, tempFile);
+		fwrite(&tempColor[2], 1, 1, tempFile);
+		fwrite(&tempColor[1], 1, 1, tempFile);
+		fwrite(&tempColor[0], 1, 1, tempFile);
 	}
-	fsys_fclose(tempFile);
+	fclose(tempFile);
 
 	return true;
 }
