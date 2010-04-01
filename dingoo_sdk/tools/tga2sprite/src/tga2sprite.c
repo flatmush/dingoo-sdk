@@ -208,45 +208,53 @@ bool sprite_save(sprite* inSprite, const char* inPath) {
 }
 
 int main(int argc, char** argv) {
-	if (argc <= 1) {
-		printf("Usage: tga2sprite <file.tga>");
+	if (argc <= 2) {
+		printf("Usage: tga2sprite <outfile.spt> <infile1.tga> [infile2.tga ...]\n");
 		return 1;
 	}
-	
-	gfx_texture* tempSpriteBmp;
-	sprite* tempSprite;
-	char fileNameNoExtension[256];
-	char tempString[256];
 
-	sprintf(fileNameNoExtension, argv[1]);
-	char* lastDot = strrchr(fileNameNoExtension, '.');
-	if (lastDot != NULL) {
-		*lastDot = '\0';
+	int nbrOfFiles = argc - 2;
+
+	gfx_texture** files = malloc(sizeof(gfx_texture*) * nbrOfFiles);
+
+	int i;
+	for (i = 0; i < nbrOfFiles; i++)
+	{
+		files[i] = gfx_tex_load_tga(argv[2 + i]);
+
+		if (files[i] == NULL) {
+			printf("Unable to load file %s.\n", argv[2 + i]);
+			return 1;
+		}
+	}
+
+	int w = files[0]->width;
+	int h = files[0]->height;
+
+	for (i = 1; i < nbrOfFiles; i++) {
+		if (files[i]->width != w || files[i]->height != h) {
+			printf("All images must have the same width and height.\n");
+			return 1;
+		}
 	}
 	
-	tempSpriteBmp = gfx_tex_load_tga(argv[1]);
-	if (tempSpriteBmp == NULL) {
-		printf("Could not load file %s.\n", argv[1]);
-		return 1;
-	}
+	sprite* tempSprite;
 	
-	tempSprite = sprite_create(tempSpriteBmp->width, tempSpriteBmp->height);
+	tempSprite = sprite_create(w, h);
 	if (tempSprite == NULL) {
 		printf("Could not allocate memory.\n");
 		return 1;
 	}
 
-	tempSprite = sprite_frame_add_bitmap(tempSprite, tempSpriteBmp->address, gfx_color_rgb(0xFF, 0x00, 0xFF));
+	for (i = 0; i < nbrOfFiles; i++) {
+		tempSprite = sprite_frame_add_bitmap(tempSprite, files[i]->address, gfx_color_rgb(0xFF, 0x00, 0xFF));
+	}
 
-	free(tempSpriteBmp);
-
-	sprintf(tempString, "%s.spt", fileNameNoExtension);
-
-	if (!sprite_save(tempSprite, tempString)) {
-		printf("Error while saving file.");
+	if (!sprite_save(tempSprite, argv[1])) {
+		printf("Error while saving file.\n");
 		return 2;
 	}
 
-	printf("Saved as %s", tempString);
+	printf("Saved as %s\n", argv[1]);
 	return 0;
 }
