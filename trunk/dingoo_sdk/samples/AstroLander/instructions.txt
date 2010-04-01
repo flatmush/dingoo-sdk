@@ -1,4 +1,4 @@
-Astro Lander 1.0.0r40
+Astro Lander 1.0.0r41
 By Flatmush (aka Ben Brewer)
 Improvements by Russell Bernhardt
 
@@ -31,8 +31,7 @@ B Button               = Thruster boost
 Start                  = Pause
 Select                 = Screenshot
 Start + Select         = Quit
-Start -> Left trigger  = Quit
-Start -> Right trigger = Change difficulty (scoring is skewed based on difficulty)
+Start > L/R Trigger    = Decrease/Increase Difficulty
 
 
 

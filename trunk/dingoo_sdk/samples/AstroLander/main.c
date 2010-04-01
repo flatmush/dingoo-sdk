@@ -115,8 +115,9 @@ void hudDrawLives(uint32_t inLives, int32_t inX, int32_t inY, gfx_color inBright
 void hudDraw(ship* inShip);
 
 void gameRespawn();
-void gameLevelNext();
 void gameDifficultyNext();
+void gameDifficultyPrev();
+void gameLevelNext();
 void gameRestart();
 
 
@@ -635,7 +636,8 @@ ship_land_score shipLandScore(ship* inShip, level* inLevel, uint32_t inLevelNo) 
 	else
 		tempOut.total = (uint32_t)(((tempOut.position + tempOut.velocity) - (tempOut.fuel + tempOut.time)) * tempOut.level);
 
-	tempOut.total >>= (2 / gameDifficulty);
+	tempOut.total  *= gameDifficulty;
+	tempOut.total >>= 1;
 
 	return tempOut;
 }
@@ -644,7 +646,7 @@ void shipLandScoreDraw(ship_land_score inScore) {
 	char tempString[32];
 
 	uint32_t tempWidth  = 106;
-	uint32_t tempHeight = 100;
+	uint32_t tempHeight = 112;
 	uint32_t tempX = ((gameDisplay->width - tempWidth) >> 1);
 	uint32_t tempY = ((gameDisplay->height - tempHeight) >> 1);
 
@@ -669,6 +671,10 @@ void shipLandScoreDraw(ship_land_score inScore) {
 
 	tempY += 12;
 	sprintf(tempString, "Level:    x% 4lu", inScore.level);
+	gfx_font_print_center(tempY, gameFont, tempString);
+
+	tempY += 12;
+	sprintf(tempString, "Diff:     x% 3lu%%", (50 * gameDifficulty));
 	gfx_font_print_center(tempY, gameFont, tempString);
 
 	tempY += 12;
@@ -946,6 +952,14 @@ void gameDifficultyNext() {
 	return;
 }
 
+void gameDifficultyPrev() {
+	gameDifficulty = ((gameDifficulty - 1) & 3);
+	if(gameDifficulty == 0)
+		gameDifficulty = 4;
+	gameRestart();
+	return;
+}
+
 void gameLevelNext() {
 	srand(rand() + OSTimeGet());
 	gameLevelNo++;
@@ -1060,7 +1074,7 @@ int main(int argc, char** argv) {
 							if(control_just_pressed(CONTROL_BUTTON_START))
 								gameModeSub = GAME_MODE_GAME_PLAY;
 							else if(control_just_pressed(CONTROL_TRIGGER_LEFT))
-								gameRunning = false; // quit if left shoulder button is pressed while paused.
+								gameDifficultyPrev(); // cycle through difficulties if the right shoulder button is pressed while paused
 							else if(control_just_pressed(CONTROL_TRIGGER_RIGHT))
 								gameDifficultyNext(); // cycle through difficulties if the right shoulder button is pressed while paused
 							break;
