@@ -12,9 +12,10 @@ Dingoo_SDK is meant to serve as a multiplatform SDK for the Dingoo A320.
   * GNU make
   * TODO: add more requirements as needed
 = Windows =
-  * CYGWIN (TODO: minimum version?)
-  * Windows SDK (TODO: S2SDK?)
-  * TODO: add more requirements as needed
+  * CYGWIN (Latest version, though any version should work)
+    * Python 2.5+ (for cygwin)
+    * GNU Make (for cygwin)
+  * Windows MIPSEL Compiler
 == Getting Help ==
 = ReadMe.txt =
 The ReadMe.txt file included in the highest level of the $DINGOO_SDK directory is the first place you should check for help. There are step-by-step installation instructions there for both Windows and Linux/UNIX build environments.
