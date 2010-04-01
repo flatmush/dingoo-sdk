@@ -40,14 +40,14 @@ extern int      _feof(FILE* stream);
 extern int      _fread(void* ptr, size_t size, size_t count, FILE* stream);
 extern int      _fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
 
-#define fopen(filename, mode) _fopen((filename), (mode))
-#define fclose(stream) _fclose(stream)
-#define fseek(stream, offset, origin) _fseek((stream), (offset), (origin))
-#define ftell(stream) _ftell(stream)
-#define ferror(stream) _ferror(stream)
-#define feof(stream) _feof(stream)
-#define fread(ptr, size, count, stream) _fread((ptr), (size), (count), (stream))
-#define fwrite(ptr, size, count, stream) _fwrite((ptr), (size), (count), (stream))
+#define fopen _fopen
+#define fclose _fclose
+#define fseek _fseek
+#define ftell _ftell
+#define ferror _ferror
+#define feof _feof
+#define fread _fread
+#define fwrite _fwrite
 
 // TODO - Make a function for remove that parses paths correctly.
 #define remove(filename) fsys_remove(filename)
