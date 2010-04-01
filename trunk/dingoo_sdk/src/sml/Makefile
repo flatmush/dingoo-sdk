@@ -64,8 +64,8 @@ $(OBJ_S) : %.o : %.S
 .PHONY : clean
 
 documentation :
-	$(DINGOO_SDK)/tools/extract_doc/extract_doc.py $(SRC_H)
-	mv -f *.wiki $(DINGOO_SDK)/../../dingoo-sdk-wiki/$(LIB_NAME)
+	$(DINGOO_SDK)/tools/extract_doc/extract_doc.py $(LIB_NAME) $(SRC_H)
+	mv -f *.wiki $(DINGOO_SDK)/../../dingoo-sdk-wiki/
 	
 clean :
 	rm -f $(OBJ)
