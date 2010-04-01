@@ -1,5 +1,8 @@
-Astro Lander 1.0.0r39
+Astro Lander 1.0.0r40
 By Flatmush (aka Ben Brewer)
+Improvements by Russell Bernhardt
+
+
 
 INSTRUCTIONS
 
@@ -9,6 +12,7 @@ Bonuses are given for:
 	- Landing gently.
 	- Landing quickly.
 	- Landing using less fuel.
+	- Playing at a higher difficulty level.
 There are multiple hud elements to help you:
 	- The red bar is your health, you will die if it empties.
 	- The yellow bar is your fuel, you will die if it empties.
@@ -20,11 +24,13 @@ There are multiple hud elements to help you:
 
 CONTROLS
 
-Left/Right             = Change angle of ship
+Left/Right Trigger     = Horizontal Thrusters
+Left/Right             = Rotational Thrusters
 A Button               = Vertical thruster
 B Button               = Thruster boost
 Start                  = Pause
 Select                 = Screenshot
+Start + Select         = Quit
 Start -> Left trigger  = Quit
 Start -> Right trigger = Change difficulty (scoring is skewed based on difficulty)
 
@@ -35,6 +41,7 @@ SOURCE
 This game is open source, the source can be downloaded from:
 http://flatmush.juliusparishy.com/a320/
 http://code.google.com/p/dingoo-sdk/downloads/list
+
 
 
 LICENSE
