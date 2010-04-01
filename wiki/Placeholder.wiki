@@ -1,0 +1,5 @@
+#summary Temporary place-holder.
+
+= Introduction =
+
+Dingoo_SDK -- a multiplatform SDK for the Dingoo A320.
