@@ -1,4 +1,4 @@
-Astro Lander 1.0.0
+Astro Lander 1.0.0r39
 By Flatmush (aka Ben Brewer)
 
 INSTRUCTIONS
@@ -15,16 +15,18 @@ There are multiple hud elements to help you:
 	- The green squares are you lives.
 	- The blue triangle/square is the target indicator,
 		it indicates the direction of the landing pad.
-
+	- The alt indicator is a rough estimate of your altitude.
 
 
 CONTROLS
 
-Left/Right     = Horizontal thrusters.
-A Button       = Vertical Thruster
-Start          = Pause
-Select         = Screenshot
-Start + Select = Quit
+Left/Right             = Change angle of ship
+A Button               = Vertical thruster
+B Button               = Thruster boost
+Start                  = Pause
+Select                 = Screenshot
+Start -> Left trigger  = Quit
+Start -> Right trigger = Change difficulty (scoring is skewed based on difficulty)
 
 
 
@@ -32,7 +34,7 @@ SOURCE
 
 This game is open source, the source can be downloaded from:
 http://flatmush.juliusparishy.com/a320/
-
+http://code.google.com/p/dingoo-sdk/downloads/list
 
 
 LICENSE

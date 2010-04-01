@@ -63,9 +63,7 @@ $(OBJ_S) : %.o : %.S
 
 documentation :
 	python $(DINGOO_SDK)/tools/extract_doc/extract_doc.py $(SRC_H)
-	mkdir -p $(DINGOO_SDK)/doc/wiki
-	mkdir -p $(DINGOO_SDK)/doc/wiki/$(LIB_NAME)
-	mv -f *.wiki $(DINGOO_SDK)/doc/wiki/$(LIB_NAME)
+	mv -f *.wiki $(DINGOO_SDK)/../../dingoo-sdk-wiki/libc #forced
 
 clean :
 	rm -f $(OBJ)
