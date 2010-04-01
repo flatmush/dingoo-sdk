@@ -1,7 +1,7 @@
 #ifndef __control_h__
 #define __control_h__
 /**
-=control.h=
+=sml/control.h=
 Defines the button codes and methods for polling the buttons for changes in
 their state.
 */
