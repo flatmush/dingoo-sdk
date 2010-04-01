@@ -1,0 +1,26 @@
+The extract_doc.py utility extracts Google Wiki formatted comments out of the
+headers in the src/sml and src/libc directories. An example of how to format
+comments for wiki use is given in the dingoo_sdk/extract_doc.example.h file.
+
+extract_doc.py takes a list of files to process, seperated by spaces:
+
+python extract_doc.py file1.h file2.h file3.h ...
+
+Wiki files are generated and named after their corresponding headers:
+file1.h.wiki file2.h.wiki etc.
+
+I've also modified the two Makefiles in src/sml and src/libc to add a rule:
+make documentation
+
+This will automatically run the extraction tool on all the appropriate headers
+and move them to dingoo_sdk/doc/wiki.
+
+At this point, I have not yet implemented a mechanism to push these files
+directly to the Google Code wiki, but that will be the next step.
+
+This system allows us to document all the code in one place and have the wiki
+update itself automatically when such changes occur, but the wiki component has
+not yet been built.
+
+Russ Bernhardt <russell.bernhardt@gmail.com>
+2010-03-31
