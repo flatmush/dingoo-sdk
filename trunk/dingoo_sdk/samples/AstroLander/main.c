@@ -117,8 +117,7 @@ void hudDraw(ship* inShip);
 void gameRespawn();
 void gameLevelNext();
 void gameRestart();
-
-
+void setShipDifficulty( ship *tempShip );
 
 #define GAME_MODE_SPLASH 1
 #define GAME_MODE_MENU   2
@@ -140,13 +139,14 @@ gfx_texture* gameSplash  = NULL;
 
 uint8_t         gameMode     = GAME_MODE_SPLASH;
 uint8_t         gameModeSub  = GAME_MODE_GAME_PLAY;
-ship_land_score gameLandingScore = { 0, 0, 0, 0,0 , 0 };
+ship_land_score gameLandingScore = { 0, 0, 0, 0, 0 , 0 };
 
 uint32_t    gameTime       = 0;
 uint32_t    gameLives      = 5;
 uint32_t    gameScore      = 0;
 uint32_t    gameLevelNo    = 1;
-uint32_t    gameDifficulty = GAME_DIFFICULTY_NORMAL;
+uint32_t    gameDifficulty = GAME_DIFFICULTY_EASY;
+char	stringDifficulty[7] = " EASY ";
 
 level*      gameLevel      = NULL;
 ship*       gameShip       = NULL;
@@ -160,6 +160,37 @@ uint32_t gameTickRate = (timer_resolution / 30);
 bool     gameRunning  = true;
 
 
+/* read the current difficulty and configure the ship as such -- don't worry
+	about the point system rewarding easy players... a difficulty-based
+	multiplier is applied to total points later. */
+void setShipDifficulty( ship *tempShip )
+{
+	uint32_t hp_max = 0, fuel_max = 0;
+	
+	switch( gameDifficulty )
+	{
+		case GAME_DIFFICULTY_EASY:
+			hp_max = 200; fuel_max = 2000;
+			break;
+		case GAME_DIFFICULTY_NORMAL:
+			hp_max = 100; fuel_max = 1200;
+			break;
+		case GAME_DIFFICULTY_HARD:
+			hp_max = 75; fuel_max = 800;
+			break;
+		case GAME_DIFFICULTY_ULTRA: /* it's called "ultra" for a reason. ;) */
+			hp_max = 25; fuel_max = 400;
+			break;
+	}
+	
+	tempShip->hp_max = hp_max;
+	tempShip->hp     = hp_max;
+
+	tempShip->fuel_max = fuel_max;
+	tempShip->fuel     = fuel_max;
+
+	return;
+}
 
 void gameScreenshot() {
 	char tempString[256];
@@ -405,11 +436,7 @@ ship* shipCreate(int32_t inX, int32_t inY) {
 	tempShip->vel_y = 0;
 	tempShip->angle = 0;
 
-	tempShip->hp_max = 100;
-	tempShip->hp     = tempShip->hp_max;
-
-	tempShip->fuel_max = 1200;
-	tempShip->fuel     = tempShip->fuel_max;
+	setShipDifficulty( tempShip );
 
 	tempShip->thrust_y = (1 << 13);
 	tempShip->thrust_x = (tempShip->thrust_y >> 1);
@@ -587,7 +614,7 @@ bool shipTick(ship* inShip, level* inLevel) {
 	return tempOut;
 }
 
-ship_land_score shipLandScore(ship* inShip, level* inLevel, uint32_t inLevelNo) {
+ship_land_score shipLandScore(ship* inShip, level* inLevel, uint32_t inLevelNo) {	
 	ship_land_score	tempOut = { 0, 0, 0, 0, 0, 0 };
 	if((inShip == NULL) || (inLevel == NULL))
 		return tempOut;
@@ -610,8 +637,10 @@ ship_land_score shipLandScore(ship* inShip, level* inLevel, uint32_t inLevelNo) 
 	if((tempOut.fuel + tempOut.time) >= (tempOut.position + tempOut.velocity))
 		tempOut.total = 0;
 	else
-		tempOut.total = ((tempOut.position + tempOut.velocity) - (tempOut.fuel + tempOut.time)) * tempOut.level;
+		tempOut.total = (uint32_t)(((tempOut.position + tempOut.velocity) - (tempOut.fuel + tempOut.time)) * tempOut.level);
 
+	tempOut.total >>= (2 / gameDifficulty);
+	
 	return tempOut;
 }
 
@@ -864,7 +893,7 @@ void hudDrawTargetDir(ship* inShip, level* inLevel, int32_t inX, int32_t inY, gf
 	}
 }
 
-void hudDraw(ship* inShip) {
+void hudDraw(ship* inShip) {	
 	if(inShip == NULL)
 		return;
 
@@ -876,17 +905,28 @@ void hudDraw(ship* inShip) {
 	char tempString[32];
 	unsigned long int tempSeconds  = (gameTime / timer_resolution);
 	unsigned long int tempFraction = ((gameTime % timer_resolution) * 10) / timer_resolution;
+	int score_hud_width = 4 + gfx_font_width(gameFont, "Score: 00000000");
+	
 	gfx_font_print_center(4, gameFont, "Time");
 	sprintf(tempString, "%lu.%01lu", tempSeconds, tempFraction);
 	gfx_font_print_center(16, gameFont, tempString);
 
 	sprintf(tempString, "Score: %lu", (unsigned long int)gameScore);
-	gfx_font_print((gameDisplay->width - (4 + gfx_font_width(gameFont, "Score: 00000000"))), 4, gameFont, tempString);
+	gfx_font_print((gameDisplay->width - score_hud_width), 4, gameFont, tempString);
 	sprintf(tempString, "Level: %lu", (unsigned long int)gameLevelNo);
-	gfx_font_print((gameDisplay->width - (4 + gfx_font_width(gameFont, "Level: 00000000"))), 16, gameFont, tempString);
+	gfx_font_print((gameDisplay->width - score_hud_width), 16, gameFont, tempString);
 
 	gfx_font_print_fromright((gameDisplay->width - 2), (gameDisplay->height - gfx_font_height(gameFont) - 2), gameFont, "[PAUSE]");
 	gfx_font_print(2, (gameDisplay->height - gfx_font_height(gameFont) - 2), gameFont, "[SCREENSHOT]");
+	
+	/* print the current difficulty in the bottom-middle of the screen */
+	gfx_font_print( ((gameDisplay->width / 2) - 3),
+		(gameDisplay->height - gfx_font_height(gameFont) - 2), gameFont,
+		stringDifficulty);
+		
+	/* print the current altitude in the top-middle of the screen */
+	sprintf( tempString, "Alt:   %d", (inShip->y + 20000)/1000 ); /* adjust alt to be more realistic */
+	gfx_font_print((gameDisplay->width - score_hud_width), 28, gameFont, tempString);
 }
 
 
@@ -901,6 +941,7 @@ void gameRespawn() {
 		tempSpawnY = gameLevel->spawn_y;
 	}
 	gameShip = shipCreate(tempSpawnX, tempSpawnY);
+	setShipDifficulty( gameShip );
 	gameTime = 0;
 }
 
@@ -918,8 +959,38 @@ void gameRestart() {
 	gameLives   = 5;
 	gameScore   = 0;
 	gameLevelNo = 0;
-	gameDifficulty = GAME_DIFFICULTY_NORMAL;
 	gameLevelNext();
+}
+
+/* returns the next highest difficult than the currently selected difficulty,
+	or EASY if the current difficulty is set to ULTRA. */
+void changeDifficulty( void )
+{
+	/* determine the next difficulty and convert to a string */
+	switch( gameDifficulty )
+	{
+		case GAME_DIFFICULTY_EASY:
+			gameDifficulty = GAME_DIFFICULTY_NORMAL;
+			strcpy( stringDifficulty, "NORMAL" );
+			break;
+		case GAME_DIFFICULTY_NORMAL:
+			gameDifficulty = GAME_DIFFICULTY_HARD;
+			strcpy( stringDifficulty, " HARD " );
+			break;
+		case GAME_DIFFICULTY_HARD:
+			gameDifficulty = GAME_DIFFICULTY_ULTRA;
+			strcpy( stringDifficulty, " ULTRA" );
+			break;
+		case GAME_DIFFICULTY_ULTRA:
+			gameDifficulty = GAME_DIFFICULTY_EASY;
+			strcpy( stringDifficulty, " EASY " );
+			break;
+	}
+	
+	/* force a restart of the game so the high score board makes sense */
+	gameRestart();
+	
+	return;
 }
 
 int main(int argc, char** argv) {
@@ -1017,6 +1088,15 @@ int main(int argc, char** argv) {
 						case GAME_MODE_GAME_PAUSE:
 							if(control_check(CONTROL_BUTTON_START).pressed && control_check(CONTROL_BUTTON_START).changed)
 								gameModeSub = GAME_MODE_GAME_PLAY;
+							else if(control_check(CONTROL_TRIGGER_LEFT).pressed && control_check(CONTROL_TRIGGER_LEFT).changed)
+								/* quit if left shoulder button is pressed while paused */
+								return 0;
+							else if(control_check(CONTROL_TRIGGER_RIGHT).pressed
+								&& control_check(CONTROL_TRIGGER_RIGHT).changed)
+								/* cycle through difficulties if the right 
+								shoulder button is pressed while paused */
+								changeDifficulty();
+								
 							break;
 						case GAME_MODE_GAME_LANDED:
 							if(control_check(CONTROL_BUTTON_A).pressed && control_check(CONTROL_BUTTON_A).changed) {
