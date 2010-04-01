@@ -4,7 +4,8 @@ import sys
 
 block = False
 
-for fh in sys.argv[1:]:
+for fh in sys.argv[2:]:
+	fh = fh.lstrip("./")
 	f = open(fh)
 	data = []
 
@@ -17,7 +18,7 @@ for fh in sys.argv[1:]:
 			data.append( line )
 		
 	if len(data) > 0:
-		outf = open(fh+".wiki", "w")
+		outf = open(sys.argv[1]+"."+fh+".wiki", "w")
 		for line in data:
 			outf.write( line )
 			

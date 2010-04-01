@@ -4,10 +4,10 @@ comments for wiki use is given in the dingoo_sdk/extract_doc.example.h file.
 
 extract_doc.py takes a list of files to process, seperated by spaces:
 
-python extract_doc.py file1.h file2.h file3.h ...
+python extract_doc.py library_name file1.h file2.h file3.h ...
 
 Wiki files are generated and named after their corresponding headers:
-file1.h.wiki file2.h.wiki etc.
+library_name.file1.h.wiki library_name.file2.h.wiki etc.
 
 I've also modified the two Makefiles in src/sml and src/libc to add a rule:
 make documentation
