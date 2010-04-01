@@ -8,14 +8,13 @@ Dingoo_SDK is meant to serve as a multiplatform SDK for the Dingoo A320.
 == Requirements ==
 = Linux =
   * [ftp://ftp.ingenic.cn/3sw/01linux/00toolchain/ Ingenic toolchain]
-  * Python 2.5 (for extract_doc.py tool only)
+  * Python 2.5+ (for extract_doc.py tool only)
   * GNU make
-  * TODO: add more requirements as needed
 = Windows =
-  * CYGWIN (Latest version, though any version should work)
-    * Python 2.5+ (for cygwin)
-    * GNU Make (for cygwin)
-  * Windows MIPSEL Compiler
+  * [http://www.cygwin.com/setup.exe CYGWIN (Latest version, though any version should work)]
+    * Python 2.5+ (for extract_doc.py tool only)
+    * GNU make
+  * [http://flatmush.juliusparishy.com/a320/toolchain/mipsel-gcc4.1-cygwin-nopic.tar.bz2 Windows MIPSEL Compiler]
 == Getting Help ==
 = ReadMe.txt =
 The ReadMe.txt file included in the highest level of the $DINGOO_SDK directory is the first place you should check for help. There are step-by-step installation instructions there for both Windows and Linux/UNIX build environments.
