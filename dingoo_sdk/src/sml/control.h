@@ -11,7 +11,6 @@ their state.
 
 /**
 ==Macros==
-<a name="controlcodes"></a>
 ===Control codes===
   * *CONTROL_POWER*: the power slider (does not track the HOLD position)
   * *CONTROL_BUTTON_A*: the A button
@@ -28,8 +27,8 @@ their state.
   * *CONTROL_DPAD_RIGHT*: the RIGHT button on the directional pad
 
 ===Methods===
-  * _int_ *control_just_pressed*( [#controlcodes control_code] ): returns 0 if the control state is set to "just recently pressed", non-zero otherwise.
-  * _int_ *control_just_released*( [#controlcodes control_code] ): returns 0 if the control state is set to "just recently released", non-zero otherwise.  * _int_ *control_still_pressed*( [#controlcodes control_code] ): returns 0 if the control state is set to "still pressed", non-zero otherwise.  * _int_ *control_still_released*( [#controlcodes control_code] ): returns 0 if the control state is set to "still released", non-zero otherwise.
+  * _int_ *control_just_pressed*( [#Control_codes control_code] ): returns 0 if the control state is set to "just recently pressed", non-zero otherwise.
+  * _int_ *control_just_released*( [#Control_codes control_code] ): returns 0 if the control state is set to "just recently released", non-zero otherwise.  * _int_ *control_still_pressed*( [#Control_codes control_code] ): returns 0 if the control state is set to "still pressed", non-zero otherwise.  * _int_ *control_still_released*( [#Control_codes control_code] ): returns 0 if the control state is set to "still released", non-zero otherwise.
 */
 #define CONTROL_POWER         7
 
@@ -55,7 +54,6 @@ their state.
 
 /**
 ==Structs==
-<a name="controlstate"></a>
 ===control_state===
 Members:
   * _bool_ *changed*: indicates this control has changed since the last check
@@ -74,8 +72,8 @@ Non-macro global methods.
   * _void_ *control_init*( _void_ ): initializes the control state tracker
   * _void_ *control_term*( _void_ ): terminates the control state tracker
   * _void_ *control_poll*( _void_ ): updates the control state tracker
-  * [#controlstate control_state] *control_check*( [#controlcodes control_code] ): gets the status of the specified control
-  * _void_ *control_lock*( [#controlcodes control_code] ): prevents the specified control from being tracked
+  * [#control_state control_state] *control_check*( [#Control_codes control_code] ): gets the status of the specified control
+  * _void_ *control_lock*( [#Control_codes control_code] ): prevents the specified control from being tracked
 */
 extern void          control_init();
 extern void          control_term();
