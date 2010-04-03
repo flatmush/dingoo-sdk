@@ -265,6 +265,9 @@ ship_land_score shipLandScore(ship* inShip, level* inLevel, uint32_t inLevelNo) 
 	if((inShip == NULL) || (inLevel == NULL))
 		return tempOut;
 
+	sound_stop(0);
+	_shipThrustLoop = 0;
+
 	uint32_t tempSegWidth = (inLevel->width / (inLevel->points_count - 1));
 	int32_t  tempTarget   = (inLevel->target_point * tempSegWidth) + ((inLevel->target_width * tempSegWidth) >> 1);
 	tempOut.position  = (tempTarget > inShip->x ? tempTarget - inShip->x : inShip->x - tempTarget);
