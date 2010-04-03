@@ -3,33 +3,33 @@ Defines the button codes and methods for polling the buttons for changes in
 their state.
 ==Macros==
 ===Control codes===
-  * *CONTROL_POWER*: the power slider (does not track the HOLD position)
-  * *CONTROL_BUTTON_A*: the A button
-  * *CONTROL_BUTTON_B*: the B button
-  * *CONTROL_BUTTON_X*: the X button
-  * *CONTROL_BUTTON_Y*: the Y button
-  * *CONTROL_BUTTON_START*: the START button (does not exist on the Gemei X760+)
-  * *CONTROL_BUTTON_SELECT*: the SELECT button (does not exist on the Gemei X760+)
-  * *CONTROL_TRIGGER_LEFT*: the left shoulder button (does not exist on the Gemei X760+)
-  * *CONTROL_TRIGGER_RIGHT*: the right shoulder button (does not exist on the Gemei X760+)
-  * *CONTROL_DPAD_UP*: the UP button on the directional pad
-  * *CONTROL_DPAD_DOWN*: the DOWN button on the directional pad
-  * *CONTROL_DPAD_LEFT*: the LEFT button on the directional pad
-  * *CONTROL_DPAD_RIGHT*: the RIGHT button on the directional pad
+  * *CONTROL`_`POWER*: the power slider (does not track the HOLD position)
+  * *CONTROL`_`BUTTON`_`A*: the A button
+  * *CONTROL`_`BUTTON`_`B*: the B button
+  * *CONTROL`_`BUTTON`_`X*: the X button
+  * *CONTROL`_`BUTTON`_`Y*: the Y button
+  * *CONTROL`_`BUTTON`_`START*: the START button (does not exist on the Gemei X760+)
+  * *CONTROL`_`BUTTON`_`SELECT*: the SELECT button (does not exist on the Gemei X760+)
+  * *CONTROL`_`TRIGGER`_`LEFT*: the left shoulder button (does not exist on the Gemei X760+)
+  * *CONTROL`_`TRIGGER`_`RIGHT*: the right shoulder button (does not exist on the Gemei X760+)
+  * *CONTROL`_`DPAD`_`UP*: the UP button on the directional pad
+  * *CONTROL`_`DPAD`_`DOWN*: the DOWN button on the directional pad
+  * *CONTROL`_`DPAD`_`LEFT*: the LEFT button on the directional pad
+  * *CONTROL`_`DPAD`_`RIGHT*: the RIGHT button on the directional pad
 
-===Methods===
-  * _int_ *control_just_pressed*( [#Control_codes control_code] ): returns 0 if the control state is set to "just recently pressed", non-zero otherwise.
-  * _int_ *control_just_released*( [#Control_codes control_code] ): returns 0 if the control state is set to "just recently released", non-zero otherwise.  * _int_ *control_still_pressed*( [#Control_codes control_code] ): returns 0 if the control state is set to "still pressed", non-zero otherwise.  * _int_ *control_still_released*( [#Control_codes control_code] ): returns 0 if the control state is set to "still released", non-zero otherwise.
+===Macro functions===
+  * _int_ *control`_`just`_`pressed*( [#Control_codes control_code] ): returns 0 if the control state is set to "just recently pressed", non-zero otherwise.
+  * _int_ *control`_`just`_`released*( [#Control_codes control_code] ): returns 0 if the control state is set to "just recently released", non-zero otherwise.  * _int_ *control`_`still`_`pressed*( [#Control_codes control_code] ): returns 0 if the control state is set to "still pressed", non-zero otherwise.  * _int_ *control`_`still`_`released*( [#Control_codes control_code] ): returns 0 if the control state is set to "still released", non-zero otherwise.
 ==Structs==
 ===control_state===
 Members:
   * _bool_ *changed*: indicates this control has changed since the last check
   * _bool_ *pressed*: indicates this control is being pressed down
   * _bool_ *repeat*: indicates this control is _still_ being held down since the last check
-==Methods==
-Non-macro global methods.
-  * _void_ *control_init*( _void_ ): initializes the control state tracker
-  * _void_ *control_term*( _void_ ): terminates the control state tracker
-  * _void_ *control_poll*( _void_ ): updates the control state tracker
+==Functions==
+Non-macro global functions.
+  * _void_ *control`_`init*( _void_ ): initializes the control state tracker
+  * _void_ *control`_`term*( _void_ ): terminates the control state tracker
+  * _void_ *control`_`poll*( _void_ ): updates the control state tracker
   * [#control_state control_state] *control_check*( [#Control_codes control_code] ): gets the status of the specified control
-  * _void_ *control_lock*( [#Control_codes control_code] ): prevents the specified control from being tracked
+  * _void_ *control`_`lock*( [#Control_codes control_code] ): prevents the specified control from being tracked
