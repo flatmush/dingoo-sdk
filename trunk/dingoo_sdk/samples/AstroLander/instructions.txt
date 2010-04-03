@@ -1,4 +1,4 @@
-Astro Lander 1.0.0r41
+Astro Lander 1.0.0r51
 By Flatmush (aka Ben Brewer)
 Improvements by Russell Bernhardt
 
@@ -19,7 +19,12 @@ There are multiple hud elements to help you:
 	- The green squares are you lives.
 	- The blue triangle/square is the target indicator,
 		it indicates the direction of the landing pad.
-	- The alt indicator is a rough estimate of your altitude.
+	- The altitude indicator on the right show your altitude releative to the level:
+		- The white bar is your ships altitude.
+		- The gray bar is the height of the level below you.
+		- The green bar is the height of the landing pad.
+		- The bottom of the indicator is the lowest point on the level.
+		- Halfway up the indicator is the highest point on the level.
 
 
 CONTROLS

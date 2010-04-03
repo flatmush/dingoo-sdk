@@ -21,14 +21,14 @@
 #define VERSION_REVISION 0
 
 typedef struct {
-	uint32_t* points;
-	uint32_t  points_count;
-	uint32_t  target_point;
-	uint32_t  target_width;
-	uint32_t  width;
-	uint32_t  start_time;
-	int32_t   spawn_x, spawn_y;
-	int32_t   gravity;
+	int32_t* points;
+	uint32_t points_count;
+	uint32_t target_point;
+	uint32_t target_width;
+	uint32_t width;
+	uint32_t start_time;
+	int32_t  spawn_x, spawn_y;
+	int32_t  gravity;
 } level;
 
 typedef struct {
@@ -43,7 +43,7 @@ typedef struct {
 
 typedef struct {
 	int32_t*  star_points;
-	int32_t   star_count;
+	uint32_t  star_count;
 	gfx_color sky_color;
 } background;
 
@@ -112,6 +112,8 @@ void        scoreListDraw(score_list* inList, uint32_t inOffset);
 
 void hudDrawGuage(uint32_t inCur, uint32_t inMax, int32_t inX, int32_t inY, uint32_t inWidth, uint32_t inHeight, gfx_color inBright, gfx_color inDark);
 void hudDrawLives(uint32_t inLives, int32_t inX, int32_t inY, gfx_color inBright, gfx_color inDark);
+void hudDrawAltimeter(ship* inShip, level* inLevel);
+void hudDrawTargetDir(ship* inShip, level* inLevel, int32_t inX, int32_t inY, gfx_color inBright, gfx_color inDark);
 void hudDraw(ship* inShip);
 
 void gameRespawn();
@@ -202,11 +204,11 @@ void gameDialog(char* inMessage) {
 		display_flip(gameDisplay);
 
 		control_poll();
-		if(control_check(CONTROL_BUTTON_B).pressed && control_check(CONTROL_BUTTON_B).changed)
+		if(control_just_pressed(CONTROL_BUTTON_B))
 			break;
-		if(control_check(CONTROL_BUTTON_A).pressed && control_check(CONTROL_BUTTON_A).changed)
+		if(control_just_pressed(CONTROL_BUTTON_A))
 			break;
-		if(control_check(CONTROL_BUTTON_SELECT).pressed && control_check(CONTROL_BUTTON_SELECT).changed) {
+		if(control_just_pressed(CONTROL_BUTTON_SELECT)) {
 			gameScreenshot();
 			gameDialog("Screenshot taken.");
 		}
@@ -251,13 +253,13 @@ uint8_t _rand8() {
 }
 
 level* levelCreate(uint32_t inPoints, uint32_t inWidth, int32_t inGravity, uint8_t inSmooth) {
-	if(inWidth < (gameDisplay->width << 16))
-		inWidth = (gameDisplay->width << 16);
+	if(inWidth < ((uint32_t)gameDisplay->width << 16))
+		inWidth = ((uint32_t)gameDisplay->width << 16);
 
 	level* tempLevel = (level*)malloc(sizeof(level) + ((inPoints + 1) << 2));
 	if(tempLevel == NULL)
 		return NULL;
-	tempLevel->points = (uint32_t*)((uintptr_t)tempLevel + sizeof(level));
+	tempLevel->points = (int32_t*)((uintptr_t)tempLevel + sizeof(level));
 	tempLevel->points_count = (inPoints + 1);
 	tempLevel->width = inWidth;
 	tempLevel->target_width = 1;
@@ -345,7 +347,7 @@ level_point levelHeight(level* inLevel, int32_t inX) {
 	level_point tempOut = { 0, false };
 	if(inLevel == NULL)
 		return tempOut;
-	if((inX < 0) || (inX >= inLevel->width))
+	if((inX < 0) || (inX >= (int32_t)inLevel->width))
 		return tempOut;
 	uint32_t tempSegWidth = (inLevel->width / (inLevel->points_count - 1));
 	uint32_t tempIndex = (inX / tempSegWidth);
@@ -361,20 +363,20 @@ level_point levelHeightMax(level* inLevel, int32_t inX, uint32_t inWidth) {
 	if(inLevel == NULL)
 		return tempOut;
 	if(inX < 0) {
-		if(inWidth < -inX)
+		if((int32_t)inWidth < -inX)
 			return tempOut;
 		inWidth += inX;
 		inX = 0;
 	}
 	if((inX + inWidth) >= inLevel->width) {
-		if(inX > inLevel->width)
+		if(inX > (int32_t)inLevel->width)
 			return tempOut;
 		inWidth = (inLevel->width - (inX + 1));
 	}
 
 	uint32_t tempSegWidth = (inLevel->width / (inLevel->points_count - 1));
 	uint32_t tempIndex = (inX / tempSegWidth);
-	if((tempIndex * tempSegWidth) < inX)
+	if((int32_t)(tempIndex * tempSegWidth) < inX)
 		tempIndex++;
 
 	tempOut = levelHeight(inLevel, inX);
@@ -481,7 +483,7 @@ void shipDraw(ship* inShip, int32_t inOffX, int32_t inOffY) {
 }
 
 ship_level_point shipLevelCollision(ship* inShip, level* inLevel) {
-	ship_level_point tempOut = { 0, -1, 0, -1, -1 };
+	ship_level_point tempOut = { 0, -1, 0, -1, -1, false };
 	if((inShip == NULL) || (inLevel == NULL))
 		return tempOut;
 	int32_t i;
@@ -552,7 +554,7 @@ bool shipTick(ship* inShip, level* inLevel) {
 		}
 	}
 
-	if((inShip->fuel >= 256) && control_check(CONTROL_BUTTON_B).pressed && control_check(CONTROL_BUTTON_B).changed) {
+	if((inShip->fuel >= 256) && control_just_pressed(CONTROL_BUTTON_B)) {
 		inShip->fuel -= 256;
 		inShip->vel_x += fix16_mul(tempSin, inShip->thrust_y) << 6;
 		inShip->vel_y += fix16_mul(tempCos, inShip->thrust_y) << 6;
@@ -579,7 +581,7 @@ bool shipTick(ship* inShip, level* inLevel) {
 	if((inShip->x - (4 << 16)) < 0) {
 		inShip->x = (4 << 16);
 		inShip->vel_x = 0;
-	} if(inShip->x + (4 << 16) >= inLevel->width) {
+	} if(inShip->x + (4 << 16) >= (int32_t)inLevel->width) {
 		inShip->x = (inLevel->width - ((4 << 16) + 1));
 		inShip->vel_x = 0;
 	}
@@ -856,6 +858,60 @@ void hudDrawLives(uint32_t inLives, int32_t inX, int32_t inY, gfx_color inBright
 	}
 }
 
+void hudDrawAltimeter(ship* inShip, level* inLevel) {
+	if((inShip == NULL) || (inLevel == NULL))
+		return;
+
+	uintptr_t tempTop    = 16;
+	uintptr_t tempBottom = (gameDisplay->height - tempTop);
+	uintptr_t tempRight  = (gameDisplay->width - 8);
+	uintptr_t tempLeft   = (tempRight - 5);
+
+	int32_t tempLevelTop    = inLevel->points[0];
+	int32_t tempLevelBottom = inLevel->points[0];
+	uintptr_t i;
+	for(i = 1; i < inLevel->points_count; i++) {
+		if(inLevel->points[i] > tempLevelTop)
+			tempLevelTop = inLevel->points[i];
+		else if(inLevel->points[i] < tempLevelBottom)
+			tempLevelBottom = inLevel->points[i];
+	}
+
+	int32_t tempShipAlt = inShip->y >> 16;
+	tempShipAlt -= tempLevelBottom >> 16;
+	tempShipAlt *= (tempBottom - tempTop);
+	tempShipAlt /= (tempLevelTop - tempLevelBottom) >> 15;
+	tempShipAlt  = (tempBottom - tempShipAlt);
+
+	int32_t tempTargetAlt = inLevel->points[inLevel->target_point] >> 16;
+	tempTargetAlt -= tempLevelBottom >> 16;
+	tempTargetAlt *= (tempBottom - tempTop);
+	tempTargetAlt /= (tempLevelTop - tempLevelBottom) >> 15;
+	tempTargetAlt  = (tempBottom - tempTargetAlt);
+
+	int32_t tempLandAlt = levelHeightMax(inLevel, (inShip->x - (4 << 16)), (8 << 16)).height >> 16;
+	tempLandAlt -= tempLevelBottom >> 16;
+	tempLandAlt *= (tempBottom - tempTop);
+	tempLandAlt /= (tempLevelTop - tempLevelBottom) >> 15;
+	tempLandAlt  = (tempBottom - tempLandAlt);
+
+	gfx_line_draw(tempLeft, tempTop, tempRight, tempTop, gfx_color_rgb(0xFF, 0xFF, 0xFF));
+	gfx_line_draw(tempLeft, tempBottom, tempRight, tempBottom, gfx_color_rgb(0xFF, 0xFF, 0xFF));
+
+	gfx_line_draw(tempLeft, tempLandAlt, tempRight, tempLandAlt, gfx_color_rgb(0x7F, 0x7F, 0x7F));
+	gfx_line_draw(tempLeft, tempTargetAlt, tempRight, tempTargetAlt, gfx_color_rgb(0x00, 0xBF, 0x00));
+
+	if(inShip->y > (tempLevelTop + (tempLevelTop - tempLevelBottom))) {
+		char tempString[256];
+		tempShipAlt = (inShip->y - tempLevelBottom) >> 24;
+		sprintf(tempString, "Altitude: %li km", tempShipAlt);
+		gfx_font_print_center(((gameDisplay->height >> 1) - 16), gameFont, tempString);
+	} else
+		gfx_line_draw(tempLeft, tempShipAlt, tempRight, tempShipAlt, gfx_color_rgb(0xFF, 0xFF, 0xFF));
+
+	gfx_line_draw(tempRight, tempTop, tempRight, (tempBottom + 1), gfx_color_rgb(0xFF, 0xFF, 0xFF));
+}
+
 void hudDrawTargetDir(ship* inShip, level* inLevel, int32_t inX, int32_t inY, gfx_color inBright, gfx_color inDark) {
 	if((inShip == NULL) || (inLevel == NULL))
 		return;
@@ -902,7 +958,8 @@ void hudDraw(ship* inShip) {
 	hudDrawGuage(inShip->hp, inShip->hp_max, 4, 4, 64, 8, gfx_color_rgb(0xFF, 0x00, 0x00), gfx_color_rgb(0xBF, 0x00, 0x00));
 	hudDrawGuage(inShip->fuel, inShip->fuel_max, 4, 16, 64, 8, gfx_color_rgb(0xFF, 0xFF, 0x00), gfx_color_rgb(0xBF, 0xBF, 0x00));
 	hudDrawLives(gameLives, 4, 32, gfx_color_rgb(0x00, 0xFF, 0x00), gfx_color_rgb(0x00, 0xBF, 0x00));
-	hudDrawTargetDir(gameShip, gameLevel, (gameDisplay->width >> 1), 32, gfx_color_rgb(0x00, 0x00, 0xFF), gfx_color_rgb(0x00, 0x00, 0xBF));
+	hudDrawTargetDir(inShip, gameLevel, (gameDisplay->width >> 1), 32, gfx_color_rgb(0x00, 0x00, 0xFF), gfx_color_rgb(0x00, 0x00, 0xBF));
+	hudDrawAltimeter(inShip, gameLevel);
 
 	char tempString[32];
 	unsigned long int tempSeconds  = (gameTime / timer_resolution);
@@ -917,8 +974,6 @@ void hudDraw(ship* inShip) {
 	gfx_font_print((gameDisplay->width - score_hud_width), 4, gameFont, tempString);
 	sprintf(tempString, "Level: %lu", (unsigned long int)gameLevelNo);
 	gfx_font_print((gameDisplay->width - score_hud_width), 16, gameFont, tempString);
-	sprintf(tempString, "Alt:   %li", (inShip->y + 20000) / 1000); // adjust alt to be more realistic
-	gfx_font_print((gameDisplay->width - score_hud_width), 28, gameFont, tempString); // print the current altitude in the top-right of the screen.
 
 	gfx_font_print_fromright((gameDisplay->width - 2), (gameDisplay->height - gfx_font_height(gameFont) - 2), gameFont, "[PAUSE]");
 	gfx_font_print(2, (gameDisplay->height - gfx_font_height(gameFont) - 2), gameFont, "[SCREENSHOT]");
@@ -1130,7 +1185,7 @@ int main(int argc, char** argv) {
 					tempOffX = ((gameDisplay->width << 15) - gameShip->x);
 					if(tempOffX > 0)
 						tempOffX = 0;
-					if(((gameDisplay->width << 16) - tempOffX) >= gameLevel->width)
+					if((((uint32_t)gameDisplay->width << 16) - tempOffX) >= gameLevel->width)
 						tempOffX = ((gameDisplay->width << 16) - gameLevel->width) + 1;
 					tempOffY = ((gameDisplay->height << 15) - gameShip->y);
 				}
