@@ -40,24 +40,9 @@ ship* shipCreate(int32_t inX, int32_t inY) {
 	/* read the current difficulty and configure the ship as such -- don't worry
 		about the point system rewarding easy players... a difficulty-based
 		multiplier is applied to total points later. */
-	switch(gameDifficulty) {
-		case GAME_DIFFICULTY_EASY:
-			tempShip->hp_max   = 200;
-			tempShip->fuel_max = 2000;
-			break;
-		case GAME_DIFFICULTY_NORMAL:
-			tempShip->hp_max   = 100;
-			tempShip->fuel_max = 1200;
-			break;
-		case GAME_DIFFICULTY_HARD:
-			tempShip->hp_max   = 75;
-			tempShip->fuel_max = 800;
-			break;
-		case GAME_DIFFICULTY_ULTRA: /* it's called "ultra" for a reason. ;) */
-			tempShip->hp_max   = 25;
-			tempShip->fuel_max = 400;
-			break;
-	}
+
+	tempShip->hp_max   = (50  * (5 - gameDifficulty));
+	tempShip->fuel_max = (400 * (5 - gameDifficulty));
 
 	tempShip->hp   = tempShip->hp_max;
 	tempShip->fuel = tempShip->fuel_max;

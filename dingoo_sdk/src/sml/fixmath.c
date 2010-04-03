@@ -1,4 +1,4 @@
-#include <sml/fixmath.h>
+#include "fixmath.h"
 
 
 
@@ -26,16 +26,33 @@ fix16_t _fix16_sqrt_cache_value[4096] = { 0 };
 
 
 
-const fix16_t fix16_pi = 205887;
-const fix16_t fix16_e  = 178145;
+const fix16_t fix16_pi  = 205887;
+const fix16_t fix16_e   = 178145;
+const fix16_t fix16_one = 0x00010000;
 
 
 
-int32_t fix16_to_int(fix16_t inVal) {
+double fix16_to_dbl(const fix16_t inVal) {
+	return ((double)inVal / 65536.0);
+}
+
+fix16_t fix16_from_dbl(const double inVal) {
+	return (fix16_t)(inVal * 65536.0);
+}
+
+float fix16_to_float(const fix16_t inVal) {
+	return ((float)inVal / 65536.0f);
+}
+
+fix16_t fix16_from_float(const float inVal) {
+	return (fix16_t)(inVal * 65536.0f);
+}
+
+int32_t fix16_to_int(const fix16_t inVal) {
 	return ((inVal + 0x00008000) >> 16);
 }
 
-fix16_t fix16_from_int(int32_t inVal) {
+fix16_t fix16_from_int(const int32_t inVal) {
 	return (inVal << 16);
 }
 
@@ -52,15 +69,43 @@ fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1) {
 
 fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1) {
 	int64_t tempResult = ((int64_t)inArg0 * (int64_t)inArg1) + 0x00008000;
-	return (tempResult >> 16);
+	tempResult >>= 16;
+	return tempResult;
+}
+
+fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1) {
+	int64_t tempResult = ((int64_t)inArg0 * (int64_t)inArg1) + 0x00008000;
+	tempResult >>= 16;
+	if(tempResult < fix16_MIN)
+		return fix16_MIN;
+	if(tempResult > fix16_MAX)
+		return fix16_MAX;
+	return tempResult;
 }
 
 fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) {
-	int64_t tempOut = inArg0;
-	tempOut <<= 16;
-	tempOut += (inArg1 >> 1);
-	tempOut /= inArg1;
-	return tempOut;
+	int64_t tempResult = inArg0;
+	tempResult <<= 16;
+	tempResult += (inArg1 >> 1);
+	tempResult /= inArg1;
+	return tempResult;
+}
+
+fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
+	if(inArg1 == 0) {
+		if(inArg0 < 0)
+			return fix16_MIN;
+		return fix16_MAX;
+	}
+	int64_t tempResult = inArg0;
+	tempResult <<= 16;
+	tempResult += (inArg1 >> 1);
+	tempResult /= inArg1;
+	if(tempResult < fix16_MIN)
+		return fix16_MIN;
+	if(tempResult > fix16_MAX)
+		return fix16_MAX;
+	return tempResult;
 }
 
 
@@ -199,12 +244,20 @@ fix16_t fix16_sqrt(fix16_t inValue) {
 	return tempOut;
 }
 
+fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract) {
+	int64_t tempOut;
+	tempOut   = ((int64_t)inArg0 * (fix16_one - inFract));
+	tempOut  += ((int64_t)inArg1 * inFract);
+	tempOut >>= 16;
+	return (fix16_t)tempOut;
+}
 
 
 
 
 
-fract_t fract_create(uint32_t inNumerator, uint32_t inDenominator) {
+
+fract32_t fract32_create(uint32_t inNumerator, uint32_t inDenominator) {
 	if(inDenominator <= inNumerator)
 		return 0xFFFFFFFF;
 	uint32_t tempMod = (inNumerator % inDenominator);
@@ -212,16 +265,16 @@ fract_t fract_create(uint32_t inNumerator, uint32_t inDenominator) {
 	return (tempMod * tempDiv);
 }
 
-fract_t fract_invert(fract_t inFract) {
+fract32_t fract32_invert(fract32_t inFract) {
 	return (0xFFFFFFFF - inFract);
 }
 
-uint32_t fract_usmul(uint32_t inVal, fract_t inFract) {
+uint32_t fract32_usmul(uint32_t inVal, fract32_t inFract) {
 	return (uint32_t)(((uint64_t)inVal * (uint64_t)inFract) >> 32);
 }
 
-int32_t fract_smul(int32_t inVal, fract_t inFract) {
+int32_t fract32_smul(int32_t inVal, fract32_t inFract) {
 	if(inVal < 0)
-		return -fract_usmul(-inVal, inFract);
-	return fract_usmul(inVal, inFract);
+		return -fract32_usmul(-inVal, inFract);
+	return fract32_usmul(inVal, inFract);
 }
