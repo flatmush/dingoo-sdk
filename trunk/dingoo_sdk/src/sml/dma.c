@@ -1,6 +1,8 @@
 #include "dma.h"
+
+#include <jz4740/jz4740.h>
+
 #include <dingoo/cache.h>
-#include <dingoo/jz4740.h>
 #include <dingoo/ucos2.h>
 
 uintptr_t _dma_dest_width[3]   = { DMAC_DCMD_DWDH_8, DMAC_DCMD_DWDH_16, DMAC_DCMD_DWDH_32 };

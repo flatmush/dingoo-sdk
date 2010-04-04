@@ -11,6 +11,7 @@ if [ ! -d "$MIPSTOOLS" ]; then
 fi
 
 cd $DINGOO_SDK/src/libc && make clean && make
+cd $DINGOO_SDK/src/jz4740 && make clean && make
 cd $DINGOO_SDK/src/sml && make clean && make
 cd $DINGOO_SDK/src/fgl && make clean && make
 rm -f $DINGOO_SDK/lib/libgcc.a

@@ -10,7 +10,7 @@
 
 
 void hudDrawGuage(uint32_t inCur, uint32_t inMax, int32_t inX, int32_t inY, uint32_t inWidth, uint32_t inHeight, gfx_color inBright, gfx_color inDark) {
-	uint32_t tempFill = fract_usmul(inWidth, fract_create(inCur, inMax));
+	uint32_t tempFill = fract32_usmul(inWidth, fract32_create(inCur, inMax));
 	gfx_rect_fill_draw(inX, inY, tempFill, ((inHeight + 1) >> 1), inBright);
 	gfx_rect_fill_draw(inX, (inY + ((inHeight + 1) >> 1)), tempFill, (inHeight >> 1), inDark);
 	gfx_rect_draw(inX, inY, inWidth, inHeight, gfx_color_rgb(0xFF, 0xFF, 0xFF));

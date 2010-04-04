@@ -154,7 +154,7 @@ bool shipTick(ship* inShip, level* inLevel) {
 
 	int32_t  tempGravity  = (inLevel == NULL ? (1 << 12) : inLevel->gravity);
 	int32_t  tempWind     = 0;
-	fract_t  tempFriction = fract_create(127, 128);
+	fract32_t  tempFriction = fract32_create(127, 128);
 
 	if(control_check(CONTROL_DPAD_LEFT).pressed)
 		inShip->angle -= (fix16_pi >> 6);
@@ -206,8 +206,8 @@ bool shipTick(ship* inShip, level* inLevel) {
 
 	inShip->vel_x += tempWind;
 	inShip->vel_y -= tempGravity;
-	inShip->vel_x  = fract_smul(inShip->vel_x, tempFriction);
-	inShip->vel_y  = fract_smul(inShip->vel_y, tempFriction);
+	inShip->vel_x  = fract32_smul(inShip->vel_x, tempFriction);
+	inShip->vel_y  = fract32_smul(inShip->vel_y, tempFriction);
 
 	inShip->x += inShip->vel_x;
 	if((inShip->x - (4 << 16)) < 0) {
@@ -221,13 +221,13 @@ bool shipTick(ship* inShip, level* inLevel) {
 	if(inShip->vel_x > 0) {
 		if(tempHit.right_y > 0) {
 			inShip->x = (tempHit.right_x - ((4 << 16) + 1));
-			inShip->vel_x = (0 - fract_smul(inShip->vel_x, fract_create(1, 4)));
+			inShip->vel_x = (0 - fract32_smul(inShip->vel_x, fract32_create(1, 4)));
 		}
 	} else {
 		if(tempHit.left_y > 0) {
 			shipDamage(inShip, inShip->vel_x);
 			inShip->x = (tempHit.left_x + ((4 << 16) + 1));
-			inShip->vel_x = (0 - fract_smul(inShip->vel_x, fract_create(1, 4)));
+			inShip->vel_x = (0 - fract32_smul(inShip->vel_x, fract32_create(1, 4)));
 		}
 	}
 
@@ -240,7 +240,7 @@ bool shipTick(ship* inShip, level* inLevel) {
 			shipDamage(inShip, inShip->vel_y);
 		}
 		inShip->y = tempHit.high;
-		inShip->vel_y = (0 - fract_smul(inShip->vel_y, fract_create(1, 4)));
+		inShip->vel_y = (0 - fract32_smul(inShip->vel_y, fract32_create(1, 4)));
 	}
 	return tempOut;
 }
