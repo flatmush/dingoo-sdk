@@ -116,9 +116,9 @@ level_point levelHeight(level* inLevel, int32_t inX) {
 	uint32_t tempSegWidth = (inLevel->width / (inLevel->points_count - 1));
 	uint32_t tempIndex = (inX / tempSegWidth);
 	tempOut.land = ((tempIndex >= inLevel->target_point) && (tempIndex < (inLevel->target_point + inLevel->target_width)));
-	fract_t tempFract = fract_create((inX % tempSegWidth), tempSegWidth);
-	tempOut.height = fract_smul(inLevel->points[tempIndex], fract_invert(tempFract));
-	tempOut.height += fract_smul(inLevel->points[tempIndex + 1], tempFract);
+	fract32_t tempFract = fract32_create((inX % tempSegWidth), tempSegWidth);
+	tempOut.height = fract32_smul(inLevel->points[tempIndex], fract32_invert(tempFract));
+	tempOut.height += fract32_smul(inLevel->points[tempIndex + 1], tempFract);
 	return tempOut;
 }
 
