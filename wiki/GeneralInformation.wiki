@@ -16,9 +16,9 @@ Dingoo_SDK is meant to serve as a multiplatform SDK for the Dingoo A320.
     * GNU make
   * [http://flatmush.juliusparishy.com/a320/toolchain/mipsel-gcc4.1-cygwin-nopic.tar.bz2 Windows MIPSEL Compiler]
 == Getting Help ==
-=== ReadMe.txt ===
-The ReadMe.txt file included in the highest level of the $DINGOO_SDK directory is the first place you should check for help. There are step-by-step installation instructions there for both Windows and Linux/UNIX build environments.
+=== Read Me ===
+The [http://code.google.com/p/dingoo-sdk/source/browse/trunk/dingoo_sdk/ReadMe.txt ReadMe.txt] file included in the highest level of the $DINGOO_SDK directory is the first place you should check for help. There are step-by-step installation instructions there for both Windows and Linux/UNIX build environments.
 === Wiki ===
 The wiki is currently a work-in-progress and may not contain much helpful information at the moment, but we are actively working on it.
 === Issues ===
-The issues tracker is the best place to post bugs or other unusual errors that aren't the result of a failed or incorrect installation (see the ReadMe.txt file). We are also open to feature requests and suggestions as time allows.
+The issues tracker is the best place to post bugs or other unusual errors that aren't the result of a failed or incorrect installation (see the [http://code.google.com/p/dingoo-sdk/source/browse/trunk/dingoo_sdk/ReadMe.txt ReadMe.txt] file). We are also open to feature requests and suggestions as time allows.
