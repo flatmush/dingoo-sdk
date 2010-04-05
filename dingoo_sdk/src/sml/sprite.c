@@ -168,6 +168,53 @@ sprite* sprite_load(const char* inPath) {
 	return tempSprite;
 }
 
+sprite* sprite_load_from_buffer(uint8_t* buffer) {
+	if(buffer == NULL)
+		return NULL;
+
+	if(strncmp(buffer, "dsprite\0", 8) != 0) {
+		return NULL;
+	}
+
+	uint16_t tempWidth, tempHeight, tempFrames;
+	tempWidth = buffer[8] + (buffer[9] << 8);
+	tempHeight = buffer[10] + (buffer[11] << 8);
+	tempFrames = buffer[12] + (buffer[13] << 8);
+
+	uint16_t bufIndex = 16;
+
+	sprite* tempSprite = sprite_create(tempWidth, tempHeight);
+	if(tempSprite == NULL) {
+		return NULL;
+	}
+
+	uintptr_t i;
+	uint32_t  tempFrameLen;
+	uint16_t* tempFrame;
+	sprite* tempSpriteAdd;
+	for(i = 0; i < tempFrames; i++) {
+		tempFrameLen = buffer[bufIndex] + (buffer[bufIndex + 1] << 8) + (buffer[bufIndex + 2] << 16) + (buffer[bufIndex + 3] << 24);
+		bufIndex += 4;
+		tempFrame = (uint16_t*)malloc(tempFrameLen << 1);
+		if(tempFrame == NULL) {
+			sprite_delete(tempSprite);
+			return NULL;
+		}
+		memcpy(tempFrame, &buffer[bufIndex], 2 * tempFrameLen);
+		bufIndex += (2 * tempFrameLen);
+
+		tempSpriteAdd = sprite_frame_add(tempSprite, tempFrame);
+		if(tempSpriteAdd == NULL) {
+			free(tempFrame);
+			sprite_delete(tempSprite);
+			return NULL;
+		}
+		tempSprite = tempSpriteAdd;
+	}
+
+	return tempSprite;
+}
+
 bool sprite_save(sprite* inSprite, const char* inPath) {
 	if((inSprite == NULL) || (inPath == NULL))
 		return false;
