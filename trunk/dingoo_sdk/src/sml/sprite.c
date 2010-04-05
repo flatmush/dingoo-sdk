@@ -181,7 +181,7 @@ sprite* sprite_load_from_buffer(uint8_t* buffer) {
 	tempHeight = buffer[10] + (buffer[11] << 8);
 	tempFrames = buffer[12] + (buffer[13] << 8);
 
-	uint16_t bufIndex = 16;
+	uint32_t bufIndex = 16;
 
 	sprite* tempSprite = sprite_create(tempWidth, tempHeight);
 	if(tempSprite == NULL) {
