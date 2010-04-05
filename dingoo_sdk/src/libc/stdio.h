@@ -49,6 +49,8 @@ extern int      _fwrite(const void* ptr, size_t size, size_t count, FILE* stream
 #define fread _fread
 #define fwrite _fwrite
 
+extern FILE* fmemopen(void* buf, size_t size, const char* mode);
+
 // TODO - Make a function for remove that parses paths correctly.
 #define remove(filename) fsys_remove(filename)
 

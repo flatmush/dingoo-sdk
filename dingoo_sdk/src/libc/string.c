@@ -9,7 +9,7 @@ int _strlen(const char* inStr) {
 
 
 
-char* strchr(char* inStr, int inChar) {
+const char* strchr(const char* inStr, int inChar) {
 	if(inStr == NULL)
 		return NULL;
 	if((inChar < -128) || (inChar >= 256))
@@ -25,7 +25,7 @@ char* strchr(char* inStr, int inChar) {
 	return NULL;
 }
 
-char* strstr(char* inStr, char* inFind) {
+const char* strstr(const char* inStr, const char* inFind) {
 	if((inStr == NULL) || (inFind == NULL))
 		return NULL;
 	if(inFind[0] == '\0')
@@ -54,7 +54,7 @@ char* strcpy(char* outDest, const char* inSrc) {
 	return outDest;
 }
 
-char* strncpy(char* outDest, const char* inSrc, size_t inLength) {
+char* strncpy(char* outDest, const const char* inSrc, size_t inLength) {
 	if((outDest == NULL) || (inSrc == NULL))
 		return NULL;
 	size_t i;
