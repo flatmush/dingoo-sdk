@@ -6,8 +6,8 @@
 #define strlen(inStr) _strlen(inStr)
 extern int   _strlen(const char* inStr);
 
-extern char* strchr(char* inStr, int inChar);
-extern char* strstr(char* inStr, char* inFind);
+extern const char* strchr(const char* inStr, int inChar);
+extern const char* strstr(const char* inStr, const char* inFind);
 
 extern char* strcpy(char* outDest, const char* inSrc);
 extern char* strncpy(char* outDest, const char* inSrc, size_t inLength);
