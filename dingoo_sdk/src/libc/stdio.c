@@ -247,18 +247,16 @@ int _fread(void* ptr, size_t size, size_t count, FILE* stream) {
 	if(tempFile->type == _file_type_mem) {
 		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
 
-		if(!tempFileMem->write)
+		if(!tempFileMem->read)
 			return -1;
 
-		uintptr_t i, j;
-		for(i = 0, j = 0; i < count; i++, j += size) {
-			if((tempFileMem->offset + size) > tempFileMem->size)
-				break;
-			memcpy((void*)((uintptr_t)ptr + j), (void*)((uintptr_t)tempFileMem->base + tempFileMem->offset), size);
-			tempFileMem->offset += size;
-		}
+		uintptr_t tempMaxCount = ((tempFileMem->size - tempFileMem->offset) / size);
+		if(count > tempMaxCount)
+			count = tempMaxCount;
 
-		return i;
+		memcpy(ptr, (void*)((uintptr_t)tempFileMem->base + tempFileMem->offset), (size * count));
+		tempFileMem->offset += (size * count);
+		return count;
 	}
 
 	return 0;
@@ -286,18 +284,16 @@ int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
 	if(tempFile->type == _file_type_mem) {
 		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
 
-		if(!tempFileMem->read)
+		if(!tempFileMem->write)
 			return -1;
 
-		uintptr_t i, j;
-		for(i = 0, j = 0; i < count; i++, j += size) {
-			if((tempFileMem->offset + size) > tempFileMem->size)
-				break;
-			memcpy((void*)((uintptr_t)tempFileMem->base + tempFileMem->offset), (void*)((uintptr_t)ptr + j), size);
-			tempFileMem->offset += size;
-		}
+		uintptr_t tempMaxCount = ((tempFileMem->size - tempFileMem->offset) / size);
+		if(count > tempMaxCount)
+			count = tempMaxCount;
 
-		return i;
+		memcpy((void*)((uintptr_t)tempFileMem->base + tempFileMem->offset), ptr, (size * count));
+		tempFileMem->offset += (size * count);
+		return count;
 	}
 
 	return 0;
