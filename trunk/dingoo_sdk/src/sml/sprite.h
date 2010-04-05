@@ -18,6 +18,7 @@ extern sprite* sprite_frame_add(sprite* inSprite, uint16_t* inData);
 extern sprite* sprite_frame_add_bitmap(sprite* inSprite, uint16_t* inBitmap, gfx_color inKey);
 
 extern sprite* sprite_load(const char* inPath);
+extern sprite* sprite_load_from_buffer(uint8_t* buffer);
 extern bool    sprite_save(sprite* inSprite, const char* inPath);
 extern sprite* sprite_load_from_tga(const char* inPath, gfx_color inKey);
 extern sprite* sprite_load_from_tga_buffer(uint8_t* tgaFileData, gfx_color inKey);
