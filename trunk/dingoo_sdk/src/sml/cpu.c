@@ -95,7 +95,8 @@ bool cpu_clock_set(uintptr_t inCore, uintptr_t inMem) {
 	*((cpm_clk_ctrl_reg*)CPM_CPCCR) = tempClkCtrl;
 
 	//*((uint32_t*)CPM_LPCDR) = (((inCore + 8400000) / 16800000) - 1); // Set LCD pixel clock as close to 16800000 as possible.
-	//*((uint32_t*)CPM_MSCCDR) = (((inCore + 14000000) / 28000000) - 1); // Set MSC device clock as close to 2800000 as possible.
+
+	*((uint32_t*)CPM_MSCCDR) = (((inCore + 14000000) / 28000000) - 1); // Set MSC device clock as close to 2800000 as possible.
 
 	// TODO - Clock other units correctly.
 
