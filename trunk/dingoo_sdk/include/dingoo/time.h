@@ -8,6 +8,8 @@ extern unsigned int GetTickCount();
 // The macro below fixes the problems with GetTickCount, but the function shouldn't be used.
 #define GetTickCount() ((OSTimeGet() * GetTickCount_Resolution) / OS_TICKS_PER_SEC)
 
+extern void detect_clock();
+
 extern void udelay(uint32_t);
 extern void mdelay(uint32_t);
 

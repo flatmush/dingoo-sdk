@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <dingoo/time.h>
+
 #include <jz4740/jz4740.h>
 
 
@@ -226,6 +228,9 @@ bool cpm_pll_freq_set(uintptr_t inM, uintptr_t inN, uintptr_t inD) {
 
 		//((cpm_pll_ctrl_reg*)CPM_CPPCR)->bypass = 0;
 	}
+
+	// Update OS state.
+	detect_clock();
 
 	return true;
 }
