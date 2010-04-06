@@ -1,9 +1,9 @@
 ap_lcd_set_frame
 lcd_set_frame
 lcd_get_frame
-delay_ms
+void delay_ms(uint32_t);
 lcd_get_bpp
-lcd_get_cframe
+void* lcd_get_cframe()
 lcd_flip
 kbd_get_key
 kbd_get_status
@@ -24,11 +24,11 @@ sys_judge_event
 SysDisableBkLight
 SysEnableShutDownPower
 SysDisableCloseBkLight
-_lcd_get_frame
-_lcd_set_frame
-_sys_judge_event
-_kbd_get_status
-_kbd_get_key
+void* _lcd_get_frame();
+void  _lcd_set_frame();
+int _sys_judge_event();
+void         _kbd_get_status(KEY_STATUS*)
+unsigned int _kbd_get_key();
 _waveout_open
 _waveout_set_volume
 jz_pm_pllconvert
@@ -52,9 +52,9 @@ fsys_ftell
 fsys_feof
 fsys_ferror
 fsys_clearerr
-fsys_findfirst
-fsys_findnext
-fsys_findclose
+int fsys_findfirst(const char*, int, fsys_file_info_t*);
+int fsys_findnext(fsys_file_info_t*);
+int fsys_findclose(fsys_file_info_t*);
 fsys_mkdir
 fsys_rename
 fsys_flush_cache
@@ -69,7 +69,7 @@ tv_open
 tv_close
 isTVON
 pcm_ioctl
-mdelay
+void mdelay(uint32_t);
 HP_Mute_sw
 pcm_can_write
 waveout_open
@@ -110,25 +110,25 @@ dl_res_close
 dl_get_proc
 memcpy
 memset
-abort
-fprintf
-fread
-free
-fseek
-fwrite
-malloc
-printf
-realloc
-sprintf
+void abort();
+int fprintf(FILE*, const char*, ...);
+size_t fread(void*, size_t, size_t, FILE*);
+void free(void*);
+int fseek(FILE*, long int, int);
+size_t fwrite(const void*, size_t, size_t, FILE*);
+void* malloc(size_t);
+int printf(const char*, ...);
+void* realloc(void*, size_t);
+int sprintf(char*, const char*, ...);
 sscanf
 vsprintf
-GUI_Exec
-GUI_Lock
-GUI_Unlock
-GUI_TIMER_Create
-GUI_TIMER_Delete
-GUI_TIMER_SetPeriod
-GUI_TIMER_Restart
+int              GUI_TIMER_Exec(void);
+void             GUI_Lock(void); 
+void             GUI_Unlock(void); 
+GUI_TIMER_HANDLE GUI_TIMER_Create(GUI_TIMER_CALLBACK* cb, int Time, U32 Context, int Flags);
+void             GUI_TIMER_Delete(GUI_TIMER_HANDLE hObj);
+void             GUI_TIMER_SetPeriod(GUI_TIMER_HANDLE hObj, GUI_TIMER_TIME Period);
+void             GUI_TIMER_Restart(GUI_TIMER_HANDLE hObj);
 LCD_Color2Index
 LCD_GetXSize
 LCD_GetYSize
@@ -139,22 +139,22 @@ WM_DefaultProc
 WM__SendMessage
 WM_SetFocus
 U8TOU32
-__icache_invalidate_al
-__dcache_writeback_all
+void __icache_invalidate_all();
+void __dcache_writeback_all();
 LcdGetDisMode
-free_irq
+void free_irq(unsigned int irq);
 spin_lock_irqsave
 spin_unlock_irqrestore
-detect_clock
+void detect_clock();
 udelay
-serial_putc
+void serial_putc(const char c);
 serial_puts
-serial_getc
+int  serial_getc();
 TaskMediaFunStop
 StartSwTimer
 GetTickCount
-OSCPUSaveSR
-OSCPURestoreSR
+OS_CPU_SR OSCPUSaveSR();
+void      OSCPURestoreSR(OS_CPU_SR cpu_sr);
 OSFlagPost
 OSQCreate
 OSSemDel
@@ -168,7 +168,7 @@ OSTimeGet
 U8TOU16
 _tcscmp
 _tcscpy
-__to_unicode_le
-__to_locale_ansi
+wchar_t* __to_unicode_le(char*)
+char* __to_locale_ansi(wchar_t*)
 udc_attached
 g_pGameDecodeBuf
