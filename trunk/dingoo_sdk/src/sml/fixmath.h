@@ -1,91 +1,123 @@
 #ifndef __fixmath_h__
 #define __fixmath_h__
-/**
-=sml/fixmath.h=
-Functions to perform fast fixed-point math operations.
+/*!
+	\file fixmath.h
+	\brief Functions to perform fast fixed-point math operations.
 */
 #include <stdint.h>
 #include <stdbool.h>
 
-#define fix16_MAX (fix16_t)0x7FFFFFFF
-#define fix16_MIN (fix16_t)0x80000000
-/**
-==Types==
-  * *fract32`_`t*: Just a _uint32`_`t_.
-  * *fix16`_`t*: Just an _int32`_`t_.
-*/
+#define fix16_MAX (fix16_t)0x7FFFFFFF /*!< the maximum value of fix16_t */
+#define fix16_MIN (fix16_t)0x80000000 /*!< the minimum value of fix16_t */
+
 typedef uint32_t fract32_t;
 typedef int32_t fix16_t;
 
-/**
-==Global constants==
-  * *fix16`_`pi*: Pi (3.14... TODO)
-  * *fix16`_`e*: e (... TODO)
-  * *fix16`_`one*: 1.0000000.. TODO
-*/
-extern const fix16_t fix16_pi;
-extern const fix16_t fix16_e;
-extern const fix16_t fix16_one;
+extern const fix16_t fix16_pi; /*!< fix16_t value of pi */
+extern const fix16_t fix16_e; /*!< fix16_t value of e */
+extern const fix16_t fix16_one; /*!< fix16_t value of 1 */
 
-/**
-==Functions==
-  * _uint32`_`t_ *uint32`_`log2*( _uint32`_`t_ ): Performs a log-base2 on the given number.
-  * _double_ *fix16`_`to`_`dbl*( [#Types fix16_t] ): Converts the given fixed-point to a double.
-  * [#Types fix16_t] *fix16`_`from`_`dbl*( _double_ ): Converts the given double to a fixed-point.
-  * _int32`_`t_ *fix16`_`to`_`int*( [#Types fix16_t] ): Converts the given fixed-point to an integer.
-  * [#Types fix16_t] *fix16`_`from`_`int*( _int32`_`t_ ): Converts the given integer to a fixed-point.
-  * [#Types fix16_t] *fix16`_`sadd*( [#Types fix16_t], [#Types fix16_t] ): Adds the two fixed-points together.
-  * [#Types fix16_t] *fix16`_`mul*( [#Types fix16_t], [#Types fix16_t] ): Multiplies the two fixed-points together.
-  * [#Types fix16_t] *fix16`_`smul*( [#Types fix16_t], [#Types fix16_t] ): Multiplies the two _signed_ fixed-points together.
-  * [#Types fix16_t] *fix16`_`div*( [#Types fix16_t], [#Types fix16_t] ): Divides the first fixed-point by the second fixed-point.
-  * [#Types fix16_t] *fix16`_`sdiv*( [#Types fix16_t], [#Types fix16_t] ): Divides the first _signed_ fixed-point by the second _signed_ fixed-point.
-  * [#Types fix16_t] *fix16`_`sin*( [#Types fix16_t] ): Performs a sine on the given fixed-point.
-  * [#Types fix16_t] *fix16`_`cos*( [#Types fix16_t] ): Performs a cosine on the given fixed-point.
-  * [#Types fix16_t] *fix16`_`tan*( [#Types fix16_t] ): Performs a tangent on the given fixed-point.
-  * [#Types fix16_t] *fix16`_`asin*( [#Types fix16_t] ): Performs an inverse sine on the given fixed-point.
-  * [#Types fix16_t] *fix16`_`scos*( [#Types fix16_t] ): Performs an inverse cosine on the given fixed-point.
-  * [#Types fix16_t] *fix16`_`atan*( [#Types fix16_t] ): Performs an inverse tangent on the given fixed-point.
-  * [#Types fix16_t] *fix16`_`atan2*( [#Types fix16_t] ): Performs an inverse base2-tangent on the given fixed-point. TODO
-  * [#Types fix16_t] *fix16`_`sqrt*( [#Types fix16_t] ): Performs a square root on the given fixed-point.
-  * [#Types fix16_t] *fix16`_`lerp16*( [#Types fix16_t] ): TODO
-  * [#Types fract32_t] *fract32`_`create*( _uint32`_`t_, _uint32`_`t_ ): Creates a fraction with the first integer as the numerator, and the second as the denominator.
-  * [#Types fract32_t] *fract32`_`invert*( [#Types fract32_t] ): Inverts the given fraction.
-  * _uint32`_`t_  *fract32`_`usmul*( _uint32`_`t_, [#Types fract32_t] ): Multiplies the given fraction by the given unsigned integer.
-  * _uint32`_`t_  *fract32`_`smul*( _int32`_`t_, [#Types fract32_t] ): Multiplies the given fraction by the given signed integer. 
+/*! Performs an unsigned log-base2 on the specified unsigned integer and returns the result.
 */
 extern uint32_t uint32_log2(uint32_t inVal);
 
+/*! Coverts a fix16_t to a double and returns the result.
+*/
 extern double  fix16_to_dbl(const fix16_t inVal);
+
+/*! Converts a double to a fix16_t and returns the result.
+*/
 extern fix16_t fix16_from_dbl(const double inVal);
 
+/*! Converts a fix16_t to a float and returns the result.
+*/
 extern float   fix16_to_float(const fix16_t inVal);
+
+/*! Converts a float to a fix16_t and returns the result.
+*/
 extern fix16_t fix16_from_float(const float inVal);
 
+/*! Converts a fix16_t to a signed integer and returns the result.
+*/
 extern int32_t fix16_to_int(const fix16_t inVal);
+
+/*! Converts a signed integer to a fix16_t and returns the result.
+*/
 extern fix16_t fix16_from_int(const int32_t inVal);
 
+/*! Performs a saturated addition (overflow-protected) of the two given fix16_t's and returns the result.
+*/
 extern fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1);
+
+/*! Multiplies the two given fix16_t's and returns the result.
+*/
 extern fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1);
+
+/*! Performs a saturated multiplication (overflow-protected) of the two given fix16_t's and returns the result.
+*/
 extern fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1);
+
+/*! Divides the first given fix16_t by the second and returns the result.
+*/
 extern fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1);
+
+/*! Performs a saturated division (overflow-protected) of the first fix16_t by the second and returns the result.
+*/
 extern fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1);
 
+/*! Returns the sine of the given fix16_t.
+*/
 extern fix16_t fix16_sin(fix16_t inAngle);
+
+/*! Returns the cosine of the given fix16_t.
+*/
 extern fix16_t fix16_cos(fix16_t inAngle);
+
+/*! Returns the tangent of the given fix16_t.
+*/
 extern fix16_t fix16_tan(fix16_t inAngle);
 
+/*! Returns the arcsine of the given fix16_t.
+*/
 extern fix16_t fix16_asin(fix16_t inValue);
+
+/*! Returns the arccosine of the given fix16_t.
+*/
 extern fix16_t fix16_acos(fix16_t inValue);
+
+/*! Returns the arctangent of the given fix16_t.
+*/
 extern fix16_t fix16_atan(fix16_t inValue);
+
+/*! Returns the arctangent of inY/inX.
+*/
 extern fix16_t fix16_atan2(fix16_t inY, fix16_t inX);
 
+/*! Returns the square root of the given fix16_t.
+*/
 extern fix16_t fix16_sqrt(fix16_t inValue);
 
+/*! Returns the linear interpolation: (inArg0 * (1 - inFract)) + (inArg1 * inFract)
+*/
 extern fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract);
 
+/*! Creates a fraction using unsigned integers.
+	\param inNumerator the unsigned integer numerator
+	\param inDenominator the unsigned integer denominator
+	\return a fraction using the given numerator and denominator
+*/
 extern fract32_t fract32_create(uint32_t inNumerator, uint32_t inDenominator);
+
+/*! Inverts the given fraction, swapping the numerator and the denominator.
+*/
 extern fract32_t fract32_invert(fract32_t inFract);
+
+/*! Performs unsigned saturated (overflow-protected) multiplication with the two given fractions and returns the result as an unsigned integer.
+*/
 extern uint32_t  fract32_usmul(uint32_t inVal, fract32_t inFract);
+
+/*! Performs saturated (overflow-protected) multiplication with the two given fractions and returns the result as a signed integer.
+*/
 extern int32_t   fract32_smul(int32_t inVal, fract32_t inFract);
 
 #endif
