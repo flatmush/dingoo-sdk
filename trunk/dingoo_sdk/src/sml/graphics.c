@@ -77,12 +77,10 @@ void gfx_render_target_swap() {
 }
 
 
-gfx_texture* gfx_tex_allocate(uint32_t width, uint32_t height)
-{
+gfx_texture* gfx_tex_allocate(uint32_t width, uint32_t height) {
 	gfx_texture* tempTexture = NULL;
 	tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (width * height * 2));
-	if (tempTexture == NULL)
-	{
+	if (tempTexture == NULL) {
 		return NULL;
 	}
 	tempTexture->address = (void*)((uintptr_t)tempTexture + sizeof(gfx_texture));
@@ -92,11 +90,7 @@ gfx_texture* gfx_tex_allocate(uint32_t width, uint32_t height)
 	return tempTexture;
 }
 
-gfx_texture* gfx_tex_load_tga(const char* inPath) {
-	if(inPath == NULL)
-		return NULL;
-
-	FILE* tempFile = fopen(inPath, "rb");
+gfx_texture* _gfx_tex_load_tga(FILE* tempFile) {
 	if(tempFile == NULL)
 		return NULL;
 
@@ -151,60 +145,20 @@ gfx_texture* gfx_tex_load_tga(const char* inPath) {
 	return tempTexture;
 }
 
-gfx_texture* gfx_tex_load_tga_from_buffer(uint8_t* buffer) {
+gfx_texture* gfx_tex_load_tga(const char* inPath) {
+	if(inPath == NULL)
+		return NULL;
+
+	FILE* tempFile = fopen(inPath, "rb");
+	return _gfx_tex_load_tga(tempFile);
+}
+
+gfx_texture* gfx_tex_load_tga_from_buffer(uint8_t* buffer, size_t size) {
 	if(buffer == NULL)
 		return NULL;
 
-	uint8_t  tga_ident_size;
-	uint8_t  tga_color_map_type;
-	uint8_t  tga_image_type;
-	uint16_t tga_color_map_start;
-	uint16_t tga_color_map_length;
-	uint8_t  tga_color_map_bpp;
-	uint16_t tga_origin_x;
-	uint16_t tga_origin_y;
-	uint16_t tga_width;
-	uint16_t tga_height;
-	uint8_t  tga_bpp;
-	uint8_t  tga_descriptor;
-
-	tga_ident_size = buffer[0];
-	tga_color_map_type = buffer[1];
-	tga_image_type = buffer[2];
-	tga_color_map_start = buffer[3] + (buffer[4] << 8);
-	tga_color_map_length = buffer[5] + (buffer[6] << 8);
-	tga_color_map_bpp = buffer[7];
-	tga_origin_x = buffer[8] + (buffer[9] << 8);
-	tga_origin_y = buffer[10] + (buffer[11] << 8);
-	tga_width = buffer[12] + (buffer[13] << 8);
-	tga_height = buffer[14] + (buffer[15] << 8);
-	tga_bpp = buffer[16];
-	tga_descriptor = buffer[17];
-
-	bool upside_down = (tga_descriptor & 0x20) > 0;
-	uint32_t bufIndex = 18;
-
-	gfx_texture* tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (tga_width * tga_height * 2));
-	if(tempTexture == NULL) {
-		return NULL;
-	}
-	tempTexture->address = (void*)((uintptr_t)tempTexture + sizeof(gfx_texture));
-	tempTexture->width = tga_width;
-	tempTexture->height = tga_height;
-
-	uintptr_t i;
-	uint8_t tempColor[3];
-	uint16_t* tempTexPtr = tempTexture->address;
-	for(i = 0; i < (tga_width * tga_height); i++) {
-		tempColor[2] = buffer[bufIndex + 0];
-		tempColor[1] = buffer[bufIndex + 1];
-		tempColor[0] = buffer[bufIndex + 2];
-		bufIndex += 3;
-
-		tempTexPtr[upside_down ? i : ((tga_height - 1 - (i / tga_width)) * tga_width + i % tga_width)] = gfx_color_rgb(tempColor[0], tempColor[1], tempColor[2]);
-	}
-
-	return tempTexture;
+	FILE* tempFile = fmemopen(buffer, size, "rb");
+	return _gfx_tex_load_tga(tempFile);
 }
 
 bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {

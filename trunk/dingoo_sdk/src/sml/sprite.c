@@ -107,11 +107,7 @@ uintptr_t sprite_frame_len(sprite* inSprite, uint16_t inFrame) {
 
 
 
-sprite* sprite_load(const char* inPath) {
-	if(inPath == NULL)
-		return NULL;
-
-	FILE* tempFile = fopen(inPath, "rb");
+sprite* _sprite_load(FILE* tempFile) {
 	if(tempFile == NULL)
 		return NULL;
 
@@ -168,51 +164,20 @@ sprite* sprite_load(const char* inPath) {
 	return tempSprite;
 }
 
-sprite* sprite_load_from_buffer(uint8_t* buffer) {
+sprite* sprite_load(const char* inPath) {
+	if(inPath == NULL)
+		return NULL;
+
+	FILE* tempFile = fopen(inPath, "rb");
+	return _sprite_load(tempFile);
+}
+
+sprite* sprite_load_from_buffer(uint8_t* buffer, size_t size) {
 	if(buffer == NULL)
 		return NULL;
 
-	if(strncmp(buffer, "dsprite\0", 8) != 0) {
-		return NULL;
-	}
-
-	uint16_t tempWidth, tempHeight, tempFrames;
-	tempWidth = buffer[8] + (buffer[9] << 8);
-	tempHeight = buffer[10] + (buffer[11] << 8);
-	tempFrames = buffer[12] + (buffer[13] << 8);
-
-	uint32_t bufIndex = 16;
-
-	sprite* tempSprite = sprite_create(tempWidth, tempHeight);
-	if(tempSprite == NULL) {
-		return NULL;
-	}
-
-	uintptr_t i;
-	uint32_t  tempFrameLen;
-	uint16_t* tempFrame;
-	sprite* tempSpriteAdd;
-	for(i = 0; i < tempFrames; i++) {
-		tempFrameLen = buffer[bufIndex] + (buffer[bufIndex + 1] << 8) + (buffer[bufIndex + 2] << 16) + (buffer[bufIndex + 3] << 24);
-		bufIndex += 4;
-		tempFrame = (uint16_t*)malloc(tempFrameLen << 1);
-		if(tempFrame == NULL) {
-			sprite_delete(tempSprite);
-			return NULL;
-		}
-		memcpy(tempFrame, &buffer[bufIndex], 2 * tempFrameLen);
-		bufIndex += (2 * tempFrameLen);
-
-		tempSpriteAdd = sprite_frame_add(tempSprite, tempFrame);
-		if(tempSpriteAdd == NULL) {
-			free(tempFrame);
-			sprite_delete(tempSprite);
-			return NULL;
-		}
-		tempSprite = tempSpriteAdd;
-	}
-
-	return tempSprite;
+	FILE* tempFile = fmemopen(buffer, size, "rb");
+	return _sprite_load(tempFile);
 }
 
 bool sprite_save(sprite* inSprite, const char* inPath) {
@@ -262,8 +227,8 @@ sprite* sprite_load_from_tga(const char* inPath, gfx_color inKey) {
 	return tempSprite;
 }
 
-sprite* sprite_load_from_tga_buffer(uint8_t* tgaFileData, gfx_color inKey) {
-	gfx_texture* tempTexture = gfx_tex_load_tga_from_buffer(tgaFileData);
+sprite* sprite_load_from_tga_buffer(uint8_t* tgaFileData, size_t bufferSize, gfx_color inKey) {
+	gfx_texture* tempTexture = gfx_tex_load_tga_from_buffer(tgaFileData, bufferSize);
 
 	if (tempTexture == NULL)
 		return NULL;
