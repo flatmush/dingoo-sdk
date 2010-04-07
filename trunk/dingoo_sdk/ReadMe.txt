@@ -76,10 +76,14 @@ Delete your current SDK directory and replace it with the newly downloaded SDK, 
 For minor library changes it is possible to just re-make each of the new libs, but a full re-install is advised.
 
 
+
 1.4 - Building the documentation
 
 To build the documentation, you need to run: doxygen $DINGOO_SDK/src/Doxyfile
 HTML and XML documentation is saved to $DINGOO_SDK/doc/html and $DINGOO_SDK/doc/xml, respectively. You can easily modify the Doxyfile to include other formats as you need them, but the HTML documentation is the most user-friendly, just open $DINGOO_SDK/doc/html/index.html in your web browser.
+
+
+
 
 
 2 - COMPILING THE SAMPLE PROGRAMS
