@@ -36,7 +36,10 @@ First install cygwin by executing setup.exe.
 	- Wait for the mirror list to download.
 	- Select any mirror, if one doesn't work then select another, Click "Next".
 	- Wait for the package list to download.
-	- Select "Devel" in the package tree, and toggle the package "make" (not "automake") to "install", Click "Next".
+	- Select "Devel" in the package tree
+		- Toggle the package "make" (not "automake") to "install"
+		- Toggle the package "doxygen" to "install" (optional if you want documentation)
+		- Click "Next".
 	- Wait for the packages to download and install.
 	- Click "Finish", cygwin is now installed.
 
@@ -60,7 +63,9 @@ The dingoo SDK is now installed.
 
 1.2 - UNIX INSTALLATION
 
-Linux users will need to download and install the inegenic MIPS compiler tools to an appropriate place.
+Linux users will need to do the following:
+	- Download http://flatmush.juliusparishy.com/a320/toolchain/mipsel-4.1.2-nopic.tar.bz2
+	- Install these compiler tools to an appropriate place.
 	- Set the environment variable MIPSTOOLS to the location of your mips compiler tools.
 	- Set the environment variable DINGOO_SDK to this directory.
 	- Type "cd $DINGOO_SDK && ./install"
