@@ -7,7 +7,7 @@ Dingoo_SDK is meant to serve as a multiplatform SDK for the Dingoo A320.
 
 == Requirements ==
 === Linux ===
-  * [ftp://ftp.ingenic.cn/3sw/01linux/00toolchain/ Ingenic toolchain]
+  * [http://flatmush.juliusparishy.com/a320/toolchain/mipsel-4.1.2-nopic.tar.bz2 Ingenic toolchain]
   * [http://www.stack.nl/~dimitri/doxygen/ Doxygen 1.5.8] (for building the documentation)
   * GNU make
 === Windows ===
