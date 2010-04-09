@@ -748,8 +748,40 @@ void gfx_tex_draw(int16_t inX, int16_t inY, gfx_texture* inTexture) {
 
 
 
-uint16_t gfx_font_width(gfx_texture* inFont, char* inString) {
-	if((inFont == NULL) || (inString == NULL))
+gfx_font* gfx_font_load(const char* inPath, gfx_color inKey) {
+	gfx_texture* tempTexture = gfx_tex_load_tga(inPath);
+	if (tempTexture == NULL)
+		return NULL;
+
+	gfx_font* tempFont = (gfx_font*)malloc(sizeof(gfx_font));
+	if (tempFont == NULL)
+		return NULL;
+
+	tempFont->texture = tempTexture;
+	tempFont->colorKey = inKey;
+
+	return tempFont;
+}
+
+gfx_font* gfx_font_load_from_buffer(uint8_t* buffer, size_t size, gfx_color inKey) {
+	gfx_texture* tempTexture = gfx_tex_load_tga_from_buffer(buffer, size);
+	if (tempTexture == NULL)
+		return NULL;
+
+	gfx_font* tempFont = (gfx_font*)malloc(sizeof(gfx_font));
+	if (tempFont == NULL)
+		return NULL;
+
+	tempFont->texture = tempTexture;
+	tempFont->colorKey = inKey;
+
+	return tempFont;
+}
+
+
+
+uint16_t gfx_font_width(gfx_font* inFont, char* inString) {
+	if((inFont == NULL) || (inString == NULL) || (inFont->texture == NULL))
 		return 0;
 	uintptr_t i, tempCur, tempMax;
 	for(i = 0, tempCur = 0, tempMax = 0; inString[i] != '\0'; i++) {
@@ -761,27 +793,27 @@ uint16_t gfx_font_width(gfx_texture* inFont, char* inString) {
 			tempCur++;
 		if(tempCur > tempMax) tempMax = tempCur;
 	}
-	tempMax *= (inFont->width >> 4);
+	tempMax *= (inFont->texture->width >> 4);
 	return tempMax;
 }
 
-uint16_t gfx_font_height(gfx_texture* inFont) {
-	if(inFont == NULL)
+uint16_t gfx_font_height(gfx_font* inFont) {
+	if(inFont == NULL  || inFont->texture == NULL)
 		return 0;
-	return (inFont->height >> 4);
+	return (inFont->texture->height >> 4);
 }
 
-void gfx_font_print_char(int16_t inX, int16_t inY, gfx_texture* inFont, char inChar) {
+void gfx_font_print_char(int16_t inX, int16_t inY, gfx_font* inFont, char inChar) {
 	char tempStr[2] = { inChar, '\0' };
 	gfx_font_print(inX, inY, inFont, tempStr);
 }
 
-void gfx_font_print(int16_t inX, int16_t inY, gfx_texture* inFont, char* inString) {
-	if((inFont == NULL) || (inString == NULL))
+void gfx_font_print(int16_t inX, int16_t inY, gfx_font* inFont, char* inString) {
+	if((inFont == NULL) || (inString == NULL) || (inFont->texture == NULL))
 		return;
 
 	uint16_t* tempBuffer = gfx_render_target->address;
-	uint16_t* tempFont = inFont->address;
+	uint16_t* tempFont = inFont->texture->address;
 	uint8_t*  tempChar;
 	int16_t   tempX = inX;
 	int16_t   tempY = inY;
@@ -789,11 +821,11 @@ void gfx_font_print(int16_t inX, int16_t inY, gfx_texture* inFont, char* inStrin
 
 	for(tempChar = (uint8_t*)inString; *tempChar != '\0'; tempChar++) {
 		if(*tempChar == ' ') {
-			tempX += (inFont->width >> 4);
+			tempX += (inFont->texture->width >> 4);
 			continue;
 		}
 		if(*tempChar == '\t') {
-			tempX += ((inFont->width >> 4) << 2);
+			tempX += ((inFont->texture->width >> 4) << 2);
 			continue;
 		}
 		if(*tempChar == '\r') {
@@ -802,24 +834,27 @@ void gfx_font_print(int16_t inX, int16_t inY, gfx_texture* inFont, char* inStrin
 		}
 		if(*tempChar == '\n') {
 			tempX = inX;
-			tempY += (inFont->height >> 4);
+			tempY += (inFont->texture->height >> 4);
 			continue;
 		}
-		for(j = ((*tempChar >> 4) * (inFont->height >> 4)), y = tempY; (j < (((*tempChar >> 4) + 1) * (inFont->height >> 4))) && (y < gfx_render_target->height); j++, y++) {
-			for(i = ((*tempChar & 0x0F) * (inFont->width >> 4)), x = tempX; (i < (((*tempChar & 0x0F) + 1) * (inFont->width >> 4))) && (x < gfx_render_target->width); i++, x++) {
-				tempBuffer[(y * gfx_render_target->width) + x] |= tempFont[(j * inFont->width) + i];
+		for(j = ((*tempChar >> 4) * (inFont->texture->height >> 4)), y = tempY; (j < (((*tempChar >> 4) + 1) * (inFont->texture->height >> 4))) && (y < gfx_render_target->height); j++, y++) {
+			for(i = ((*tempChar & 0x0F) * (inFont->texture->width >> 4)), x = tempX; (i < (((*tempChar & 0x0F) + 1) * (inFont->texture->width >> 4))) && (x < gfx_render_target->width); i++, x++) {
+				//tempBuffer[(y * gfx_render_target->width) + x] |= tempFont[(j * inFont->texture->width) + i];
+				if (tempFont[(j * inFont->texture->width) + i] != inFont->colorKey) {
+					tempBuffer[(y * gfx_render_target->width) + x] = tempFont[(j * inFont->texture->width) + i];
+				}
 			}
 		}
-		tempX += (inFont->width >> 4);
+		tempX += (inFont->texture->width >> 4);
 	}
 }
 
-void gfx_font_print_center(int16_t inY, gfx_texture* inFont, char* inString) {
+void gfx_font_print_center(int16_t inY, gfx_font* inFont, char* inString) {
 	int16_t tempX = (gfx_render_target->width - gfx_font_width(inFont, inString)) >> 1;
 	gfx_font_print(tempX, inY, inFont, inString);
 }
 
-void gfx_font_print_fromright(int16_t inX, int16_t inY, gfx_texture* inFont, char* inString) {
+void gfx_font_print_fromright(int16_t inX, int16_t inY, gfx_font* inFont, char* inString) {
 	int16_t tempX = inX - gfx_font_width(inFont, inString);
 	gfx_font_print(tempX, inY, inFont, inString);
 }

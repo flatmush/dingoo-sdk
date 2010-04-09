@@ -15,6 +15,11 @@ typedef struct {
 	uint16_t      width, height;
 } gfx_texture;
 
+typedef struct {
+	gfx_texture*  texture;
+	gfx_color     colorKey;
+} gfx_font;
+
 extern gfx_texture* gfx_render_target;
 
 
@@ -40,11 +45,14 @@ extern void         gfx_tri_fill_draw(int16_t inX0, int16_t inY0, int16_t inX1, 
 
 extern void         gfx_tex_draw(int16_t inX, int16_t inY, gfx_texture* inTexture);
 
-extern uint16_t     gfx_font_width(gfx_texture* inFont, char* inString);
-extern uint16_t     gfx_font_height(gfx_texture* inFont);
-extern void         gfx_font_print_char(int16_t inX, int16_t inY, gfx_texture* inFont, char inChar);
-extern void         gfx_font_print(int16_t inX, int16_t inY, gfx_texture* inFont, char* inString);
-extern void         gfx_font_print_center(int16_t inY, gfx_texture* inFont, char* inString);
-extern void         gfx_font_print_fromright(int16_t inX, int16_t inY, gfx_texture* inFont, char* inString);
+extern gfx_font*    gfx_font_load(const char* inPath, gfx_color inKey);
+extern gfx_font*    gfx_font_load_from_buffer(uint8_t* buffer, size_t size, gfx_color inKey);
+
+extern uint16_t     gfx_font_width(gfx_font* inFont, char* inString);
+extern uint16_t     gfx_font_height(gfx_font* inFont);
+extern void         gfx_font_print_char(int16_t inX, int16_t inY, gfx_font* inFont, char inChar);
+extern void         gfx_font_print(int16_t inX, int16_t inY, gfx_font* inFont, char* inString);
+extern void         gfx_font_print_center(int16_t inY, gfx_font* inFont, char* inString);
+extern void         gfx_font_print_fromright(int16_t inX, int16_t inY, gfx_font* inFont, char* inString);
 
 #endif
