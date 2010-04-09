@@ -10,6 +10,15 @@ typedef uint16_t gfx_color;
 extern inline gfx_color gfx_color_rgb(uint8_t inRed, uint8_t inGreen, uint8_t inBlue);
 extern inline gfx_color gfx_color_rand(uint8_t inRed, uint8_t inGreen, uint8_t inBlue);
 
+#define COLOR_RED     0xf800
+#define COLOR_GREEN   0x07e0
+#define COLOR_BLUE    0x001f
+#define COLOR_YELLOW  0xffe0
+#define COLOR_MAGENTA 0xf81f
+#define COLOR_TEAL    0x07ff
+#define COLOR_BLACK   0x0000
+#define COLOR_WHITE   0xffff
+
 typedef struct {
 	void*         address;
 	uint16_t      width, height;
@@ -47,6 +56,7 @@ extern void         gfx_tex_draw(int16_t inX, int16_t inY, gfx_texture* inTextur
 
 extern gfx_font*    gfx_font_load(const char* inPath, gfx_color inKey);
 extern gfx_font*    gfx_font_load_from_buffer(uint8_t* buffer, size_t size, gfx_color inKey);
+extern void         gfx_font_delete(gfx_font* inFont);
 
 extern uint16_t     gfx_font_width(gfx_font* inFont, char* inString);
 extern uint16_t     gfx_font_height(gfx_font* inFont);
