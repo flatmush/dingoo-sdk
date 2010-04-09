@@ -21,7 +21,7 @@
 #define VERSION_MINOR    0
 #define VERSION_REVISION 0
 
-gfx_texture* gameFont = NULL;
+gfx_font* gameFont = NULL;
 
 display* gameDisplay  = NULL;
 timer*   gameTimer    = NULL;
@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
 
 	char tempString[256];
 	sprintf(tempString, "%sfont.tga", gamePath);
-	gameFont = gfx_tex_load_tga(tempString);
+	gameFont = gfx_font_load(tempString, COLOR_BLACK);
 
 	drawFiles();
 	display_flip(gameDisplay);

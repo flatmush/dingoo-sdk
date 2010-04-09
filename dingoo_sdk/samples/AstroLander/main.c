@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 
 	char tempString[256];
 
-	gameFont   = gfx_tex_load_tga("font.tga");
+	gameFont   = gfx_font_load("font.tga", COLOR_BLACK);
 	gameSplash = gfx_tex_load_tga("splash.tga");
 	gameScores = scoreListLoad("scores.dat");
 

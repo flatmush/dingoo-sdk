@@ -19,7 +19,7 @@
 
 
 
-gfx_texture* appFont    = NULL;
+gfx_font* appFont    = NULL;
 
 display* appDisplay  = NULL;
 timer*   appTimer    = NULL;
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
 	display_flip(appDisplay);
 	control_lock(timer_resolution / 4);
 
-	appFont = gfx_tex_load_tga("font.tga");
+	appFont = gfx_font_load("font.tga", COLOR_BLACK);
 	appTimer = timer_create();
 
 	char tempString[256];

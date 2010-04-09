@@ -43,7 +43,7 @@ extern void gameRestart();
 
 
 
-extern gfx_texture* gameFont;
+extern gfx_font* gameFont;
 extern gfx_texture* gameSplash;
 
 extern uint8_t         gameMode;

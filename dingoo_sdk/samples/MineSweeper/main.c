@@ -40,7 +40,7 @@ void hudDraw();
 
 
 
-gfx_texture* fontDefault = NULL;
+gfx_font* fontDefault = NULL;
 
 uint32_t gridWidth  = 0;
 uint32_t gridHeight = 0;
@@ -429,7 +429,7 @@ int main(int argc, char** argv) {
 	gfx_render_target_clear(gfx_color_rgb(0x00, 0x00, 0x00));
 	gfx_render_target_swap();
 
-	fontDefault = gfx_tex_load_tga("font.tga");
+	fontDefault = gfx_font_load("font.tga", COLOR_BLACK);
 
 	gameTimer = timer_create();
 	gameLevel = 1;

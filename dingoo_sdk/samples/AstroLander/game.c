@@ -21,7 +21,7 @@
 
 
 
-gfx_texture* gameFont    = NULL;
+gfx_font* gameFont       = NULL;
 gfx_texture* gameSplash  = NULL;
 
 uint8_t         gameMode     = GAME_MODE_SPLASH;

@@ -23,7 +23,7 @@
 
 
 
-gfx_texture* gameFont     = NULL;
+gfx_font*    gameFont     = NULL;
 display*     gameDisplay  = NULL;
 timer*       gameTimer    = NULL;
 uint32_t     gameTickRate = (timer_resolution / 30);
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 	display_flip(gameDisplay);
 	control_lock(timer_resolution / 4);
 
-	gameFont = gfx_tex_load_tga("font.tga");
+	gameFont = gfx_font_load("font.tga", COLOR_BLACK);
 
 	gfx_texture* tempSpriteBmp[4];
 	sprite* tempSprite;
