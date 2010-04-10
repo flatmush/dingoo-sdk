@@ -1,4 +1,4 @@
-#ifdnef __inttypes_h__
+#ifndef __inttypes_h__
 #define __inttypes_h__
 
 #include <stdint.h>
