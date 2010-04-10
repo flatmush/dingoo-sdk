@@ -62,7 +62,12 @@ int main(int argc, char** argv) {
 	fseek(tempFile, 0, SEEK_END);
 	uintptr_t tempBodyLen = ftell(tempFile);
 	fseek(tempFile, 0, SEEK_SET);
-	uint8_t tempBody[tempBodyLen];
+	uint8_t* tempBody = (uint8_t*)malloc(tempBodyLen);
+	if(tempBody == NULL) {
+		printf("Error: Couldn't allocate memory of binary data, out of memory.\n");
+		fclose(tempFile);
+		return EXIT_FAILURE;
+	}
 	fread(tempBody, 1, tempBodyLen, tempFile);
 	fclose(tempFile);
 
@@ -72,11 +77,13 @@ int main(int argc, char** argv) {
 	sprintf(tempPath, "%s.app", argv[1]);
 	tempFile = fopen(tempPath, "wb");
 	if(tempFile == NULL) {
+		free(tempBody);
 		printf("Error: Couldn't open \"%s.app\".\n", argv[1]);
 		return EXIT_FAILURE;
 	}
 	fwrite(tempHeader, 1, tempHeaderLen, tempFile);
 	fwrite(tempBody, 1, tempBodyLen, tempFile);
+	free(tempBody);
 	fclose(tempFile);
 	return EXIT_SUCCESS;
 }
