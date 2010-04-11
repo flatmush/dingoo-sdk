@@ -38,8 +38,7 @@ The issues tracker is the best place to post bugs or other unusual errors that a
     * #dingoo-a320 on irc.freenode.net
     * #dingoonity on irc.freenode.net
   *Forums:
-    *[http://boards.dingoonity.org/ Dingoonity]
+    *[http://boards.dingoonity.org/index.php Dingoonity]
     *[http://www.gp32x.com/board/index.php?/forum/73-dingoo-a320/ gp32x]
   *Email:
     * Developers emails can be found in the project owners/contributors list [http://code.google.com/p/dingoo-sdk/people/list here].
-
