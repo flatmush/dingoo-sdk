@@ -1,0 +1,86 @@
+ChinaChip DL APP Format
+
+
+
+1: Header
+
+The app file format starts off with a number of header chunks.
+Each header chunk is 32-bytes long.
+
+Every header chunk begns with a 4-byte uppercase ASCII identifier,
+if the identifier is all zeros then the header is just padding and can be skipped over.
+After each header chunk is a 32-bit integer assumed to be some sort of chunk identity number.
+
+
+1.1: Chunk Order
+Chunks are always seen to appear in the following order, though I'm not sure if they have to be ordered:
+CCDL, IMPT, EXPT, RAWD, [ERPT], [<null>]
+
+
+1.2: General Chunk Format
+
+Most chunks follow the following structure:
+char     name[4]; // 4-byte ASCII chunk name
+uint32_t ident;   // Chunk identifer
+uint32_t offset;  // Offset of this chunks data area in the file.
+uint32_t size;    // Size of this chunks data area in the file (usually padded to 16-bytes).
+The final 16-bytes of the chunk contain chunk-specific data.
+
+
+1.3: Chunk Definitions
+
+1.3.1: CCDL Chunk
+
+The CCDL chunk seems to have a chunk identifier which is: 0
+The CCDL chunk does not follow the general chunk structure.
+The CCDL chunk is thought to contain a small amount of initialization/entry code for the rest of the file,
+though nothing is known for sure.
+
+
+1.3.2: The IMPT/EXPT Chunk
+
+The IMPT and EXPT chunks are identical, except:
+	The IMPT chunk describes the IMPORT TABLE which defines how OS functions are dynamically linked to the application.
+	The EXPT chunk describes the EXPORT TABLE which defined how application functions are made available to the OS.
+
+The IMPT chunk identifier is 8.
+The EXPT chunk identifier is 9.
+
+The IMPT/EXPT chunk follows the general chunk structure,
+it's chunk specific area seems to just contain 16-bytes of zero-padding.
+
+
+1.3.3: The RAWD Chunk
+
+The RAWD chunk describes the stored program code, it follows the general chunk structure.
+The RAWD chunk chunk identifier is 1.
+
+The chunk specific fields are:
+uint32_t unknown; // Unknown always seems to be set to 0.
+uint32_t entry;   // THE LMA (Literal Memory Address) of the programs entry function (dl_main).
+uint32_t origin;  // The LMA that the code will be loaded into (0x80A00000 on the dingoo).
+uint32_t alloc;   // The amount of memory that should be allocated for the code and static data (.bss) at runtime.
+
+
+1.3.4: The ERPT
+
+The ERPT chunk's usage is completely unknown, it is not needed to produce a runnable application.
+
+
+
+2: Import/Export Tables
+
+The import and export tables consist of a simple structure.
+
+The first 16-bytes form a table header, this is just a 32-bit integer count of the table areas followed by 12-bytes of zero-padding.
+
+The table header is followed by <count> table entries, an entry follows the following format:
+uint32_t string_offset; // Offset of this imports name in the string list.
+uint32_t unknown0;      // Unknown always set to 0x00000000.
+uint32_t unknown1;      // Unknown always set to 0x00020000.
+uint32_t address;       // Address of the pointer to this function/variable in the program.
+
+After the table entries comes the string list, this is simply a null separated list of names for the imports.
+Each name string is always followed by at-least one ASCII null ('\0', 0x00) and then zero-padding to pad the name to the next 4-byte boundary.
+
+The end of the import table contains padding to pad the table to the nearest 16-byte boundary.
