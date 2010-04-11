@@ -10,7 +10,7 @@ CPP       = mipsel-linux-g++
 CC        = mipsel-linux-gcc
 AR        = mipsel-linux-ar
 
-SOURCE    = .
+SOURCE    = . ./sys
 
 INCLUDE   = -I. -I./include -I$(DINGOO_SDK)/include
 
@@ -27,7 +27,6 @@ LIB_PATH  = $(DINGOO_SDK)/lib
 
 SRC_CPP = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.cpp))
 SRC_C   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.c))
-SRC_H   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.h))
 SRC_S   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.S))
 OBJ_CPP = $(notdir $(patsubst %.cpp, %.o, $(SRC_CPP)))
 OBJ_C   = $(notdir $(patsubst %.c, %.o, $(SRC_C)))
@@ -44,7 +43,9 @@ all : $(LIB_PATH)/lib$(LIB_NAME).a
 
 $(LIB_PATH)/lib$(LIB_NAME).a : $(OBJ)
 	$(AR) rcs $(LIB_PATH)/lib$(LIB_NAME).a *.o
-	cp -f $(SRC_H) $(DINGOO_SDK)/include/
+	mkdir -p $(DINGOO_SDK)/include/sys
+	cp -f *.h $(DINGOO_SDK)/include/
+	cp -f sys/*.h $(DINGOO_SDK)/include/sys/
 
 $(OBJ_CPP) : %.o : %.cpp
 	$(CPP) $(CPP_OPTS) -o $@ $<
@@ -61,11 +62,8 @@ $(OBJ_S) : %.o : %.S
 
 .PHONY : clean
 
-documentation :
-	python $(DINGOO_SDK)/tools/extract_doc/extract_doc.py $(SRC_H)
-	mv -f *.wiki $(DINGOO_SDK)/../../dingoo-sdk-wiki/libc #forced
-
 clean :
 	rm -f $(OBJ)
 	rm -f $(LIB_PATH)/lib$(LIB_NAME).a
 	rm -f $(DINGOO_SDK)/include/*.h
+	rm -rf $(DINGOO_SDK)/include/sys
