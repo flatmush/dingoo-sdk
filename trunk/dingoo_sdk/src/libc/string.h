@@ -7,6 +7,7 @@
 extern int   _strlen(const char* inStr);
 
 extern const char* strchr(const char* inStr, int inChar);
+extern const char* strrchr(const char* inStr, int inChar);
 extern const char* strstr(const char* inStr, const char* inFind);
 
 extern char* strcpy(char* outDest, const char* inSrc);
