@@ -34,11 +34,11 @@ Use Doxygen to build HTML documentation in the $DINGOO_SDK/doc directory. See th
 The issues tracker is the best place to post bugs or other unusual errors that aren't the result of a failed or incorrect installation (see the [http://code.google.com/p/dingoo-sdk/source/browse/trunk/dingoo_sdk/ReadMe.txt ReadMe.txt] file). We are also open to feature requests and suggestions as time allows.
 
 === Chat ===
-  *IRC:
+  * IRC:
     * #dingoo-a320 on irc.freenode.net
     * #dingoonity on irc.freenode.net
-  *Forums:
+  * Forums:
     * [http://boards.dingoonity.org/index.php Dingoonity]
     * [http://www.gp32x.com/board/index.php?/forum/73-dingoo-a320/ gp32x]
-  *Email:
+  * Email:
     * Developers emails can be found in the project owners/contributors list [http://code.google.com/p/dingoo-sdk/people/list here].
