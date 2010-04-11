@@ -12,10 +12,14 @@ typedef struct {
 	uint8_t  channels;
 } sound_t;
 
+
+
 extern bool sound_init();
 extern void sound_term();
 
 extern uintptr_t sound_play(sound_t inSound, bool inLoop);
 extern void      sound_stop(uintptr_t inSound);
+
+extern uintptr_t sound_volume_set(uintptr_t inVolume);
 
 #endif
