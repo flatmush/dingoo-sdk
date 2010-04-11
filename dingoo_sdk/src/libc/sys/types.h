@@ -4,6 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef uint32_t off_t;
+typedef int32_t off_t;
 
 #endif
