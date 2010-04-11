@@ -25,6 +25,23 @@ const char* strchr(const char* inStr, int inChar) {
 	return NULL;
 }
 
+const char* strrchr(const char* inStr, int inChar) {
+	if(inStr == NULL)
+		return NULL;
+	if((inChar < -128) || (inChar >= 256))
+		return NULL;
+	char tempChar = (inChar >= 128 ? (inChar - 256) : inChar);
+	if(tempChar == '\0')
+		return &inStr[strlen(inStr)];
+	uintptr_t i;
+	const char* tempOut = NULL;
+	for(i = 0; inStr[i] != '\0'; i++) {
+		if(inStr[i] == tempChar)
+			tempOut = &inStr[i];
+	}
+	return tempOut;
+}
+
 const char* strstr(const char* inStr, const char* inFind) {
 	if((inStr == NULL) || (inFind == NULL))
 		return NULL;
