@@ -21,7 +21,7 @@ if [ -d "$WINDIR" ]; then
 	$DINGOO_SDK/tools/mipstools_fix/mipstools_fix
 else
 	rm -f $DINGOO_SDK/tools/elf2app/elf2app
-	cc $DINGOO_SDK/tools/elf2app/src/elf2app.c -o $DINGOO_SDK/tools/elf2app/elf2app
+	cc $DINGOO_SDK/tools/elf2app/src/*.c -o $DINGOO_SDK/tools/elf2app/elf2app
 	rm -f $DINGOO_SDK/tools/bin2h/bin2h
 	cc $DINGOO_SDK/tools/bin2h/src/bin2h.c -o $DINGOO_SDK/tools/bin2h/bin2h
 fi
@@ -38,13 +38,15 @@ SECTIONS { .dingoo 0x80A00000 : { $DINGOO_SDK/lib/dingoo.o (.text)
                                   *(.lit8)
                                   *(.lit4)
                                   *(.sdata)
+                                }
                                   _fbss = .;
+           .bss :               {
                                   *(.sbss)
                                   *(.scommon)
                                   *(.bss)
                                   *(COMMON)
+                                }
                                   _end = . ;
-                              }
            /DISCARD/ : { *(*) }
          }
 
