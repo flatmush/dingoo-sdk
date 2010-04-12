@@ -33,7 +33,7 @@ bool dma_wait(uintptr_t inChannel, uintptr_t inTimeout) {
 	return true;
 }
 
-bool dma_copy(uintptr_t inChannel, void* inDest, void* inSource, uintptr_t inSize) {
+bool dma_copy(uintptr_t inChannel, void* inDest, const void* inSource, uintptr_t inSize) {
 	if(inChannel >= MAX_DMA_NUM)
 		return false; // TODO - Initialize software DMA thread.
 	if(!(REG_DMAC_DCCSR(inChannel) & DMAC_DCCSR_TT))
@@ -91,11 +91,8 @@ bool dma_copy(uintptr_t inChannel, void* inDest, void* inSource, uintptr_t inSiz
 	} else REG_DMAC_DRSR(inChannel) = DMAC_DRSR_RS_AUTO;
 
 	// Modify memory mapping for sources/destinations.
-	inDest   = (void*)((uintptr_t)inDest   & 0x1FFFFFFF);
-	inSource = (void*)((uintptr_t)inSource & 0x1FFFFFFF);
-
-	REG_DMAC_DSAR(inChannel) = (uintptr_t)inSource;
-	REG_DMAC_DTAR(inChannel) = (uintptr_t)inDest;
+	REG_DMAC_DSAR(inChannel) = ((uintptr_t)inSource & 0x1FFFFFFF);
+	REG_DMAC_DTAR(inChannel) = ((uintptr_t)inDest   & 0x1FFFFFFF);
 	REG_DMAC_DTCR(inChannel) = (inSize >> _dma_block_width[i - 1]);
 
 	REG_DMAC_DCMD(inChannel) = tempSourceMode | tempDestMode | tempTransferMode;

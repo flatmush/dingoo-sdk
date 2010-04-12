@@ -10,8 +10,8 @@
 #include <jz4740/jz4740.h>
 #include <jz4740/emc.h>
 #include <jz4740/cpm.h>
+#include <jz4740/cpu.h>
 
-#include <sml/cpu.h>
 #include <sml/graphics.h>
 #include <sml/display.h>
 #include <sml/control.h>
@@ -26,6 +26,8 @@ timer*   appTimer    = NULL;
 uint32_t appTickRate = (timer_resolution / 30);
 bool     appRunning  = true;
 
+uintptr_t _presets_count = 4;
+uintptr_t _presets[4] = { 336000000, 360000000, 400000000, 430000000 };
 
 
 int main(int argc, char** argv) {
@@ -56,10 +58,6 @@ int main(int argc, char** argv) {
 	uintptr_t tempCore;
 	uintptr_t tempMemory;
 	cpu_clock_get(&tempCore, &tempMemory);
-	tempCore   /= 1000000;
-	tempMemory /= 1000000;
-
-	uintptr_t tempMenu = 0;
 
 	int sysref;
 	while(appRunning) {
@@ -86,43 +84,42 @@ int main(int argc, char** argv) {
 				break;
 			}
 			if(control_just_pressed(CONTROL_BUTTON_SELECT)) {
-				emc_sdram_timings_dump("emc_sdram.txt");
-				cpm_pll_ctrl_dump("cpm_pll.txt");
+				emc_sdram_ctrl_reg_dump("emc_sdram_ctrl_reg.txt");
+				emc_sdram_timings_dump("emc_sdram_timings.txt", tempMemory);
+				cpm_pll_ctrl_dump("cpm_pll_ctrl_reg.txt");
 				cpm_freq_dump("cpm_freqs.txt");
-				break;
 			}
 
 			if(control_check(CONTROL_DPAD_UP).repeat) {
-				tempMenu = (tempMenu - 1) & 1;
-				break;
+				uintptr_t i;
+				for(i = 0; (i < _presets_count); i++) {
+					if(tempCore < _presets[i]) {
+						tempCore = _presets[i];
+						break;
+					}
+				}
 			}
 			if(control_check(CONTROL_DPAD_DOWN).repeat) {
-				tempMenu = (tempMenu + 1) & 1;
-				break;
+				intptr_t i;
+				for(i = (_presets_count - 1); i >= 0; i--) {
+					if(tempCore > _presets[i]) {
+						tempCore = _presets[i];
+						break;
+					}
+				}
 			}
 
-			if(control_check(CONTROL_DPAD_LEFT).repeat) {
-				if(tempMenu == 0) tempCore   = (tempCore == 1 ? 1 : tempCore - 1);
-				else              tempMemory = (tempMemory == 1 ? 1 : tempMemory - 1);
-				break;
-			}
-			if(control_check(CONTROL_DPAD_RIGHT).repeat) {
-				if(tempMenu == 0) tempCore   = (tempCore == 500 ? 500 : tempCore + 1);
-				else              tempMemory = (tempMemory == 166 ? 166 : tempMemory + 1);
-				break;
-			}
+			if(control_check(CONTROL_DPAD_LEFT).repeat)
+				tempCore = (tempCore == 1000000 ? 1000000 : tempCore - 1000000);
+			if(control_check(CONTROL_DPAD_RIGHT).repeat)
+				tempCore   = (tempCore == 500000000 ? 500000000 : tempCore + 1000000);
 
 			if(control_just_pressed(CONTROL_BUTTON_A)) {
-				cpu_clock_set((tempCore * 1000000), (tempMemory * 1000000));
+				cpu_clock_set(tempCore);
 				cpu_clock_get(&tempCore, &tempMemory);
-				tempCore   /= 1000000;
-				tempMemory /= 1000000;
 			}
-			if(control_just_pressed(CONTROL_BUTTON_B)) {
+			if(control_just_pressed(CONTROL_BUTTON_B))
 				cpu_clock_get(&tempCore, &tempMemory);
-				tempCore   /= 1000000;
-				tempMemory /= 1000000;
-			}
 		}
 
 
@@ -134,11 +131,9 @@ int main(int argc, char** argv) {
 		gfx_font_print_center(tempY, appFont, "A320 Clocks"); tempY += 12;
 		tempY += 12;
 
-		gfx_font_print_center((tempY + (tempMenu * 12)), appFont, "        <         >");
-
-		sprintf(tempString, "Core:     % 3lu MHz  ", tempCore);
+		sprintf(tempString, "Core:   < % 3lu MHz >", (tempCore / 1000000));
 		gfx_font_print_center(tempY, appFont, tempString); tempY += 12;
-		sprintf(tempString, "Memory:   % 3lu MHz  ", tempMemory);
+		sprintf(tempString, "Memory:   % 3lu MHz  ", (tempMemory / 1000000));
 		gfx_font_print_center(tempY, appFont, tempString); tempY += 12;
 
 		tempY += 12;
