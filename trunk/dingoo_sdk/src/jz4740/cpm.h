@@ -21,6 +21,26 @@ typedef struct {
 } __attribute__((__packed__)) cpm_clk_ctrl_reg;
 
 typedef struct {
+	unsigned int uart0    : 1;
+	unsigned int tcu      : 1;
+	unsigned int rtc      : 1;
+	unsigned int i2c      : 1;
+	unsigned int ssi      : 1;
+	unsigned int aic_pclk : 1;
+	unsigned int aic_bclk : 1;
+	unsigned int msc      : 1;
+	unsigned int sadc     : 1;
+	unsigned int cim      : 1;
+	unsigned int lcd      : 1;
+	unsigned int udc      : 1;
+	unsigned int dmac     : 1;
+	unsigned int ipu      : 1;
+	unsigned int uhc      : 1;
+	unsigned int uart1    : 1;
+	unsigned int reserved : 16;
+} __attribute__((__packed__)) cpm_clk_gate_reg;
+
+typedef struct {
 	unsigned int stable_time : 8;
 	unsigned int enable      : 1;
 	unsigned int bypass      : 1;
@@ -38,6 +58,15 @@ typedef struct {
 	uintptr_t ldclk, lpclk;
 	uintptr_t usbclk, i2sclk, mscclk;
 } cpm_freq;
+
+
+
+extern volatile cpm_clk_ctrl_reg* const cpm_cpccr;
+extern volatile cpm_clk_gate_reg* const cpm_clkgr;
+extern volatile cpm_pll_ctrl_reg* const cpm_cppcr;
+extern volatile uint32_t*         const cpm_lpcdr;
+extern volatile uint32_t*         const cpm_msccdr;
+extern volatile uint32_t*         const cpm_i2scdr;
 
 
 

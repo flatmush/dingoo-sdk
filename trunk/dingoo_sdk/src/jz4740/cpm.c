@@ -10,9 +10,18 @@
 
 
 
+volatile cpm_clk_ctrl_reg* const cpm_cpccr  = (cpm_clk_ctrl_reg*)CPM_CPCCR;
+volatile cpm_clk_gate_reg* const cpm_clkgr  = (cpm_clk_gate_reg*)CPM_CLKGR;
+volatile cpm_pll_ctrl_reg* const cpm_cppcr  = (cpm_pll_ctrl_reg*)CPM_CPPCR;
+volatile uint32_t*         const cpm_lpcdr  = (uint32_t*)CPM_LPCDR;
+volatile uint32_t*         const cpm_msccdr = (uint32_t*)CPM_MSCCDR;
+volatile uint32_t*         const cpm_i2scdr = (uint32_t*)CPM_I2SCDR;
+
+
+
 cpm_freq cpm_freq_get() {
 	cpm_freq tempFreq;
-	cpm_clk_ctrl_reg tempClkCtrl = *((cpm_clk_ctrl_reg*)CPM_CPCCR);
+	cpm_clk_ctrl_reg tempClkCtrl = *cpm_cpccr;
 
 	tempFreq.pll = cpm_pll_freq_get();
 
@@ -31,16 +40,18 @@ cpm_freq cpm_freq_get() {
 	tempFreq.cko    = (tempClkCtrl.clkoen ? tempFreq.mclk : 0);
 
 	tempFreq.ldclk  = ((tempFreq.pll >> (1 - tempClkCtrl.pcs)) / (tempClkCtrl.ldiv + 1));
-	tempFreq.lpclk  = ((tempFreq.pll >> (1 - tempClkCtrl.pcs)) / ((*((uint32_t*)CPM_LPCDR) & 0x000001FF) + 1));
+	tempFreq.lpclk  = ((tempFreq.pll >> (1 - tempClkCtrl.pcs)) / ((*cpm_lpcdr & 0x000001FF) + 1));
 
 	tempFreq.usbclk = (tempClkCtrl.ucs ? ((tempFreq.pll >> (1 - tempClkCtrl.pcs)) / (tempClkCtrl.udiv + 1)) : EXCLK_FREQ);
 	// TODO - Get other USB frequencies.
 
-	tempFreq.mscclk = ((tempFreq.pll >> (1 - tempClkCtrl.pcs)) / (*((uint32_t*)CPM_MSCCDR) & 0x0000001F));
+	tempFreq.mscclk = ((tempFreq.pll >> (1 - tempClkCtrl.pcs)) / (*cpm_msccdr & 0x0000001F));
 
-	tempFreq.i2sclk = (tempClkCtrl.i2cs ? ((tempFreq.pll >> (1 - tempClkCtrl.pcs)) / ((*((uint32_t*)CPM_I2SCDR) & 0x000001FF) + 1)) : EXCLK_FREQ);
+	tempFreq.i2sclk = (tempClkCtrl.i2cs ? ((tempFreq.pll >> (1 - tempClkCtrl.pcs)) / ((*cpm_i2scdr & 0x000001FF) + 1)) : EXCLK_FREQ);
 
 	// TODO - Get other frequencies.
+
+	// TODO - Check clock gates and return 0 if the clocks are gated.
 
 	return tempFreq;
 }
@@ -94,9 +105,9 @@ bool cpm_freq_set(cpm_freq inFreq) {
 	tempPDiv = tempLookup[inFreq.cclk / inFreq.pclk];
 	if(tempPDiv > 9) return false;
 
-	((cpm_clk_ctrl_reg*)CPM_CPCCR)->ce = 0;
+	cpm_cpccr->ce = 0;
 
-	cpm_clk_ctrl_reg tempClkCtrl = *((cpm_clk_ctrl_reg*)CPM_CPCCR);
+	cpm_clk_ctrl_reg tempClkCtrl = *cpm_cpccr;
 
 	tempClkCtrl.cdiv = tempCDiv;
 	tempClkCtrl.mdiv = tempMDiv;
@@ -107,7 +118,7 @@ bool cpm_freq_set(cpm_freq inFreq) {
 
 	// TODO - Set other clocks correctly.
 
-	*((cpm_clk_ctrl_reg*)CPM_CPCCR) = tempClkCtrl;
+	*cpm_cpccr = tempClkCtrl;
 
 	cpm_pll_freq_set(tempM, tempN, tempD);
 
@@ -153,7 +164,7 @@ bool cpm_freq_dump(const char* inPath) {
 
 
 uintptr_t cpm_pll_freq_get() {
-	cpm_pll_ctrl_reg tempCtrl = *((cpm_pll_ctrl_reg*)CPM_CPPCR);
+	cpm_pll_ctrl_reg tempCtrl = *cpm_cppcr;
 
 	uintptr_t tempFreq = EXCLK_FREQ;
 
@@ -212,21 +223,21 @@ bool cpm_pll_freq_set(uintptr_t inM, uintptr_t inN, uintptr_t inD) {
 	bool tempNoDiv = ((inM + 2) == ((inN + 2) << inD));
 
 	if(tempNoDiv) {
-		((cpm_pll_ctrl_reg*)CPM_CPPCR)->enable = 0;
+		cpm_cppcr->enable = 0;
 	} else {
-		//((cpm_pll_ctrl_reg*)CPM_CPPCR)->bypass = 1;
-		//((cpm_pll_ctrl_reg*)CPM_CPPCR)->enable = 0;
+		//cpm_cppcr->bypass = 1;
+		//cpm_cppcr->enable = 0;
 
-		cpm_pll_ctrl_reg tempCtrl = *((cpm_pll_ctrl_reg*)CPM_CPPCR);
+		cpm_pll_ctrl_reg tempCtrl = *cpm_cppcr;
 		tempCtrl.n          = inN;
 		tempCtrl.m          = inM;
 		tempCtrl.output_div = inD;
 		tempCtrl.enable     = 1;
-		*((cpm_pll_ctrl_reg*)CPM_CPPCR) = tempCtrl;
+		*cpm_cppcr = tempCtrl;
 
-		//while(((cpm_pll_ctrl_reg*)CPM_CPPCR)->stable == 0);
+		//while(cpm_cppcr->stable == 0);
 
-		//((cpm_pll_ctrl_reg*)CPM_CPPCR)->bypass = 0;
+		//cpm_cppcr->bypass = 0;
 	}
 
 	// Update OS state.
@@ -238,7 +249,7 @@ bool cpm_pll_freq_set(uintptr_t inM, uintptr_t inN, uintptr_t inD) {
 
 
 bool cpm_pll_ctrl_dump(const char* inPath) {
-	cpm_pll_ctrl_reg tempPllCtrl = *((cpm_pll_ctrl_reg*)CPM_CPPCR);
+	cpm_pll_ctrl_reg tempPllCtrl = *cpm_cppcr;
 
 	char tempString[256];
 

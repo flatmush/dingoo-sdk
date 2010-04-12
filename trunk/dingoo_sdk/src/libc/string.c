@@ -1,6 +1,10 @@
 #include <string.h>
 #include <stdint.h>
 
+#include <jz4740/dma.h>
+
+
+
 int _strlen(const char* inStr) {
 	uintptr_t i;
 	for(i = 0; inStr[i] != '\0'; i++);
@@ -135,10 +139,59 @@ void* memchr (void* inPtr, int inChar, size_t inLength) {
 void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 	if((outDest == NULL) || (inSrc == NULL))
 		return NULL;
+
+	if(inLength > 16384) {
+		uintptr_t tempChannel = dma_free();
+		if(tempChannel < 6) {
+			dma_copy(tempChannel, outDest, inSrc, inLength);
+			dma_wait(tempChannel, 0);
+			return outDest;
+		}
+	}
+
 	size_t i;
-	for(i = 0; i < inLength; i++)
-		((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
-	// TODO - Optimize.
+
+	if((((uintptr_t)outDest | (uintptr_t)inSrc) & 15) == 0) {
+		register uint32_t a, b, c, d;
+		for(i = 0; i < (inLength >> 4); i++) {
+			a = ((uint32_t*)inSrc)[i];
+			b = ((uint32_t*)inSrc)[i];
+			c = ((uint32_t*)inSrc)[i];
+			d = ((uint32_t*)inSrc)[i];
+			((uint32_t*)outDest)[i + 0] = a;
+			((uint32_t*)outDest)[i + 1] = b;
+			((uint32_t*)outDest)[i + 2] = c;
+			((uint32_t*)outDest)[i + 3] = d;
+		}
+		for(i <<= 4; i < inLength; i++)
+			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
+	} else if((((uintptr_t)outDest | (uintptr_t)inSrc) & 7) == 0) {
+		register uint32_t a, b;
+		for(i = 0; i < (inLength >> 3); i++) {
+			a = ((uint32_t*)inSrc)[i];
+			b = ((uint32_t*)inSrc)[i];
+			((uint32_t*)outDest)[i + 0] = a;
+			((uint32_t*)outDest)[i + 1] = b;
+		}
+		for(i <<= 3; i < inLength; i++)
+			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
+	} else if((((uintptr_t)outDest | (uintptr_t)inSrc) & 3) == 0) {
+		for(i = 0; i < (inLength >> 2); i++)
+			((uint32_t*)outDest)[i] = ((uint32_t*)inSrc)[i];
+		for(i <<= 2; i < inLength; i++)
+			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
+	} else if((((uintptr_t)outDest | (uintptr_t)inSrc) & 1) == 0) {
+		for(i = 0; i < (inLength >> 2); i++)
+			((uint16_t*)outDest)[i] = ((uint16_t*)inSrc)[i];
+		if((i << 1) < inLength)
+			((uint8_t*)outDest)[(i << 1) + 1] = ((uint8_t*)inSrc)[(i << 1) + 1];
+	} else {
+		for(i = 0; i < inLength; i++)
+			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
+	}
+
+	// TODO - Optimize further for dest aligned copies.
+
 	return outDest;
 }
 
