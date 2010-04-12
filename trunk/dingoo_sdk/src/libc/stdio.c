@@ -348,3 +348,12 @@ FILE* fmemopen(void* buf, size_t size, const char* mode) {
 void perror(const char* prefix) {
 	//_fprintf(stderr, "%s: %s", prefix, strerror(errno));
 }
+
+int fgetc(FILE* stream) {
+	char c;
+
+	if (_fread(&c, 1, 1, stream) != 1)
+		return EOF;
+
+	return (int)c;
+}

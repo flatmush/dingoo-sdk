@@ -7,6 +7,8 @@
 typedef FSYS_FILE FILE;
 typedef long int fpos_t;
 
+#define EOF -1
+
 #define SEEK_SET FSYS_SEEK_SET
 #define SEEK_CUR FSYS_SEEK_CUR
 #define SEEK_END FSYS_SEEK_END
@@ -53,5 +55,9 @@ extern FILE* fmemopen(void* buf, size_t size, const char* mode);
 
 // TODO - Make a function for remove that parses paths correctly.
 #define remove(filename) fsys_remove(filename)
+
+int fgetc(FILE* stream);
+
+#define getc fgetc
 
 #endif
