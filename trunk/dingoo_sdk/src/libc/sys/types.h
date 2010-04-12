@@ -6,4 +6,6 @@
 
 typedef int32_t off_t;
 
+typedef intptr_t ssize_t;
+
 #endif
