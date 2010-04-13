@@ -41,10 +41,13 @@ background* gameBackground = NULL;
 score_list* gameScores     = NULL;
 uintptr_t   gameScoreListOffset = 0;
 
-display* gameDisplay  = NULL;
-timer*   gameTimer    = NULL;
-uint32_t gameTickRate = (timer_resolution / 30);
-bool     gameRunning  = true;
+uintptr_t gameVolume     = 50;
+uintptr_t gameVolumeShow = 0;
+
+display*  gameDisplay  = NULL;
+timer*    gameTimer    = NULL;
+uint32_t  gameTickRate = (timer_resolution / 30);
+bool      gameRunning  = true;
 
 
 

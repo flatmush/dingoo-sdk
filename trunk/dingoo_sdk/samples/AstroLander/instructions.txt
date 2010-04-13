@@ -1,4 +1,4 @@
-Astro Lander 1.0.0r51
+Astro Lander 1.0.0r99
 By Flatmush (aka Ben Brewer)
 Improvements by Russell Bernhardt
 
@@ -37,6 +37,7 @@ Start                  = Pause
 Select                 = Screenshot
 Start + Select         = Quit
 Start > L/R Trigger    = Decrease/Increase Difficulty
+Start > Up/Down        = Increase/Decrease Volume
 
 
 

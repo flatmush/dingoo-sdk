@@ -276,7 +276,7 @@ void sound_stop(uintptr_t inSound) {
 
 
 uintptr_t sound_volume_set(uintptr_t inVolume) {
-	uintptr_t tempVol = max(inVolume, 100);
+	uintptr_t tempVol = min(inVolume, 100);
 	_sound_buffer_volume = tempVol;
 	return tempVol;
 }

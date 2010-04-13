@@ -63,9 +63,12 @@ extern background* gameBackground;
 extern score_list* gameScores;
 extern uintptr_t   gameScoreListOffset;
 
-extern display* gameDisplay;
-extern timer*   gameTimer;
-extern uint32_t gameTickRate;
-extern bool     gameRunning;
+extern uintptr_t gameVolume;
+extern uintptr_t gameVolumeShow;
+
+extern display*  gameDisplay;
+extern timer*    gameTimer;
+extern uint32_t  gameTickRate;
+extern bool      gameRunning;
 
 #endif
