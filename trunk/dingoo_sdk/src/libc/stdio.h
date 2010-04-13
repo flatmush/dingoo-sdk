@@ -7,7 +7,7 @@
 typedef FSYS_FILE FILE;
 typedef long int fpos_t;
 
-#define EOF 0x0100
+#define EOF -1
 
 #define SEEK_SET FSYS_SEEK_SET
 #define SEEK_CUR FSYS_SEEK_CUR
