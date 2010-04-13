@@ -49,6 +49,7 @@ int main(int argc, char** argv) {
 	}
 	gfx_init(gameDisplay);
 	sound_init();
+	gameVolume = sound_volume_set(gameVolume);
 
 	gfx_render_target_clear(gfx_color_rgb(0x00, 0x00, 0x00));
 	display_flip(gameDisplay);
@@ -101,6 +102,9 @@ int main(int argc, char** argv) {
 				gameDialog("Screenshot taken.");
 			}
 
+			if(gameVolumeShow > 0)
+				gameVolumeShow--;
+
 			switch(gameMode) {
 				case GAME_MODE_SPLASH:
 					if(control_just_pressed(CONTROL_BUTTON_A))
@@ -132,10 +136,20 @@ int main(int argc, char** argv) {
 						case GAME_MODE_GAME_PAUSE:
 							if(control_just_pressed(CONTROL_BUTTON_START))
 								gameModeSub = GAME_MODE_GAME_PLAY;
-							else if(control_just_pressed(CONTROL_TRIGGER_LEFT))
-								gameDifficultyPrev(); // cycle through difficulties if the right shoulder button is pressed while paused
-							else if(control_just_pressed(CONTROL_TRIGGER_RIGHT))
-								gameDifficultyNext(); // cycle through difficulties if the right shoulder button is pressed while paused
+							else {
+								if(control_just_pressed(CONTROL_TRIGGER_LEFT))
+									gameDifficultyPrev(); // cycle through difficulties if the right shoulder button is pressed while paused
+								if(control_just_pressed(CONTROL_TRIGGER_RIGHT))
+									gameDifficultyNext(); // cycle through difficulties if the right shoulder button is pressed while paused
+								if(control_just_pressed(CONTROL_DPAD_UP)) {
+									gameVolume = sound_volume_set(gameVolume + 10);
+									gameVolumeShow = 15;
+								}
+								if(control_just_pressed(CONTROL_DPAD_DOWN)) {
+									gameVolume = sound_volume_set(gameVolume >= 10 ? (gameVolume - 10) : 0);
+									gameVolumeShow = 15;
+								}
+							}
 							break;
 						case GAME_MODE_GAME_LANDED:
 							if(control_just_pressed(CONTROL_BUTTON_A)) {
@@ -202,6 +216,10 @@ int main(int argc, char** argv) {
 						break;
 					case GAME_MODE_GAME_PAUSE:
 						gfx_font_print_center(((gameDisplay->height - gfx_font_height(gameFont)) >> 1), gameFont, "- PAUSED -");
+						if(gameVolumeShow > 0) {
+							sprintf(tempString, "Volume: % 3lu", gameVolume);
+							gfx_font_print_center((((gameDisplay->height - gfx_font_height(gameFont)) >> 1) + 12), gameFont, tempString);
+						}
 						break;
 					case GAME_MODE_GAME_LANDED:
 						shipLandScoreDraw(gameLandingScore);
