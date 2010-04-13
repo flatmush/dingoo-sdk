@@ -43,9 +43,7 @@ all : $(LIB_PATH)/lib$(LIB_NAME).a
 
 $(LIB_PATH)/lib$(LIB_NAME).a : $(OBJ)
 	$(AR) rcs $(LIB_PATH)/lib$(LIB_NAME).a *.o
-	mkdir -p $(DINGOO_SDK)/include/sys
-	cp -f *.h $(DINGOO_SDK)/include/
-	cp -f sys/*.h $(DINGOO_SDK)/include/sys/
+	make headers
 
 $(OBJ_CPP) : %.o : %.cpp
 	$(CPP) $(CPP_OPTS) -o $@ $<
@@ -67,3 +65,14 @@ clean :
 	rm -f $(LIB_PATH)/lib$(LIB_NAME).a
 	rm -f $(DINGOO_SDK)/include/*.h
 	rm -rf $(DINGOO_SDK)/include/sys
+
+
+
+# Header rules
+
+.PHONY: headers
+
+headers:
+	mkdir -p $(DINGOO_SDK)/include/sys
+	cp -f *.h $(DINGOO_SDK)/include/
+	cp -f sys/*.h $(DINGOO_SDK)/include/sys/
