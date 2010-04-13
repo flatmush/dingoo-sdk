@@ -176,8 +176,8 @@ void app_delete(app* inApp) {
 
 
 
-bool app_import_add(app* inApp, char* inName, uintptr_t inOffset) {
-	if(inApp == NULL)
+bool app_import_add(app* inApp, const char* inName, uintptr_t inOffset) {
+	if((inApp == NULL) || (inName == NULL))
 		return false;
 
 	app_import_entry* tempEntry = (app_import_entry*)malloc(sizeof(app_import_entry) + strlen(inName) + 1);
@@ -200,8 +200,8 @@ bool app_import_add(app* inApp, char* inName, uintptr_t inOffset) {
 	return true;
 }
 
-bool app_export_add(app* inApp, char* inName, uintptr_t inOffset) {
-	if(inApp == NULL)
+bool app_export_add(app* inApp, const char* inName, uintptr_t inOffset) {
+	if((inApp == NULL) || (inName == NULL))
 		return false;
 
 	app_export_entry* tempEntry = (app_export_entry*)malloc(sizeof(app_export_entry) + strlen(inName) + 1);
@@ -238,7 +238,7 @@ bool app_save(app* inApp, const char* inPath) {
 	if((inApp == NULL) || (inPath == NULL))
 		return false;
 
-	uintptr_t i, j;
+	uintptr_t i;
 
 	_app_ccdl tempCCDL = _app_ccdl_default;
 	_app_impt tempIMPT = _app_impt_default;
