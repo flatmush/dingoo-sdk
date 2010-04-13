@@ -1,5 +1,5 @@
-#ifndef __stdio_h__
-#define __stdio_h__
+#ifndef __libc_stdio_h__
+#define __libc_stdio_h__
 
 #include <stddef.h>
 #include <dingoo/fsys.h>
@@ -43,8 +43,13 @@ extern FILE* fmemopen(void* buf, size_t size, const char* mode);
 // TODO - Make a function for remove that parses paths correctly.
 #define remove(filename) fsys_remove(filename)
 
-extern int fgetc(FILE* stream);
-extern int fputc(int c, FILE* stream);
+extern int   getc(FILE* stream);
+extern int   getchar();
+extern char* gets(char* s);
+
+extern int   fgetc(FILE* stream);
+extern int   fputc(int c, FILE* stream);
+extern char* fgets(char* s, int n, FILE* stream);
 
 #define getc fgetc
 #define getchar() fgetc(stdin)
