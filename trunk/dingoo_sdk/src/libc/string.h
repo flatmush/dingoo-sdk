@@ -3,8 +3,7 @@
 
 #include <stddef.h>
 
-#define strlen(inStr) _strlen(inStr)
-extern int   _strlen(const char* inStr);
+extern int   strlen(const char* inStr);
 
 extern const char* strchr(const char* inStr, int inChar);
 extern const char* strrchr(const char* inStr, int inChar);
@@ -19,13 +18,11 @@ extern int   strncmp(const char* inStr0, const char* inStr1, size_t inLength);
 extern char* strcat(char* outDest, const char* inSrc);
 
 extern void* memchr (void* inPtr, int inChar, size_t inLength);
-extern void* _memcpy(void* outDest, const void* inSrc, size_t inLength);
+extern void* memcpy(void* outDest, const void* inSrc, size_t inLength);
 extern void* memmove(void* outDest, const void* inSrc, size_t inLength);
-extern void* _memset(void* outDest, int inValue, size_t inLength);
+extern void* memset(void* outDest, int inValue, size_t inLength);
 extern int   memcmp (const void *s1, const void *s2, size_t n);
 
-#define strcmp(inStr0, inStr1) _strcmp(inStr0, inStr1)
-#define memcpy(outDest, inSrc, inLength) _memcpy(outDest, inSrc, inLength)
-#define memset(outDest, inValue, inLength) _memset(outDest, inValue, inLength)
+#define strcmp(x, y) _strcmp(x, y)
 
 #endif

@@ -23,33 +23,20 @@ extern int    fprintf(FILE*, const char*, ...);
 extern int    printf(const char*, ...);
 extern int    sprintf(char*, const char*, ...);
 
-extern size_t fread(void*, size_t, size_t, FILE*);
-extern size_t fwrite(const void*, size_t, size_t, FILE*);
-extern int    fseek(FILE*, long int, int);
-
 extern void   perror(const char* prefix);
 
 //#define printf(...) fprintf(stdout, __VA_ARGS__)
 //#define eprintf(...) fprintf(stderr, __VA_ARGS__)
 
-extern FILE* _fopen(const char* filename, const char* mode);
-extern void  _fclose(FILE* stream);
+extern FILE* fopen(const char* filename, const char* mode);
+extern void  fclose(FILE* stream);
 
-extern int      _fseek(FILE* stream, long int offset, int origin);
-extern long int _ftell(FILE* stream);
-extern int      _ferror(FILE* stream);
-extern int      _feof(FILE* stream);
-extern int      _fread(void* ptr, size_t size, size_t count, FILE* stream);
-extern int      _fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
-
-#define fopen _fopen
-#define fclose _fclose
-#define fseek _fseek
-#define ftell _ftell
-#define ferror _ferror
-#define feof _feof
-#define fread _fread
-#define fwrite _fwrite
+extern int      fseek(FILE* stream, long int offset, int origin);
+extern long int ftell(FILE* stream);
+extern int      ferror(FILE* stream);
+extern int      feof(FILE* stream);
+extern int      fread(void* ptr, size_t size, size_t count, FILE* stream);
+extern int      fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
 
 extern FILE* fmemopen(void* buf, size_t size, const char* mode);
 
