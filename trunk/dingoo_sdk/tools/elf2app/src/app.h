@@ -31,8 +31,8 @@ typedef struct {
 extern app* app_create(void* inData, uintptr_t inSize, uintptr_t inEntry, uintptr_t inBSS);
 extern void app_delete(app* inApp);
 
-extern bool app_import_add(app* inApp, char* inName, uintptr_t inOffset);
-extern bool app_export_add(app* inApp, char* inName, uintptr_t inOffset);
+extern bool app_import_add(app* inApp, const char* inName, uintptr_t inOffset);
+extern bool app_export_add(app* inApp, const char* inName, uintptr_t inOffset);
 
 extern bool app_save(app* inApp, const char* inPath);
 
