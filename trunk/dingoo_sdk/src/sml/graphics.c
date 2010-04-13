@@ -740,7 +740,11 @@ void gfx_tex_draw(int16_t inX, int16_t inY, gfx_texture* inTexture) {
 
 	int16_t x, y, i, j;
 	for(j = 0, y = inY; (j < inTexture->height) && (y < gfx_render_target->height); j++, y++) {
+		if (y < 0)
+			continue;
 		for(i = 0, x = inX; (i < inTexture->width) && (x < gfx_render_target->width); i++, x++) {
+			if (x < 0)
+				continue;
 			tempBuffer[(y * gfx_render_target->width) + x] = tempTexture[(j * inTexture->width) + i];
 		}
 	}
