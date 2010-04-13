@@ -362,3 +362,12 @@ int fgetc(FILE* stream) {
 
 	return (int)c;
 }
+
+int fputc(int c, FILE* stream) {
+	if((c >= 256) || (c < -128))
+		return EOF;
+	char _c = (c > 127 ? (c - 256) : c);
+	if(_fwrite(&_c, 1, 1, stream) != 1)
+		return EOF;
+	return c;
+}
