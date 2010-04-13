@@ -6,22 +6,15 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin\Debug\elf2app" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+			<Target title="default">
+				<Option output="..\elf2app" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\" />
+				<Option object_output="." />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-g" />
-				</Compiler>
-			</Target>
-			<Target title="Release">
-				<Option output="bin\Release\elf2app" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
+					<Add option="-fexpensive-optimizations" />
+					<Add option="-O3" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -31,7 +24,15 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="main.c">
+		<Unit filename="app.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="app.h" />
+		<Unit filename="elf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="elf.h" />
+		<Unit filename="elf2app.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

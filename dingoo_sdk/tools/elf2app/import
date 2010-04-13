@@ -67,7 +67,7 @@ USB_Connect
 USB_No_Connect
 tv_open
 tv_close
-'isTVON
+isTVON
 pcm_ioctl
 mdelay
 HP_Mute_sw
