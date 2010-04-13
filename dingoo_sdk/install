@@ -10,10 +10,16 @@ if [ ! -d "$MIPSTOOLS" ]; then
 	exit 0
 fi
 
-cd $DINGOO_SDK/src/libc && make clean && make
-cd $DINGOO_SDK/src/jz4740 && make clean && make
-cd $DINGOO_SDK/src/sml && make clean && make
-cd $DINGOO_SDK/src/fgl && make clean && make
+cd $DINGOO_SDK/src/libc && make clean && make headers
+cd $DINGOO_SDK/src/jz4740 && make clean && make headers
+cd $DINGOO_SDK/src/sml && make clean && make headers
+cd $DINGOO_SDK/src/fgl && make clean && make headers
+
+cd $DINGOO_SDK/src/libc && make
+cd $DINGOO_SDK/src/jz4740 && make
+cd $DINGOO_SDK/src/sml && make
+cd $DINGOO_SDK/src/fgl && make
+
 rm -f $DINGOO_SDK/lib/libgcc.a
 cp $MIPSTOOLS/lib/gcc/mipsel-linux/*/libgcc.a $DINGOO_SDK/lib/
 
