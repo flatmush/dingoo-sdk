@@ -355,7 +355,7 @@ void perror(const char* prefix) {
 }
 
 int fgetc(FILE* stream) {
-	char c;
+	unsigned char c;
 
 	if (_fread(&c, 1, 1, stream) != 1)
 		return EOF;
