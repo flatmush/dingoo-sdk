@@ -69,10 +69,12 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
+	//printf("Status: Creating program binary.\n");
 	char tempCommand[256];
 	sprintf(tempCommand, "mipsel-linux-objcopy -O binary -j .dingoo %s.elf %s.bin", argv[1], argv[1]);
 	system(tempCommand);
 
+	//printf("Status: Reading program binary.\n");
 	char tempPath[strlen(argv[1]) + 5];
 	sprintf(tempPath, "%s.bin", argv[1]);
 	FILE* tempFile = fopen(tempPath, "rb");
@@ -92,6 +94,7 @@ int main(int argc, char** argv) {
 	fread(tempBody, 1, tempBodyLen, tempFile);
 	fclose(tempFile);
 
+	//printf("Status: Reading elf symbol table.\n");
 	sprintf(tempPath, "%s.elf", argv[1]);
 	_sym = elf_symbol_table_read(tempPath);
 	if(_sym == NULL) {
@@ -101,6 +104,7 @@ int main(int argc, char** argv) {
 	}
 
 
+	//printf("Status: Creating app structure.\n");
 	_app = app_create(tempBody, tempBodyLen, elf_symbol_table_find_offset(_sym, "dl_main"), elf_bss_size(argv[1]));
 	if(_app == NULL) {
 		printf("Error: Couldn't create app struct.\n");
@@ -109,6 +113,7 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
+	//printf("Status: Reading import list.\n");
 	sprintf(tempPath, "%s/import", app_path);
 	tempFile = fopen(tempPath, "r");
 	if(tempFile != NULL) {
@@ -121,6 +126,7 @@ int main(int argc, char** argv) {
 		fclose(tempFile);
 	}
 
+	//printf("Status: Reading export list.\n");
 	sprintf(tempPath, "%s/export", app_path);
 	tempFile = fopen(tempPath, "r");
 	if(tempFile != NULL) {
@@ -135,6 +141,7 @@ int main(int argc, char** argv) {
 
 	elf_symbol_table_delete(_sym);
 
+	//printf("Status: Writing app file.\n");
 	sprintf(tempPath, "%s.app", argv[1]);
 	if(!app_save(_app, tempPath)) {
 		printf("Error: Couldn't save app file.\n");

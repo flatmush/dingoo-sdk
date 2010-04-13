@@ -125,7 +125,7 @@ uintptr_t elf_symbol_table_find_offset(elf_symbol_table* inTable, const char* in
 uintptr_t elf_bss_size(const char* inPath) {
 	char tempString[512];
 	sprintf(tempString, "mipsel-linux-objdump --adjust-vma=0x80a00000 -h %s.elf", inPath);
-	FILE* tempFile = popen(tempString, "rb");
+	FILE* tempFile = popen(tempString, "r");
 	if(tempFile == NULL)
 		return 0;
 
@@ -133,10 +133,13 @@ uintptr_t elf_bss_size(const char* inPath) {
 	while(!feof(tempFile)) {
 		fgets(tempString, 512, tempFile);
 		if(sscanf(tempString, " %*u %s %lx", tempString, &tempSize) >= 0) {
-			if(strcmp(tempString, ".bss") == 0)
+			if(strcmp(tempString, ".bss") == 0) {
+				fclose(tempFile);
 				return tempSize;
+			}
 		}
 	}
+	fclose(tempFile);
 
 	return 0;
 }

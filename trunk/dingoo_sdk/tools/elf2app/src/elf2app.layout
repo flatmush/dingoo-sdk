@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="default" />
+	<File name="app.c" open="1" top="0" tabpos="2">
+		<Cursor position="1633" topLine="92" />
+	</File>
+	<File name="elf.c" open="1" top="0" tabpos="5">
+		<Cursor position="3321" topLine="110" />
+	</File>
+	<File name="elf2app.c" open="1" top="0" tabpos="1">
+		<Cursor position="602" topLine="30" />
+	</File>
+</CodeBlocks_layout_file>
