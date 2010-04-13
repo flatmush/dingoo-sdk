@@ -14,10 +14,11 @@ app*              _app = NULL;
 
 
 
-void _label_fix(char* inLabel) {
+bool _label_fix(char* inLabel) {
 	uintptr_t i;
 	for(i = 0; (isalnum(inLabel[i]) || (inLabel[i] == '_')); i++);
 	inLabel[i] = '\0';
+	return (i > 0);
 }
 
 void _import(const char* inName) {
@@ -119,9 +120,8 @@ int main(int argc, char** argv) {
 	if(tempFile != NULL) {
 		while(!feof(tempFile)) {
 			fgets(tempPath, 256, tempFile);
-			sscanf(tempPath, "%s", tempPath);
-			_label_fix(tempPath);
-			_import(tempPath);
+			if(_label_fix(tempPath))
+				_import(tempPath);
 		}
 		fclose(tempFile);
 	}
@@ -132,9 +132,8 @@ int main(int argc, char** argv) {
 	if(tempFile != NULL) {
 		while(!feof(tempFile)) {
 			fgets(tempPath, 256, tempFile);
-			sscanf(tempPath, "%s", tempPath);
-			_label_fix(tempPath);
-			_export(tempPath);
+			if(_label_fix(tempPath))
+				_export(tempPath);
 		}
 		fclose(tempFile);
 	}
