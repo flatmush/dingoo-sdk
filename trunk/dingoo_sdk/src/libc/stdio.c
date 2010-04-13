@@ -354,6 +354,36 @@ void perror(const char* prefix) {
 	//_fprintf(stderr, "%s: %s", prefix, strerror(errno));
 }
 
+// Required for linking symbol externally.
+#undef getc
+int getc(FILE* stream) {
+	return fgetc(stream);
+}
+
+// Required for linking symbol externally.
+#undef getchar
+int getchar() {
+	return fgetc(stdin);
+}
+
+char* gets(char* s) {
+	if(s == NULL)
+		return NULL;
+	char c;
+	uintptr_t i;
+	for(i = 0; !feof(stdin); i++) {
+		c = getchar();
+		if(c == '\n') {
+			s[i] = '\0';
+			return s;
+		}
+	}
+	s[i] = '\0';
+	return s;
+}
+
+
+
 int fgetc(FILE* stream) {
 	unsigned char c;
 
@@ -370,4 +400,28 @@ int fputc(int c, FILE* stream) {
 	if(_fwrite(&_c, 1, 1, stream) != 1)
 		return EOF;
 	return c;
+}
+
+char* fgets(char* s, int n, FILE* stream) {
+	if((s == NULL) || (n < 0) || (stream == NULL))
+		return NULL;
+	if(n == 0) {
+		s[0] = '\0';
+		return s;
+	}
+
+	char c;
+	int i;
+	for(i = 0; i < (n - 1); i++) {
+		c = fgetc(stream);
+		if(c == EOF)
+			break;
+		s[i] = c;
+		if(c == '\n') {
+			i++;
+			break;
+		}
+	}
+	s[i] = '\0';
+	return s;
 }
