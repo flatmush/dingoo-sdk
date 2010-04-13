@@ -369,14 +369,15 @@ int getchar() {
 char* gets(char* s) {
 	if(s == NULL)
 		return NULL;
-	char c;
+	int c;
 	uintptr_t i;
 	for(i = 0; !feof(stdin); i++) {
 		c = getchar();
-		if(c == '\n') {
+		if((c == '\n') || (c == EOF)) {
 			s[i] = '\0';
 			return s;
 		}
+		s[i] = c;
 	}
 	s[i] = '\0';
 	return s;
@@ -410,7 +411,7 @@ char* fgets(char* s, int n, FILE* stream) {
 		return s;
 	}
 
-	char c;
+	int c;
 	int i;
 	for(i = 0; i < (n - 1); i++) {
 		c = fgetc(stream);
