@@ -5,7 +5,7 @@
 
 
 
-int _strlen(const char* inStr) {
+int strlen(const char* inStr) {
 	uintptr_t i;
 	for(i = 0; inStr[i] != '\0'; i++);
 	return i;
@@ -91,30 +91,32 @@ int _strcmp(const char* inStr0, const char* inStr1) {
 	if(inStr0 == NULL) {
 		if(inStr1 == NULL)
 			return 0;
-		return -inStr1[0];
+		return -((unsigned char)inStr1[0]);
 	}
 	if(inStr1 == NULL)
 		return (unsigned char)inStr0[0];
 	uintptr_t i;
-	for(i = 0; (inStr0[i] != '\0') || (inStr1[i] != '\0'); i++) {
-		if(inStr0[i] != inStr1[i])
-			return (inStr0[i] - inStr1[i]);
+	for(i = 0; (inStr0[i] == inStr1[i]); i++) {
+		if(inStr0[i] == '\0')
+			return 0;
 	}
-	return 0;
+	return ((unsigned char)inStr0[i] - (unsigned char)inStr1[i]);
 }
 
 int strncmp(const char* inStr0, const char* inStr1, size_t inLength) {
 	if(inStr0 == NULL) {
 		if(inStr1 == NULL)
 			return 0;
-		return -inStr1[0];
+		return -((unsigned char)inStr1[0]);
 	}
 	if(inStr1 == NULL)
 		return (unsigned char)inStr0[0];
 	uintptr_t i;
-	for(i = 0; (i < inLength) && ((inStr0[i] != '\0') || (inStr1[i] != '\0')); i++) {
+	for(i = 0; (i < inLength); i++) {
 		if(inStr0[i] != inStr1[i])
-			return (inStr0[i] - inStr1[i]);
+			return ((unsigned char)inStr0[i] - (unsigned char)inStr1[i]);
+		if(inStr0[i] == '\0')
+			return 0;
 	}
 	return 0;
 }

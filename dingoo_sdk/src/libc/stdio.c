@@ -5,8 +5,7 @@
 #include <string.h>
 #include <errno.h>
 
-#undef fread
-#undef fwrite
+
 
 FILE*  stdin  = (FILE*)((uintptr_t)NULL + 1);
 FILE*  stdout = (FILE*)((uintptr_t)NULL + 2);
@@ -81,7 +80,7 @@ char* _file_path(const char* inPath) {
 
 
 
-FILE* _fopen(const char* filename, const char* mode) {
+FILE* fopen(const char* filename, const char* mode) {
 	if(strcmp(filename, "COM0") == 0)
 		return _serial;
 
@@ -107,7 +106,7 @@ FILE* _fopen(const char* filename, const char* mode) {
 	return (FILE*)tempFile;
 }
 
-void _fclose(FILE* stream) {
+void fclose(FILE* stream) {
 	if(stream == stdin)
 		return;
 	if(stream == stdout)
@@ -174,7 +173,7 @@ int _fseek(FILE* stream, long int offset, int origin) {
 	return -1;
 }
 
-long int _ftell(FILE* stream) {
+long int ftell(FILE* stream) {
 	if((stream == stdin) || (stream == stdout) || (stream == stderr))
 		return -1;
 	if(stream == _serial)
@@ -195,7 +194,7 @@ long int _ftell(FILE* stream) {
 
 
 
-int _ferror(FILE* stream) {
+int ferror(FILE* stream) {
 	if((stream == stdin) || (stream == stdout) || (stream == stderr))
 		return 0;
 	if(stream == _serial)
@@ -209,7 +208,7 @@ int _ferror(FILE* stream) {
 	return 0;
 }
 
-int _feof(FILE* stream) {
+int feof(FILE* stream) {
 	if((stream == stdin) || (stream == stdout) || (stream == stderr))
 		return 0;
 	if(stream == _serial)
@@ -236,8 +235,11 @@ int _fread(void* ptr, size_t size, size_t count, FILE* stream) {
 		// TODO - Implement stdin somehow.
 		return 0;
 	}
-	if(stream == _serial)
-		return fread(NULL, size, count, stream);
+	if(stream == _serial) {
+		// TODO - Synth using serial_getc().
+		return 0;
+		//return fread(NULL, size, count, stream);
+	}
 
 	_file_t* tempFile = (_file_t*)stream;
 
@@ -273,8 +275,11 @@ int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
 		// TODO - Implement stderr.
 		return 0;
 	}
-	if(stream == _serial)
-		return fwrite(NULL, size, count, stream);
+	if(stream == _serial) {
+		// TODO - Synth using serial_putc().
+		return 0;
+		//return fwrite(NULL, size, count, stream);
+	}
 
 	_file_t* tempFile = (_file_t*)stream;
 
