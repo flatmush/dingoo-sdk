@@ -156,10 +156,10 @@ void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 	if((((uintptr_t)outDest | (uintptr_t)inSrc) & 15) == 0) {
 		register uint32_t a, b, c, d;
 		for(i = 0; i < (inLength >> 4); i++) {
-			a = ((uint32_t*)inSrc)[i];
-			b = ((uint32_t*)inSrc)[i];
-			c = ((uint32_t*)inSrc)[i];
-			d = ((uint32_t*)inSrc)[i];
+			a = ((uint32_t*)inSrc)[i + 0];
+			b = ((uint32_t*)inSrc)[i + 1];
+			c = ((uint32_t*)inSrc)[i + 2];
+			d = ((uint32_t*)inSrc)[i + 3];
 			((uint32_t*)outDest)[i + 0] = a;
 			((uint32_t*)outDest)[i + 1] = b;
 			((uint32_t*)outDest)[i + 2] = c;
@@ -170,8 +170,8 @@ void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 	} else if((((uintptr_t)outDest | (uintptr_t)inSrc) & 7) == 0) {
 		register uint32_t a, b;
 		for(i = 0; i < (inLength >> 3); i++) {
-			a = ((uint32_t*)inSrc)[i];
-			b = ((uint32_t*)inSrc)[i];
+			a = ((uint32_t*)inSrc)[i + 0];
+			b = ((uint32_t*)inSrc)[i + 1];
 			((uint32_t*)outDest)[i + 0] = a;
 			((uint32_t*)outDest)[i + 1] = b;
 		}
