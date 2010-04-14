@@ -7,6 +7,8 @@ The wiki page list can be found [http://code.google.com/p/dingoo-sdk/wiki here].
 
 Dingoo_SDK is meant to serve as a multi-platform SDK for the Dingoo A320's native operating system which is a variant of uCOS II.
 
+For a list of games and applications built using some variant of the SDK, see the [DevelopedApplications] wiki page.
+
 == Requirements ==
 
 === Linux ===
