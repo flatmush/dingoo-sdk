@@ -1,12 +1,24 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <setjmp.h>
 
 uint32_t _rand_x = 0x12345678UL;
 uint32_t _rand_a = 39916801UL;
 uint32_t _rand_c = 479001599UL;
 
+extern jmp_buf _libc_exit_jmp_buf;
+extern int     _libc_exit_status;
 
+
+void _abort() {
+	exit(EXIT_FAILURE);
+}
+
+void exit(int status) {
+	_libc_exit_status = status;
+	longjmp(_libc_exit_jmp_buf, 1);
+}
 
 int abs(int n) {
 	if(n >= 0)

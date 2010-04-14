@@ -4,8 +4,8 @@
 #include <stddef.h>
 #include <malloc.h>
 
-#define EXIT_FAILURE -1
-#define EXIT_SUCCESS 1
+#define EXIT_FAILURE 1
+#define EXIT_SUCCESS 0
 
 typedef struct {
 	long int quot;
@@ -17,7 +17,8 @@ typedef struct {
 	int rem;
 } div_t;
 
-extern void  abort();
+extern void abort();
+extern void exit(int status);
 
 extern int      abs(int n);
 extern long int labs(long int n);
