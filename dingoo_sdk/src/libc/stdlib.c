@@ -26,7 +26,7 @@ void exit(int status) {
 }
 
 int atexit(void (*func)(void)) {
-	_atexit_func_t* tempRealloc = realloc(_atexit_table, (sizeof(_atexit_func_t) * (_atexit_count + 1)));
+	_atexit_func_t* tempRealloc = (_atexit_func_t*)realloc(_atexit_table, (sizeof(_atexit_func_t) * (_atexit_count + 1)));
 	if(tempRealloc == NULL)
 		return -1;
 	_atexit_table = tempRealloc;

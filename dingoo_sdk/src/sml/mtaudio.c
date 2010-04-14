@@ -8,6 +8,7 @@
 
 
 bool          _audio_ready             = false;
+bool          _audio_atexit            = false;
 waveout_inst* _audio_inst              = NULL;
 uint8_t       _audio_thread_id         = 255;
 uintptr_t     _audio_thread_stack_size = 0;
@@ -31,11 +32,7 @@ void (*_audio_callback)() = NULL;
 
 void _audio_thread(void* inDummy) {
 	while(!_audio_thread_kill) {
-		if(_audio_pause) {
-			OSTimeDly(1);
-			continue;
-		}
-		if(!waveout_can_write()) {
+		if(_audio_pause || !waveout_can_write()) {
 			OSTimeDly(1);
 			continue;
 		}
@@ -86,6 +83,9 @@ bool mtaudio_init(void* inCallback) {
 	_audio_thread_id = i;
 
 	_audio_ready = true;
+	if(!_audio_atexit && (atexit(mtaudio_term) != 0))
+		mtaudio_term();
+	_audio_atexit = true;
 	return _audio_ready;
 }
 
