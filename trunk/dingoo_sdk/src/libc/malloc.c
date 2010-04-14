@@ -6,9 +6,26 @@
 
 #define _VALLOC_PAGE_BOUNDRY 4096
 
+
+
+// Original OS functions.
+//extern void* __malloc(size_t size);
+//extern void* __realloc(void* ptr, size_t size);
+//extern void  __free(void* ptr);
 #undef malloc
 #undef realloc
 #undef free
+#define __malloc malloc
+#define __realloc realloc
+#define __free free
+extern void* malloc(size_t size);
+extern void* realloc(void* ptr, size_t size);
+extern void  free(void* ptr);
+
+// Wrapper functions.
+extern void* _malloc(size_t size);
+extern void* _realloc(void* ptr, size_t size);
+extern void  _free(void* ptr);
 
 
 
@@ -28,7 +45,7 @@ inline uint8_t _alloc_block_hash(void* inPtr) {
 }
 
 _alloc_block* _alloc_block_create() {
-	_alloc_block* tempBlock = (_alloc_block*)malloc(sizeof(_alloc_block));
+	_alloc_block* tempBlock = (_alloc_block*)__malloc(sizeof(_alloc_block));
 	if(tempBlock == NULL)
 		return NULL;
 	uintptr_t i;
@@ -78,8 +95,8 @@ void _alloc_block_cleanup(_alloc_block* inBlock) {
 	_alloc_block_cleanup(inBlock->next);
 	uintptr_t i;
 	for(i = 0; i < 256; i++)
-		free(inBlock->ptr[i]);
-	free(inBlock);
+		__free(inBlock->ptr[i]);
+	__free(inBlock);
 }
 
 
@@ -99,7 +116,7 @@ typedef struct {
 _align_block* _align_list = NULL;
 
 _align_block* _align_block_create() {
-	_align_block* tempBlock = (_align_block*)malloc(sizeof(_align_block));
+	_align_block* tempBlock = (_align_block*)__malloc(sizeof(_align_block));
 	if(tempBlock == NULL)
 		return NULL;
 	uintptr_t i;
@@ -144,19 +161,19 @@ void _align_block_cleanup(_align_block* inBlock) {
 	_align_block_cleanup(inBlock->next);
 	uintptr_t i;
 	for(i = 0; i < 256; i++)
-		free(inBlock->entry[i].real);
-	free(inBlock);
+		__free(inBlock->entry[i].real);
+	__free(inBlock);
 }
 
 
 
 void* _malloc(size_t size) {
-	void* tempAlloc = malloc(size);
+	void* tempAlloc = __malloc(size);
 	if(tempAlloc == NULL)
 		return NULL;
 	if(_alloc_block_add(_alloc_list, tempAlloc))
 		return tempAlloc;
-	free(tempAlloc);
+	__free(tempAlloc);
 	return NULL;
 }
 
@@ -173,7 +190,7 @@ void* _realloc(void* ptr, size_t size) {
 		return tempAlloc;
 	}
 
-	tempAlloc = realloc(ptr, size);
+	tempAlloc = __realloc(ptr, size);
 	if(tempAlloc == NULL)
 		return NULL;
 	if(tempAlloc == ptr)
@@ -190,12 +207,12 @@ void _free(void* ptr) {
 
 	_align_block_entry* tempAlign = _align_block_find(_align_list, ptr);
 	if(tempAlign != NULL) {
-		free(tempAlign);
+		__free(tempAlign);
 		tempAlign->align = NULL;
 		return;
 	}
 
-	free(ptr);
+	__free(ptr);
 	_alloc_block_delete(_alloc_list, ptr);
 }
 
@@ -222,13 +239,13 @@ void* memalign(size_t align, size_t size) {
 		return tempOut;
 	_free(tempOut);
 
-	void* tempAlloc = malloc(size + (align - 1));
+	void* tempAlloc = __malloc(size + (align - 1));
 	if(tempAlloc == NULL)
 		return NULL;
 	tempOut = (void*)(((uintptr_t)tempAlloc + (align - 1)) & (align - 1));
 	if(_align_block_add(_align_list, tempOut, tempAlloc, align, size))
 		return tempOut;
-	free(tempAlloc);
+	__free(tempAlloc);
 
 	return NULL;
 }
@@ -245,7 +262,7 @@ bool _memsys_init() {
 		return false;
 	_align_list = _align_block_create();
 	if(_align_list == NULL) {
-		free(_alloc_list);
+		__free(_alloc_list);
 		return false;
 	}
 	return true;

@@ -3,13 +3,9 @@
 
 #include <stddef.h>
 
-extern void* malloc(size_t size);
-extern void* realloc(void* ptr, size_t size);
-extern void  free(void* ptr);
-
-#define malloc(size)       _malloc(size)
-#define realloc(ptr, size) _realloc(ptr, size)
-#define free(ptr)          _free(ptr)
+#define malloc _malloc
+#define realloc _realloc
+#define free _free
 
 extern void* _malloc(size_t size);
 extern void* _realloc(void* ptr, size_t size);

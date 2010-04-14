@@ -142,14 +142,14 @@ void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 	if((outDest == NULL) || (inSrc == NULL))
 		return NULL;
 
-	if(inLength > 16384) {
+	/*if(inLength > 16384) {
 		uintptr_t tempChannel = dma_free();
 		if(tempChannel < 6) {
 			dma_copy(tempChannel, outDest, inSrc, inLength);
 			dma_wait(tempChannel, 0);
 			return outDest;
 		}
-	}
+	}*/
 
 	size_t i;
 
