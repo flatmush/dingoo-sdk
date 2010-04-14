@@ -20,49 +20,7 @@ typedef struct {
 
 
 extern char* _app_path;
-
-
-
-char* _file_path(const char* inPath) {
-	if(inPath == NULL)
-		return NULL;
-
-	uintptr_t i, j;
-	for(i = 0, j = 0; inPath[i] != '\0'; i++) {
-		if((inPath[i] == '/') || (inPath[i] == '\\'))
-			j = i;
-	}
-
-	char tempPath[strlen(_app_path) + strlen(inPath) + 3];
-	if((inPath[0] == '/') || (inPath[0] == '\\')) {
-		// TODO - Fix unix style absolute paths.
-		return NULL;
-	}
-
-	if(inPath[1] == ':')
-		strcpy(tempPath, inPath);
-	else
-		sprintf(tempPath, "%s/%s", _app_path, inPath);
-
-	for(i = 0, j = 0; tempPath[i] != '\0'; i++) {
-		if((tempPath[i] == '/') || (tempPath[i] == '\\')) {
-			if(tempPath[i + 1] == '.') {
-				if((tempPath[i + 2] == '/') || (tempPath[i + 2] == '\\'))
-					strcpy(&tempPath[i], &tempPath[i + 2]);
-				else if((tempPath[i + 2] == '.') && ((tempPath[i + 3] == '/') || (tempPath[i + 3] == '\\'))) {
-					strcpy(&tempPath[j], &tempPath[i + 3]);
-					i = j;
-				} else j = i;
-			} else j = i;
-		}
-	}
-
-	char* tempOut = (char*)malloc(strlen(tempPath) + 1);
-	if(tempOut != NULL)
-		strcpy(tempOut, tempPath);
-	return tempOut;
-}
-
+extern char* _file_path(const char* inPath);
 
 
 
@@ -124,8 +82,10 @@ struct dirent* readdir(DIR* dir) {
 	if(tempDir->eod)
 		return NULL;
 
-	if(!tempDir->was_read)
+	if(!tempDir->was_read) {
+		tempDir->was_read = true;
 		return &(tempDir->cur_entry);
+	}
 
 	if(fsys_findnext(&(tempDir->info)) != 0) {
 		fsys_findclose(&(tempDir->info));
@@ -146,7 +106,6 @@ struct dirent* readdir(DIR* dir) {
 	tempDir->offset++;
 	tempDir->cur_entry.d_ino  = tempDir->info.handle;
 	tempDir->cur_entry.d_name = tempDir->info.name;
-	tempDir->was_read = true;
 
 	return &(tempDir->cur_entry);
 }
