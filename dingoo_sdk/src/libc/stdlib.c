@@ -11,6 +11,11 @@ extern jmp_buf _libc_exit_jmp_buf;
 extern int     _libc_exit_status;
 
 
+typedef void (*_atexit_func_t)(void);
+uintptr_t       _atexit_count = 0;
+_atexit_func_t* _atexit_table = NULL;
+
+
 void _abort() {
 	exit(EXIT_FAILURE);
 }
@@ -19,6 +24,18 @@ void exit(int status) {
 	_libc_exit_status = status;
 	longjmp(_libc_exit_jmp_buf, 1);
 }
+
+int atexit(void (*func)(void)) {
+	_atexit_func_t* tempRealloc = realloc(_atexit_table, (sizeof(_atexit_func_t) * (_atexit_count + 1)));
+	if(tempRealloc == NULL)
+		return -1;
+	_atexit_table = tempRealloc;
+	_atexit_table[_atexit_count] = (_atexit_func_t)func;
+	_atexit_count++;
+	return 0;
+}
+
+
 
 int abs(int n) {
 	if(n >= 0)

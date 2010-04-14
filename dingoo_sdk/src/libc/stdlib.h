@@ -19,6 +19,7 @@ typedef struct {
 
 extern void abort();
 extern void exit(int status);
+extern int  atexit(void (*func)(void));
 
 extern int      abs(int n);
 extern long int labs(long int n);
