@@ -41,7 +41,7 @@ DIR* opendir(const char* name) {
 	tempDir->type   = FSYS_FIND_DIRECTORY;
 
 	char tempMask[strlen(tempDir->path) + 3];
-	sprintf(tempMask, "%s/*", tempDir->path);
+	sprintf(tempMask, "%s\\*", tempDir->path);
 	if(fsys_findfirst(tempMask, tempDir->type, &(tempDir->info)) != 0) {
 		tempDir->type = FSYS_FIND_FILE;
 		if(fsys_findfirst(tempMask, tempDir->type, &(tempDir->info)) != 0) {
@@ -95,7 +95,7 @@ struct dirent* readdir(DIR* dir) {
 		} else {
 			tempDir->type = FSYS_FIND_FILE;
 			char tempMask[strlen(tempDir->path) + 3];
-			sprintf(tempMask, "%s/*", tempDir->path);
+			sprintf(tempMask, "%s\\*", tempDir->path);
 			if(fsys_findfirst(tempMask, tempDir->type, &(tempDir->info)) != 0) {
 				tempDir->eod = true;
 				return NULL;
