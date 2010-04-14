@@ -151,29 +151,30 @@ void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 		}
 	}*/
 
-	size_t i;
+	size_t i, j;
 
 	if((((uintptr_t)outDest | (uintptr_t)inSrc) & 15) == 0) {
 		register uint32_t a, b, c, d;
-		for(i = 0; i < (inLength >> 4); i++) {
-			a = ((uint32_t*)inSrc)[(i << 2) + 0];
-			b = ((uint32_t*)inSrc)[(i << 2) + 1];
-			c = ((uint32_t*)inSrc)[(i << 2) + 2];
-			d = ((uint32_t*)inSrc)[(i << 2) + 3];
-			((uint32_t*)outDest)[(i << 2) + 0] = a;
-			((uint32_t*)outDest)[(i << 2) + 1] = b;
-			((uint32_t*)outDest)[(i << 2) + 2] = c;
-			((uint32_t*)outDest)[(i << 2) + 3] = d;
+		i = 0;
+		for(i = 0, j = 0; i < (inLength >> 4); i++, j += 4) {
+			a = ((uint32_t*)inSrc)[j + 0];
+			b = ((uint32_t*)inSrc)[j + 1];
+			c = ((uint32_t*)inSrc)[j + 2];
+			d = ((uint32_t*)inSrc)[j + 3];
+			((uint32_t*)outDest)[j + 0] = a;
+			((uint32_t*)outDest)[j + 1] = b;
+			((uint32_t*)outDest)[j + 2] = c;
+			((uint32_t*)outDest)[j + 3] = d;
 		}
 		for(i <<= 4; i < inLength; i++)
 			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
 	} else if((((uintptr_t)outDest | (uintptr_t)inSrc) & 7) == 0) {
 		register uint32_t a, b;
-		for(i = 0; i < (inLength >> 3); i++) {
-			a = ((uint32_t*)inSrc)[(i << 1) + 0];
-			b = ((uint32_t*)inSrc)[(i << 1) + 1];
-			((uint32_t*)outDest)[(i << 1) + 0] = a;
-			((uint32_t*)outDest)[(i << 1) + 1] = b;
+		for(i = 0, j = 0; i < (inLength >> 3); i++, j += 2) {
+			a = ((uint32_t*)inSrc)[j + 0];
+			b = ((uint32_t*)inSrc)[j + 1];
+			((uint32_t*)outDest)[j + 0] = a;
+			((uint32_t*)outDest)[j + 1] = b;
 		}
 		for(i <<= 3; i < inLength; i++)
 			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
@@ -182,11 +183,6 @@ void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 			((uint32_t*)outDest)[i] = ((uint32_t*)inSrc)[i];
 		for(i <<= 2; i < inLength; i++)
 			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
-	} else if((((uintptr_t)outDest | (uintptr_t)inSrc) & 1) == 0) {
-		for(i = 0; i < (inLength >> 1); i++)
-			((uint16_t*)outDest)[i] = ((uint16_t*)inSrc)[i];
-		if((i << 1) < inLength)
-			((uint8_t*)outDest)[(i << 1) + 1] = ((uint8_t*)inSrc)[(i << 1) + 1];
 	} else {
 		for(i = 0; i < inLength; i++)
 			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];

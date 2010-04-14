@@ -52,7 +52,7 @@ void* dl_patch(void* inOld, void* inNew) {
 		return NULL;
 	if(((uintptr_t)inNew & 0xF0000000) != ((uintptr_t)inOld & 0xF0000000))
 		return NULL;
-	void* tempOld = (void*)(((*((uint32_t*)inOld) << 2) | 0x0FFFFFFF) | ((uint32_t)inOld & 0xF0000000));
+	void* tempOld = (void*)(((*((uint32_t*)inOld) << 2) & 0x0FFFFFFF) | ((uint32_t)inOld & 0xF0000000));
 	*((uint32_t*)inOld) = (0x08000000 | (((uint32_t)inNew >> 2) & 0x03FFFFFF));
 	return tempOld;
 }
