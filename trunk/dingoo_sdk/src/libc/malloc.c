@@ -178,6 +178,13 @@ void* _malloc(size_t size) {
 }
 
 void* _realloc(void* ptr, size_t size) {
+	if(ptr == NULL)
+		return _malloc(size);
+	if(size == 0) {
+		_free(ptr);
+		return NULL;
+	}
+
 	void* tempAlloc;
 
 	_align_block_entry* tempAlign = _align_block_find(_align_list, ptr);

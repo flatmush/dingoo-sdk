@@ -37,7 +37,8 @@ uintptr_t     _sound_mixer_thread_stack_size = 0;
 OS_STK*       _sound_mixer_thread_stack      = NULL;
 volatile bool _sound_mixer_thread_kill       = false;
 
-bool _sound_ready = false;
+bool _sound_ready  = false;
+bool _sound_atexit = false;
 
 uintptr_t _sound_id_max = 1;
 
@@ -132,7 +133,7 @@ void _sound_mixer_thread(void* inDummy) {
 			_sound_channel_mix(&_sound_sources[i]);
 		OSSemPost(_sound_sources_semaphore);
 
-		while(_sound_buffer_playnext < 3)
+		while(_sound_buffer_playnext < 3) // TODO - Fix possible deadlock.
 			OSTimeDly(1);
 		_sound_buffer_playnext = _sound_buffer_mixing;
 	}
@@ -144,7 +145,7 @@ void _sound_callback() {
 	_sound_buffer_playing = 3;
 
 	// Wait until there is a buffer to be played.
-	while(_sound_buffer_playnext >= 3)
+	while(_sound_buffer_playnext >= 3) // TODO - Fix possible deadlock.
 		OSTimeDly(1);
 
 	_sound_buffer_playing  = _sound_buffer_playnext;
@@ -204,6 +205,9 @@ bool sound_init() {
 	_sound_mixer_thread_id = i;
 
 	_sound_ready = true;
+	if(!_sound_atexit && (atexit(sound_term) != 0))
+		sound_term();
+	_sound_atexit = true;
 	return _sound_ready;
 }
 

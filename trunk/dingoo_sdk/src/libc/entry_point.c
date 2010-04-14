@@ -113,8 +113,8 @@ int GameMain(char* respath) {
 		for(i = _atexit_count; i != 0; i--)
 			_atexit_table[i - 1]();
 		_atexit_count = 0;
-		_atexit_table = NULL;
 		free(_atexit_table);
+		_atexit_table = NULL;
 	}
 
 	free(_app_path);
