@@ -44,7 +44,7 @@ extern void _abort();
 
 void *__fread, *__fwrite, *__fseek;
 void *__memcpy, *__memset;
-void *__malloc, *__realloc, *__free;
+//void *__malloc, *__realloc, *__free;
 void *__abort;
 
 void* dl_patch(void* inOld, void* inNew) {
@@ -52,7 +52,7 @@ void* dl_patch(void* inOld, void* inNew) {
 		return NULL;
 	if(((uintptr_t)inNew & 0xF0000000) != ((uintptr_t)inOld & 0xF0000000))
 		return NULL;
-	void* tempOld = (void*)((*((uint32_t*)inOld) << 2) | 0x0FFFFFFF);
+	void* tempOld = (void*)(((*((uint32_t*)inOld) << 2) | 0x0FFFFFFF) | ((uint32_t)inOld & 0xF0000000));
 	*((uint32_t*)inOld) = (0x08000000 | (((uint32_t)inNew >> 2) & 0x03FFFFFF));
 	return tempOld;
 }
@@ -87,6 +87,7 @@ int GameMain(char* respath) {
 
 	if(!_memsys_init())
 		return EXIT_FAILURE;
+
 	char* tempAnsiPath = __to_locale_ansi((wchar_t*)respath);
 	uintptr_t tempAnsiLen;
 	for(tempAnsiLen = 0; tempAnsiPath[tempAnsiLen] != '\0'; tempAnsiLen++);
