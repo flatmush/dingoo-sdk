@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="default" />
-	<File name="app.c" open="1" top="0" tabpos="2">
-		<Cursor position="1633" topLine="92" />
+	<File name="app.c" open="1" top="0" tabpos="1">
+		<Cursor position="3983" topLine="175" />
 	</File>
-	<File name="elf.c" open="1" top="0" tabpos="5">
-		<Cursor position="3321" topLine="110" />
+	<File name="app.h" open="1" top="0" tabpos="4">
+		<Cursor position="797" topLine="9" />
 	</File>
-	<File name="elf2app.c" open="1" top="0" tabpos="1">
-		<Cursor position="602" topLine="30" />
+	<File name="elf.c" open="1" top="0" tabpos="2">
+		<Cursor position="3189" topLine="115" />
+	</File>
+	<File name="elf.h" open="1" top="0" tabpos="5">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="elf2app.c" open="1" top="0" tabpos="3">
+		<Cursor position="535" topLine="13" />
 	</File>
 </CodeBlocks_layout_file>

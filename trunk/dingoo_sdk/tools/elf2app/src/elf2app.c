@@ -23,18 +23,18 @@ bool _label_fix(char* inLabel) {
 }
 
 void _import(const char* inName) {
-	uintptr_t tempOffset = elf_symbol_table_find_offset(_sym, inName);
+	uint32_t tempOffset = elf_symbol_table_find_offset(_sym, inName);
 	if(tempOffset == 0)
 		return;
-	//printf("Imported %s at 0x%lX\n", inName, tempOffset);
+	//printf("Imported %s at 0x%"PRIX32"\n", inName, tempOffset);
 	app_import_add(_app, inName, tempOffset);
 }
 
 void _export(const char* inName) {
-	uintptr_t tempOffset = elf_symbol_table_find_offset(_sym, inName);
+	uint32_t tempOffset = elf_symbol_table_find_offset(_sym, inName);
 	if(tempOffset == 0)
 		return;
-	//printf("Exported %s at 0x%lX\n", inName, tempOffset);
+	//printf("Exported %s at 0x%"PRIX32"\n", inName, tempOffset);
 	app_export_add(_app, inName, tempOffset);
 }
 

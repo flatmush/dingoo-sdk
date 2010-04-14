@@ -130,7 +130,7 @@ uintptr_t _app_strlen(const char* inString) {
 	return tempLen;
 }
 
-app* app_create(void* inData, uintptr_t inSize, uintptr_t inEntry, uintptr_t inBSS) {
+app* app_create(void* inData, uint32_t inSize, uint32_t inEntry, uint32_t inBSS) {
 	app* tempApp = (app*)malloc(sizeof(app));
 	if(tempApp == NULL)
 		return NULL;
@@ -176,7 +176,7 @@ void app_delete(app* inApp) {
 
 
 
-bool app_import_add(app* inApp, const char* inName, uintptr_t inOffset) {
+bool app_import_add(app* inApp, const char* inName, uint32_t inOffset) {
 	if((inApp == NULL) || (inName == NULL))
 		return false;
 
@@ -200,7 +200,7 @@ bool app_import_add(app* inApp, const char* inName, uintptr_t inOffset) {
 	return true;
 }
 
-bool app_export_add(app* inApp, const char* inName, uintptr_t inOffset) {
+bool app_export_add(app* inApp, const char* inName, uint32_t inOffset) {
 	if((inApp == NULL) || (inName == NULL))
 		return false;
 

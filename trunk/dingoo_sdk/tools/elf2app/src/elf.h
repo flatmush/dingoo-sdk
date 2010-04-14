@@ -7,12 +7,12 @@
 
 
 typedef struct {
-	char*     name;
-	uintptr_t offset;
+	char*    name;
+	uint32_t offset;
 } elf_symbol_entry;
 
 typedef struct {
-	uintptr_t          size;
+	uint32_t           size;
 	elf_symbol_entry** data;
 } elf_symbol_table;
 
@@ -27,8 +27,8 @@ extern elf_symbol_entry* elf_symbol_entry_parse(const char* inLine);
 
 extern elf_symbol_table* elf_symbol_table_read(const char* inPath);
 
-extern uintptr_t         elf_symbol_table_find_offset(elf_symbol_table* inTable, const char* inName);
+extern uint32_t          elf_symbol_table_find_offset(elf_symbol_table* inTable, const char* inName);
 
-extern uintptr_t         elf_bss_size(const char* inPath);
+extern uint32_t          elf_bss_size(const char* inPath);
 
 #endif
