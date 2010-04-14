@@ -32,6 +32,11 @@ extern ldiv_t ldiv(long int numerator, long int denominator);
 extern void     srand(unsigned int inSeed);
 extern int      rand();
 
+extern int       atoi(const char* str);
+extern long      atol(const char* str);
+extern long long atoll(const char* str);
+extern double    atof(const char* str);
+
 extern void qsort(void* base, size_t num, size_t size, int(* comparator) (const void*, const void*));
 
 #endif
