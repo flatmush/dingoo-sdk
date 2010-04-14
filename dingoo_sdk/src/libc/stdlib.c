@@ -2,6 +2,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <setjmp.h>
+#include <ctype.h>
+
+
 
 uint32_t _rand_x = 0x12345678UL;
 uint32_t _rand_a = 39916801UL;
@@ -103,4 +106,51 @@ int rand() {
 	_rand_x *= _rand_a;
 	_rand_x += _rand_c;
 	return (_rand_x & RAND_MAX);
+}
+
+
+
+int atoi(const char* str) {
+	return atol(str);
+}
+
+long atol(const char* str) {
+	if(str == NULL)
+		return 0;
+	long out = 0;
+	uintptr_t i;
+	for(i = 0; isdigit(str[i]); i++) {
+		out *= 10;
+		out += (str[i] - '0');
+	}
+	return out;
+}
+
+long long atoll(const char* str) {
+	if(str == NULL)
+		return 0;
+	long long out = 0;
+	uintptr_t i;
+	for(i = 0; isdigit(str[i]); i++) {
+		out *= 10;
+		out += (str[i] - '0');
+	}
+	return out;
+}
+
+double atof(const char* str) {
+	if(str == NULL)
+		return 0;
+	double out = 0.0;
+	uintptr_t i;
+	for(i = 0; isdigit(str[i]); i++) {
+		out *= 10.0;
+		out += (str[i] - '0');
+	}
+	if(str[i] == '.') {
+		double j;
+		for(i++, j = 10; isdigit(str[i]); i++, j *= 10)
+			out += (double)(str[i] - '0') / j;
+	}
+	return out;
 }
