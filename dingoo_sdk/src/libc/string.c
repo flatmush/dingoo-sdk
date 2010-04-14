@@ -153,7 +153,7 @@ void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 
 	size_t i, j;
 
-	if((((uintptr_t)outDest | (uintptr_t)inSrc) & 15) == 0) {
+	/*if((((uintptr_t)outDest | (uintptr_t)inSrc) & 15) == 0) {
 		register uint32_t a, b, c, d;
 		i = 0;
 		for(i = 0, j = 0; i < (inLength >> 4); i++, j += 4) {
@@ -183,7 +183,12 @@ void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 			((uint32_t*)outDest)[i] = ((uint32_t*)inSrc)[i];
 		for(i <<= 2; i < inLength; i++)
 			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
-	} else {
+	} else if((((uintptr_t)outDest | (uintptr_t)inSrc) & 1) == 0) {
+		for(i = 0; i < (inLength >> 1); i++)
+			((uint16_t*)outDest)[i] = ((uint16_t*)inSrc)[i];
+		if((i << 1) < inLength)
+			((uint8_t*)outDest)[(i << 1) + 1] = ((uint8_t*)inSrc)[(i << 1) + 1];
+	} else */{
 		for(i = 0; i < inLength; i++)
 			((uint8_t*)outDest)[i] = ((uint8_t*)inSrc)[i];
 	}
