@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <inttypes.h>
 
 
 
@@ -54,7 +55,7 @@ elf_symbol_entry* elf_symbol_entry_parse(const char* inLine) {
 	char     tempName[256];
 
 	tempName[0] = '\0';
-	if(sscanf(inLine, "%lx %*c %*c .dingoo %*x %s", &tempOffset, tempName) < 0)
+	if(sscanf(inLine, "%" SCNx32 " %*c %*c .dingoo %*x %s", &tempOffset, tempName) < 0)
 		return NULL;
 	if(!isalnum(tempName[0]) && (tempName[0] != '_'))
 		return NULL;
@@ -108,7 +109,7 @@ elf_symbol_table* elf_symbol_table_read(const char* inPath) {
 
 
 
-uintptr_t elf_symbol_table_find_offset(elf_symbol_table* inTable, const char* inName) {
+uint32_t elf_symbol_table_find_offset(elf_symbol_table* inTable, const char* inName) {
 	if((inTable == NULL) || (inTable->data == NULL))
 		return 0;
 
@@ -122,17 +123,17 @@ uintptr_t elf_symbol_table_find_offset(elf_symbol_table* inTable, const char* in
 
 
 
-uintptr_t elf_bss_size(const char* inPath) {
+uint32_t elf_bss_size(const char* inPath) {
 	char tempString[512];
 	sprintf(tempString, "mipsel-linux-objdump --adjust-vma=0x80a00000 -h %s.elf", inPath);
 	FILE* tempFile = popen(tempString, "r");
 	if(tempFile == NULL)
 		return 0;
 
-	uintptr_t tempSize;
+	uint32_t tempSize;
 	while(!feof(tempFile)) {
 		fgets(tempString, 512, tempFile);
-		if(sscanf(tempString, " %*u %s %lx", tempString, &tempSize) >= 0) {
+		if(sscanf(tempString, " %*u %s %" SCNx32, tempString, &tempSize) >= 0) {
 			if(strcmp(tempString, ".bss") == 0) {
 				fclose(tempFile);
 				return tempSize;

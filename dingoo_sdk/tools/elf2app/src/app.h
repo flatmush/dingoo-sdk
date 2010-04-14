@@ -6,33 +6,33 @@
 
 
 typedef struct {
-	uintptr_t offset;
+	uint32_t  offset;
 	char*     name;
 } app_import_entry;
 
 typedef struct {
-	uintptr_t offset;
-	char*     name;
+	uint32_t offset;
+	char*    name;
 } app_export_entry;
 
 typedef struct {
-	uintptr_t          import_count;
+	uint32_t           import_count;
 	app_import_entry** import_data;
-	uintptr_t          export_count;
+	uint32_t           export_count;
 	app_export_entry** export_data;
-	uintptr_t          bin_size;
+	uint32_t           bin_size;
 	void*              bin_data;
-	uintptr_t          bin_entry;
-	uintptr_t          bin_bss;
+	uint32_t           bin_entry;
+	uint32_t           bin_bss;
 } app;
 
 
 
-extern app* app_create(void* inData, uintptr_t inSize, uintptr_t inEntry, uintptr_t inBSS);
+extern app* app_create(void* inData, uint32_t inSize, uint32_t inEntry, uint32_t inBSS);
 extern void app_delete(app* inApp);
 
-extern bool app_import_add(app* inApp, const char* inName, uintptr_t inOffset);
-extern bool app_export_add(app* inApp, const char* inName, uintptr_t inOffset);
+extern bool app_import_add(app* inApp, const char* inName, uint32_t inOffset);
+extern bool app_export_add(app* inApp, const char* inName, uint32_t inOffset);
 
 extern bool app_save(app* inApp, const char* inPath);
 

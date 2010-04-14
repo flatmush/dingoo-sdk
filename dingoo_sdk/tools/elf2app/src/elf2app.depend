@@ -6,24 +6,25 @@
 	<string.h>
 	<ctype.h>
 
-1271006950 c:\dingoo_sdk\tools\elf2app\src\elf.h
+1271240094 c:\dingoo_sdk\tools\elf2app\src\elf.h
 	<stdbool.h>
 	<stdint.h>
 
-1270948313 source:c:\dingoo_sdk\tools\elf2app\src\elf2app.c
+1271162248 source:c:\dingoo_sdk\tools\elf2app\src\elf2app.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	<stdbool.h>
 	<stdint.h>
+	<ctype.h>
 	"app.h"
 	"elf.h"
 
-1271007374 c:\dingoo_sdk\tools\elf2app\src\app.h
+1271162267 c:\dingoo_sdk\tools\elf2app\src\app.h
 	<stdbool.h>
 	<stdint.h>
 
-1270946808 source:c:\dingoo_sdk\tools\elf2app\src\app.c
+1271162345 source:c:\dingoo_sdk\tools\elf2app\src\app.c
 	"app.h"
 	<stdlib.h>
 	<stdio.h>
