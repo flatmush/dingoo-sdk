@@ -29,6 +29,10 @@ char* _app_path = NULL;
 jmp_buf _libc_exit_jmp_buf;
 int     _libc_exit_status;
 
+typedef void (*_atexit_func_t)(void);
+extern uintptr_t       _atexit_count;
+extern _atexit_func_t* _atexit_table;
+
 extern int _fread(void* ptr, size_t size, size_t count, FILE* stream);
 extern int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
 extern int _fseek(FILE* stream, long int offset, int origin);
@@ -102,6 +106,16 @@ int GameMain(char* respath) {
 		tempOut = main(1, &tempPath);
 	else
 		tempOut = _libc_exit_status;
+
+	// Do atexit stuff.
+	uintptr_t i;
+	if(_atexit_table != NULL) {
+		for(i = _atexit_count; i != 0; i--)
+			_atexit_table[i - 1]();
+		_atexit_count = 0;
+		_atexit_table = NULL;
+		free(_atexit_table);
+	}
 
 	free(_app_path);
 	free(tempPath);
