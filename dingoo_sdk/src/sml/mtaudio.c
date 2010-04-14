@@ -23,7 +23,7 @@ uint8_t  _audio_buffer_volume   = 100;
 uint32_t _audio_buffer_rate     = 48000;
 uint8_t  _audio_buffer_bits     = AFMT_S16_LE;
 
-bool     _audio_pause           = false; 
+volatile bool _audio_pause      = false;
 
 void (*_audio_callback)() = NULL;
 
@@ -31,22 +31,20 @@ void (*_audio_callback)() = NULL;
 
 void _audio_thread(void* inDummy) {
 	while(!_audio_thread_kill) {
-    if (!_audio_pause) {
-      if(!waveout_can_write()) {
-        OSTimeDly(1);
-        continue;
-      }
-      _audio_callback();
-      if(_audio_buffer == NULL) {
-        OSTimeDly(1);
-        continue;
-      }
-      waveout_write(_audio_inst, _audio_buffer, _audio_buffer_size);
-    }
-    else {
-      OSTimeDly(1);
-      continue;
-    }
+		if(_audio_pause) {
+			OSTimeDly(1);
+			continue;
+		}
+		if(!waveout_can_write()) {
+			OSTimeDly(1);
+			continue;
+		}
+		_audio_callback();
+		if(_audio_buffer == NULL) {
+			OSTimeDly(1);
+			continue;
+		}
+		waveout_write(_audio_inst, _audio_buffer, _audio_buffer_size);
 	}
 	_audio_thread_kill = false;
 	OSTaskDel(_audio_thread_id);
