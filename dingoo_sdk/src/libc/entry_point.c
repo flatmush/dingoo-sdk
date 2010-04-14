@@ -36,12 +36,16 @@ extern int _fseek(FILE* stream, long int offset, int origin);
 extern void* _memcpy(void* outDest, const void* inSrc, size_t inLength);
 extern void* _memset(void* outDest, int inValue, size_t inLength);
 
+//extern void* _malloc(size_t size);
+//extern void* _realloc(void* ptr, size_t size);
+//extern void  _free(void* ptr);
+
 extern void _abort();
 
 void *__fread, *__fwrite, *__fseek;
 void *__memcpy, *__memset;
+void *__malloc, *__realloc, *__free;
 void *__abort;
-//void *__malloc, *__realloc, *__free;
 
 void* dl_patch(void* inOld, void* inNew) {
 	if(((uintptr_t)inNew & 3) != 0)
@@ -75,6 +79,10 @@ int GameMain(char* respath) {
 	__memcpy = dl_patch(&memcpy, &_memcpy);
 	__memset = dl_patch(&memset, &_memset);
 
+	//__malloc  = dl_patch(&malloc, &_malloc);
+	//__realloc = dl_patch(&realloc, &_realloc);
+	//__free    = dl_patch(&free, &_free);
+
 	__abort = dl_patch(&abort, &_abort);
 
 	if(!_memsys_init())
@@ -102,8 +110,14 @@ int GameMain(char* respath) {
 	dl_patch(&fread, __fread);
 	dl_patch(&fwrite, __fwrite);
 	dl_patch(&fseek, __fseek);
+
 	dl_patch(&memcpy, __memcpy);
 	dl_patch(&memset, __memset);
+
+	//dl_patch(&malloc, __malloc);
+	//dl_patch(&realloc, __realloc);
+	//dl_patch(&free, __free);
+
 	dl_patch(&abort, __abort);
 
 	return tempOut;
