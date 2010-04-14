@@ -9,4 +9,6 @@ extern void mtaudio_term();
 
 extern void mtaudio_buffer_set(void* inBuffer, uintptr_t inSize, uint8_t inChannels, uint8_t inVolume);
 
+extern void mtaudio_pause(bool pause);
+
 #endif
