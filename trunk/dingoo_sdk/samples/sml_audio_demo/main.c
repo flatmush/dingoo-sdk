@@ -26,7 +26,7 @@ sound_t* sound_wav = NULL;
 
 
 void sound_thread() {
-	mtaudio_buffer_set(sound_wav->sample_data, ((sound_wav->sample_count * sound_wav->channels * sound_wav->sample_bits) >> 3), sound_wav->channels, 100);
+	mtaudio_buffer_set(sound_wav->sample_data, ((sound_wav->sample_count * sound_wav->channels * sound_wav->sample_bits) >> 3), sound_wav->channels, 100, 48000);
 }
 
 void draw_sine_wave(fix16_t inFrequency) {
@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 
 	sound_wav = wav_load("test.wav");
 
-	mtaudio_init(sound_thread);
+	mtaudio_init(sound_thread,48000);
 
 	gfx_render_target_clear(gfx_color_rgb(0x00, 0x00, 0x00));
 	draw_sine_wave(0x00010000);
