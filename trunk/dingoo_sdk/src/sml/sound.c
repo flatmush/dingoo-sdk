@@ -152,11 +152,11 @@ void _sound_callback() {
 	_sound_buffer_playnext = 3;
 
 	if(_sound_buffer_used[_sound_buffer_playing] == 0) {
-		mtaudio_buffer_set(NULL, 0, 2, 100);
+		mtaudio_buffer_set(NULL, 0, 2, 100,48000);
 		return;
 	}
 
-	mtaudio_buffer_set(_sound_buffer[_sound_buffer_playing], (_sound_buffer_used[_sound_buffer_playing] << 1), 2, _sound_buffer_volume);
+	mtaudio_buffer_set(_sound_buffer[_sound_buffer_playing], (_sound_buffer_used[_sound_buffer_playing] << 1), 2, _sound_buffer_volume, 48000);
 }
 
 
@@ -173,7 +173,7 @@ bool sound_init() {
 	if(_sound_sources_semaphore == NULL)
 		return false;
 
-	if(!mtaudio_init(_sound_callback)) {
+	if(!mtaudio_init(_sound_callback,48000)) {
 		OSSemDel(_sound_sources_semaphore, OS_DEL_NO_PEND, NULL);
 		_sound_sources_semaphore = NULL;
 		return false;

@@ -49,7 +49,7 @@ void _audio_thread(void* inDummy) {
 
 
 
-bool mtaudio_init(void* inCallback) {
+bool mtaudio_init(void* inCallback,uint32_t inRate) {
 	if(_audio_ready)
 		mtaudio_term();
 
@@ -58,7 +58,8 @@ bool mtaudio_init(void* inCallback) {
 	if(_audio_thread_stack == NULL)
 		return false;
 
-	waveout_args tempArgs = { _audio_buffer_rate, _audio_buffer_bits, _audio_buffer_channels, _audio_buffer_volume };
+	waveout_args tempArgs = { inRate, _audio_buffer_bits, _audio_buffer_channels, _audio_buffer_volume };
+  
 	_audio_inst = waveout_open(&tempArgs);
 	if(_audio_inst == NULL) {
 		free(_audio_thread_stack);
@@ -108,8 +109,7 @@ void mtaudio_term() {
 }
 
 
-
-void mtaudio_buffer_set(void* inBuffer, uintptr_t inSize, uint8_t inChannels, uint8_t inVolume) {
+void mtaudio_buffer_set(void* inBuffer, uintptr_t inSize, uint8_t inChannels, uint8_t inVolume, uint32_t inRate) {
 	_audio_buffer      = NULL;
 	_audio_buffer_size = 0;
 
@@ -119,16 +119,18 @@ void mtaudio_buffer_set(void* inBuffer, uintptr_t inSize, uint8_t inChannels, ui
 	if(inVolume > 100)
 		inVolume = 100;
 
-	if(inChannels != _audio_buffer_channels) {
+	if ((inChannels != _audio_buffer_channels) || (inRate != _audio_buffer_rate))  {
 		waveout_close(_audio_inst);
-		waveout_args tempArgs = { _audio_buffer_rate, _audio_buffer_bits, inChannels, inVolume };
+    waveout_args tempArgs = { inRate, _audio_buffer_bits, inChannels, inVolume };
 		_audio_inst = waveout_open(&tempArgs);
 		if(_audio_inst == NULL) {
+      tempArgs.sample_rate = _audio_buffer_rate;
 			tempArgs.channel = _audio_buffer_channels;
 			tempArgs.volume  = _audio_buffer_volume;
 			_audio_inst = waveout_open(&tempArgs);
 			return;
 		}
+    _audio_buffer_rate = inRate;
 		_audio_buffer_channels = inChannels;
 		_audio_buffer_volume   = inVolume;
 	} else if(inVolume != _audio_buffer_volume) {
