@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <dirent.h>
 
+#include <dingoo/fsys.h>
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 
