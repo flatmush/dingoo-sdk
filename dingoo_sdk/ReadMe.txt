@@ -52,6 +52,7 @@ Now you need to setup your cygwin environment:
 		SET MIPSTOOLS=/mipsel-gcc4.1-nopic
 		SET DINGOO_SDK=<dingoo_sdk install path>/dingoo_sdk
 		SET PATH=%PATH%;%MIPSTOOLS%/bin;%DINGOO_SDK%
+NB: Your dingoo_sdk path has to be posix style (e.g "c:\dingoo_sdk" would be "/cygdrive/c/dingoo_sdk").
 
 Now for the final step, open up cygwin from the icon in your start menu or desktop:
 	- Type "cd $DINGOO_SDK"
