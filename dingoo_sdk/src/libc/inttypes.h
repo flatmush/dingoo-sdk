@@ -16,7 +16,7 @@
 #define PRIdLEAST8  "hhd"
 #define PRIdLEAST16 "hd"
 #define PRIdLEAST32 "ld"
-#define PRIdLEAST32 "lld"
+#define PRIdLEAST64 "lld"
 
 #define PRIdPTR PRId32
 
@@ -184,7 +184,7 @@
 
 #define SCNxPTR SCNx32
 
-typedef int32_t  int_farptr_t
-typedef uint32_t uint_farptr_t
+typedef int32_t  int_farptr_t;
+typedef uint32_t uint_farptr_t;
 
 #endif
