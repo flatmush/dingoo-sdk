@@ -87,6 +87,19 @@ char* strncpy(char* outDest, const const char* inSrc, size_t inLength) {
 
 
 
+char* strcat(char* outDest, const char* inSrc) {
+	if((outDest == NULL) || (inSrc == NULL))
+		return outDest;
+
+	uintptr_t i, j;
+	for(i = 0, j = strlen(outDest); inSrc[i] != '\0'; i++, j++)
+		outDest[j] = inSrc[i];
+	outDest[j] = '\0';
+	return outDest;
+}
+
+
+
 int _strcmp(const char* inStr0, const char* inStr1) {
 	if(inStr0 == NULL) {
 		if(inStr1 == NULL)

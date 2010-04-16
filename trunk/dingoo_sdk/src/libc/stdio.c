@@ -405,6 +405,8 @@ int fputc(int c, FILE* stream) {
 	return c;
 }
 
+
+
 char* fgets(char* s, int n, FILE* stream) {
 	if((s == NULL) || (n < 0) || (stream == NULL))
 		return NULL;
@@ -427,4 +429,16 @@ char* fgets(char* s, int n, FILE* stream) {
 	}
 	s[i] = '\0';
 	return s;
+}
+
+int fputs(const char* str, FILE* stream) {
+	if(stream == NULL)
+		return EOF;
+	if(str == NULL)
+		return 0;
+
+	int len = strlen(str);
+	if(fwrite(str, 1, len, stream) != len)
+		return EOF;
+	return 0;
 }
