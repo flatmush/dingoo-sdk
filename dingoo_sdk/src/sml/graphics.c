@@ -758,10 +758,12 @@ gfx_font* gfx_font_load(const char* inPath, gfx_color inKey) {
 		return NULL;
 
 	gfx_font* tempFont = (gfx_font*)malloc(sizeof(gfx_font));
-	if (tempFont == NULL)
+	if(tempFont == NULL) {
+		free(tempTexture);
 		return NULL;
+	}
 
-	tempFont->texture = tempTexture;
+	tempFont->texture  = tempTexture;
 	tempFont->colorKey = inKey;
 
 	return tempFont;
@@ -773,20 +775,22 @@ gfx_font* gfx_font_load_from_buffer(uint8_t* buffer, size_t size, gfx_color inKe
 		return NULL;
 
 	gfx_font* tempFont = (gfx_font*)malloc(sizeof(gfx_font));
-	if (tempFont == NULL)
+	if(tempFont == NULL) {
+		free(tempTexture);
 		return NULL;
+	}
 
-	tempFont->texture = tempTexture;
+	tempFont->texture  = tempTexture;
 	tempFont->colorKey = inKey;
 
 	return tempFont;
 }
 
 void gfx_font_delete(gfx_font* inFont) {
-	if (inFont == NULL)
+	if(inFont == NULL)
 		return;
 
-	if (inFont->texture == NULL)
+	if(inFont->texture == NULL)
 		free(inFont->texture);
 
 	free(inFont);
