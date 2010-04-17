@@ -120,7 +120,7 @@ gfx_texture* _gfx_tex_load_tga(FILE* tempFile) {
 	fread(&tga_bpp, 1, 1, tempFile);
 	fread(&tga_descriptor, 1, 1, tempFile);
 
-	bool upside_down = (tga_descriptor & 0x20) > 0;
+	bool upside_down = ((tga_descriptor & 0x20) == 0);
 
 	gfx_texture* tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (tga_width * tga_height * 2));
 	if(tempTexture == NULL) {
@@ -128,17 +128,21 @@ gfx_texture* _gfx_tex_load_tga(FILE* tempFile) {
 		return NULL;
 	}
 	tempTexture->address = (void*)((uintptr_t)tempTexture + sizeof(gfx_texture));
-	tempTexture->width = tga_width;
-	tempTexture->height = tga_height;
+	tempTexture->width   = tga_width;
+	tempTexture->height  = tga_height;
 
-	uintptr_t i;
+	uintptr_t i, j, k;
 	uint8_t tempColor[3];
 	uint16_t* tempTexPtr = tempTexture->address;
-	for(i = 0; i < (tga_width * tga_height); i++) {
-		fread(&tempColor[2], 1, 1, tempFile);
-		fread(&tempColor[1], 1, 1, tempFile);
-		fread(&tempColor[0], 1, 1, tempFile);
-		tempTexPtr[upside_down ? i : ((tga_height - 1 - (i / tga_width)) * tga_width + i % tga_width)] = gfx_color_rgb(tempColor[0], tempColor[1], tempColor[2]);
+	for(j = 0; j < tga_height; j++) {
+		k  = (upside_down ? (tga_height - (j + 1)) : j);
+		k *= tga_width;
+		for(i = 0; i < tga_width; i++) {
+			fread(&tempColor[2], 1, 1, tempFile);
+			fread(&tempColor[1], 1, 1, tempFile);
+			fread(&tempColor[0], 1, 1, tempFile);
+			tempTexPtr[k + i] = gfx_color_rgb(tempColor[0], tempColor[1], tempColor[2]);
+		}
 	}
 	fclose(tempFile);
 
