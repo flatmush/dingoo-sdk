@@ -4,6 +4,7 @@ extern "C" {
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 void printUsage() {
 	printf("Usage: bin2h <bin> <name>\n");
@@ -24,9 +25,10 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
-	fprintf(tempOutFile, "#ifndef __%s_h__\n", argv[2]);
-	fprintf(tempOutFile, "#define __%s_h__\n", argv[2]);
+	fprintf(tempOutFile, "#ifndef __bin2h_%s_h__\n", argv[2]);
+	fprintf(tempOutFile, "#define __bin2h_%s_h__\n", argv[2]);
 	fprintf(tempOutFile, "\n");
+
 	fprintf(tempOutFile, "#ifdef __cplusplus\n");
 	fprintf(tempOutFile, "extern \"C\" {\n");
 	fprintf(tempOutFile, "#endif\n");
@@ -45,7 +47,8 @@ int main(int argc, char** argv) {
 	unsigned long int tempSize = ftell(tempInFile);
 	fseek(tempInFile, 0, SEEK_SET);
 
-	fprintf(tempOutFile, "uint8_t %s[%lu] = {\n", argv[2], tempSize);
+	fprintf(tempOutFile, "uintptr_t %s_size = %lu;\n", argv[2], tempSize);
+	fprintf(tempOutFile, "uint8_t   %s[%lu] = {\n", argv[2], tempSize);
 
 	unsigned char tempByte;
 	unsigned int tempHex;
@@ -69,6 +72,9 @@ int main(int argc, char** argv) {
 	fprintf(tempOutFile, "\n");
 	fprintf(tempOutFile, "#ifdef __cplusplus\n");
 	fprintf(tempOutFile, "}\n");
+	fprintf(tempOutFile, "#endif\n");
+
+	fprintf(tempOutFile, "\n");
 	fprintf(tempOutFile, "#endif\n");
 
 	fclose(tempOutFile);
