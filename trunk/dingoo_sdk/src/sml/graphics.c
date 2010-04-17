@@ -758,7 +758,7 @@ void gfx_tex_draw(int16_t inX, int16_t inY, gfx_texture* inTexture) {
 
 gfx_font* gfx_font_load(const char* inPath, gfx_color inKey) {
 	gfx_texture* tempTexture = gfx_tex_load_tga(inPath);
-	if (tempTexture == NULL)
+	if(tempTexture == NULL)
 		return NULL;
 
 	gfx_font* tempFont = (gfx_font*)malloc(sizeof(gfx_font));
@@ -775,7 +775,7 @@ gfx_font* gfx_font_load(const char* inPath, gfx_color inKey) {
 
 gfx_font* gfx_font_load_from_buffer(uint8_t* buffer, size_t size, gfx_color inKey) {
 	gfx_texture* tempTexture = gfx_tex_load_tga_from_buffer(buffer, size);
-	if (tempTexture == NULL)
+	if(tempTexture == NULL)
 		return NULL;
 
 	gfx_font* tempFont = (gfx_font*)malloc(sizeof(gfx_font));

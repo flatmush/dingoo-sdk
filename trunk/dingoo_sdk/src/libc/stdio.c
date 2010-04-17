@@ -50,9 +50,10 @@ char* _file_path(const char* inPath) {
 			j = i;
 	}
 
-	char tempPath[strlen(_app_path) + strlen(inPath) + 3];
+	char* tempPath = (char*)malloc(strlen(_app_path) + strlen(inPath) + 3);
 	if((inPath[0] == '/') || (inPath[0] == '\\')) {
 		// TODO - Fix unix style absolute paths.
+		free(tempPath);
 		return NULL;
 	}
 
@@ -76,10 +77,10 @@ char* _file_path(const char* inPath) {
 		}
 	}
 
-	char* tempOut = (char*)malloc(strlen(tempPath) + 1);
+	char* tempOut = (char*)realloc(tempPath, (strlen(tempPath) + 1));
 	if(tempOut != NULL)
-		strcpy(tempOut, tempPath);
-	return tempOut;
+		return tempOut;
+	return tempPath;
 }
 
 

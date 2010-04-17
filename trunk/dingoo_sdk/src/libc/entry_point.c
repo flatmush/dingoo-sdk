@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <malloc.h>
 #include <setjmp.h>
+#include <dingoo/cache.h>
 
 extern int main(int, char**);
 
@@ -94,6 +95,9 @@ int GameMain(char* respath) {
 
 	__abort = dl_patch(&abort, &_abort);
 
+	__dcache_writeback_all();
+	__icache_invalidate_all(); // Invalidate I-Cache to update jump table entries.
+
 	if(!_memsys_init())
 		return EXIT_FAILURE;
 
@@ -139,6 +143,9 @@ int GameMain(char* respath) {
 	//dl_patch(&free, __free);
 
 	dl_patch(&abort, __abort);
+
+	__dcache_writeback_all();
+	__icache_invalidate_all(); // Invalidate I-Cache to update jump table entries.
 
 	return tempOut;
 }

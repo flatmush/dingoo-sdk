@@ -17,8 +17,8 @@ typedef struct {
 	int rem;
 } div_t;
 
-extern void abort();
-extern void exit(int status);
+extern void abort() __attribute__ ((noreturn));
+extern void exit(int status) __attribute__ ((noreturn));
 extern int  atexit(void (*func)(void));
 
 extern int      abs(int n);
