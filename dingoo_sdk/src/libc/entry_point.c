@@ -52,10 +52,15 @@ void *__memcpy, *__memset;
 void *__abort;
 
 void* dl_patch(void* inOld, void* inNew) {
-	if(((uintptr_t)inNew & 3) != 0)
+	if(((uintptr_t)inNew & 3) != 0) // New function call isn't aligned.
 		return NULL;
-	if(((uintptr_t)inNew & 0xF0000000) != ((uintptr_t)inOld & 0xF0000000))
+	if((((uint32_t*)inOld)[0] >> 26) != 0x02) // Instruction isn't a jump.
 		return NULL;
+	if(((uint32_t*)inOld)[1] != 0) // Second instruction isn't a noop.
+		return NULL;
+	if(((uintptr_t)inNew & 0xF0000000) != ((uintptr_t)inOld & 0xF0000000)) // New instruction isn't in same memory segment.
+		return NULL;
+
 	void* tempOld = (void*)(((*((uint32_t*)inOld) << 2) & 0x0FFFFFFF) | ((uint32_t)inOld & 0xF0000000));
 	*((uint32_t*)inOld) = (0x08000000 | (((uint32_t)inNew >> 2) & 0x03FFFFFF));
 	return tempOld;

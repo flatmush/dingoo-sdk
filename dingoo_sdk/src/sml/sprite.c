@@ -17,7 +17,7 @@ sprite* sprite_create(uint16_t inWidth, uint16_t inHeight) {
 	tempSprite->width       = inWidth;
 	tempSprite->height      = inHeight;
 	tempSprite->frame_count = 0;
-	tempSprite->frame_data  = (uint16_t**)((uintptr_t)tempSprite + sizeof(sprite));
+	tempSprite->frame_data  = NULL;
 
 	return tempSprite;
 }
@@ -25,6 +25,13 @@ sprite* sprite_create(uint16_t inWidth, uint16_t inHeight) {
 void sprite_delete(sprite* inSprite) {
 	if(inSprite == NULL)
 		return;
+
+	if(inSprite->frame_data != NULL) {
+		uintptr_t i;
+		for(i = 0; i < inSprite->frame_count; i++)
+			free(inSprite->frame_data[i]);
+	}
+
 	free(inSprite);
 }
 
@@ -33,7 +40,7 @@ void sprite_delete(sprite* inSprite) {
 sprite* sprite_frame_add(sprite* inSprite, uint16_t* inData) {
 	if((inSprite == NULL) || (inData == NULL))
 		return false;
-	sprite* tempSprite = (sprite*)realloc(inSprite, (sizeof(sprite) + ((inSprite->frame_count + 1) << 2)));
+	sprite* tempSprite = (sprite*)realloc(inSprite, (sizeof(sprite) + ((inSprite->frame_count + 1) * sizeof(uint16_t*))));
 	if(tempSprite == NULL)
 		return NULL;
 	tempSprite->frame_data = (uint16_t**)((uintptr_t)tempSprite + sizeof(sprite));
@@ -143,7 +150,7 @@ sprite* _sprite_load(FILE* tempFile) {
 			fclose(tempFile);
 			return NULL;
 		}
-		if(fread(tempFrame, 2, tempFrameLen, tempFile) != tempFrameLen) {
+		if(fread(tempFrame, 2, tempFrameLen, tempFile) != (int)tempFrameLen) {
 			free(tempFrame);
 			sprite_delete(tempSprite);
 			fclose(tempFile);
@@ -222,7 +229,7 @@ sprite* sprite_load_from_tga(const char* inPath, gfx_color inKey) {
 	}
 
 	tempSprite = sprite_frame_add_bitmap(tempSprite, tempTexture->address, inKey);
-	
+
 	free(tempTexture);
 	return tempSprite;
 }
@@ -241,7 +248,7 @@ sprite* sprite_load_from_tga_buffer(uint8_t* tgaFileData, size_t bufferSize, gfx
 	}
 
 	tempSprite = sprite_frame_add_bitmap(tempSprite, tempTexture->address, inKey);
-	
+
 	free(tempTexture);
 	return tempSprite;
 }

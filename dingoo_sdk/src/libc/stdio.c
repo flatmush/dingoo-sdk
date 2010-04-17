@@ -7,10 +7,12 @@
 
 
 
-FILE*  stdin  = (FILE*)((uintptr_t)NULL + 1);
-FILE*  stdout = (FILE*)((uintptr_t)NULL + 2);
-FILE*  stderr = (FILE*)((uintptr_t)NULL + 3);
-FILE* _serial = (FILE*)((uintptr_t)NULL + 4);
+uint32_t _stream_reserved = 0;
+
+FILE*  stdin  = (FILE*)((uintptr_t)&_stream_reserved + 0);
+FILE*  stdout = (FILE*)((uintptr_t)&_stream_reserved + 1);
+FILE*  stderr = (FILE*)((uintptr_t)&_stream_reserved + 2);
+FILE* _serial = (FILE*)((uintptr_t)&_stream_reserved + 3);
 
 
 
