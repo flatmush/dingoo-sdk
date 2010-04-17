@@ -119,8 +119,8 @@ sprite* _sprite_load(FILE* tempFile) {
 		return NULL;
 
 	char tempMagic[8];
-	fread(tempMagic, 1, 8,tempFile);
-	if(strncmp(tempMagic, "dsprite\0", 8) != 0) {
+	fread(tempMagic, 1, 8, tempFile);
+	if(strcmp(tempMagic, "dsprite") != 0) {
 		fclose(tempFile);
 		return NULL;
 	}
