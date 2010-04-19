@@ -63,7 +63,7 @@ $(OBJ_S) : %.o : %.S
 clean :
 	rm -f $(OBJ)
 	rm -f $(LIB_PATH)/lib$(LIB_NAME).a
-	rm -f $(DINGOO_SDK)/include/*.h
+	rm -rf $(DINGOO_SDK)/include/*.h
 	rm -rf $(DINGOO_SDK)/include/sys
 
 
@@ -74,5 +74,5 @@ clean :
 
 headers:
 	mkdir -p $(DINGOO_SDK)/include/sys
-	cp -f *.h $(DINGOO_SDK)/include/
-	cp -f sys/*.h $(DINGOO_SDK)/include/sys/
+	cp -f *.h $(DINGOO_SDK)/include
+	cp -f sys/*.h $(DINGOO_SDK)/include/sys

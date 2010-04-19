@@ -75,4 +75,4 @@ clean :
 headers:
 	rm -rf $(DINGOO_SDK)/include/$(LIB_NAME)
 	mkdir $(DINGOO_SDK)/include/$(LIB_NAME)
-	cp $(SRC_H) $(DINGOO_SDK)/include/$(LIB_NAME)/
+	cp $(SRC_H) $(DINGOO_SDK)/include/$(LIB_NAME)
