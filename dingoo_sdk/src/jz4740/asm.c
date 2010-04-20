@@ -95,7 +95,7 @@ char* asm_disassemble(uint32_t inAddr, uint32_t inWord) {
 					break;
 				case 0x09: // 0b001001
 					sprintf(str, "jalr $%s, $%s", d_name, s_name);
-					umask |= _USED_S;
+					umask |= _USED_D | _USED_S;
 					break;
 				case 0x0A: // 0b001010
 					sprintf(str, "movz $%s, $%s, $%s", d_name, s_name, t_name);
