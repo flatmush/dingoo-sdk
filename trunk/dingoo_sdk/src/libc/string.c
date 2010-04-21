@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <ctype.h>
 
 #include <jz4740/dma.h>
 
@@ -145,6 +146,56 @@ int strncmp(const char* inStr0, const char* inStr1, size_t inLength) {
 	return 0;
 }
 
+int _stricmp(const char *s1, const char *s2)
+{
+	while (toupper(*s1) == toupper(*s2))
+	{
+		if (*s1 == 0)
+			return 0;
+		s1++;
+		s2++;
+	}
+	return toupper(*(unsigned const char *)s1) - toupper(*(unsigned const char *)(s2));
+}
+
+int _strnicmp(const char *s1, const char *s2, size_t n)
+{
+	if (n == 0)
+		return 0;
+	do
+	{
+		if (toupper(*s1) != toupper(*s2++))
+			return toupper(*(unsigned const char *)s1) - toupper(*(unsigned const char *)--s2);
+		if (*s1++ == 0)
+			break;
+	}
+	while (--n != 0);
+	return 0;
+}
+
+char *strncat(char *dst, const char *src, size_t n)
+{
+	if (n != 0)
+	{
+		char *d = dst;
+		const char *s = src;
+
+		while (*d != 0)
+			d++;
+		do
+		{
+			if ((*d = *s++) == 0)
+				break;
+			d++;
+		}
+		while (--n != 0);
+		*d = 0;
+	}
+
+	return dst;
+}
+
+
 
 
 void* memchr (void* inPtr, int inChar, size_t inLength) {
@@ -175,7 +226,7 @@ void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
 		}
 	}*/
 
-	size_t i, j;
+	size_t i;
 
 	/*if((((uintptr_t)outDest | (uintptr_t)inSrc) & 15) == 0) {
 		register uint32_t a, b, c, d;
