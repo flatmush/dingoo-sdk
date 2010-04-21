@@ -33,6 +33,6 @@ extern int  memcmp(const void *s1, const void *s2, size_t n);
 
 #define strcmp(x, y) _strcmp(x, y)
 #define stricmp(x, y) _stricmp(x, y)
-#define strnicmp(x, y) _strnicmp(x, y)
+#define strnicmp(x, y, z) _strnicmp(x, y, z)
 
 #endif
