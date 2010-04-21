@@ -20,6 +20,8 @@ extern int strncmp(const char *inStr0, const char *inStr1, size_t inLength);
 extern int _stricmp(const char *s1, const char *s2);
 extern int _strnicmp(const char *s1, const char *s2, size_t n);
 
+extern size_t strspn(const char *s1, const char *s2);
+
 extern char *strcat(char *outDest, const char *inSrc);
 extern char *strncat(char *dst, const char *src, size_t n);
 
