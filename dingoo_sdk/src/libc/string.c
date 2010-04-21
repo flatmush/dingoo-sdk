@@ -197,19 +197,47 @@ char *strncat(char *dst, const char *src, size_t n)
 
 size_t strspn(const char *s1, const char *s2)
 {
-	const char *p = s1, *spanp;
-	char c, sc;
+  const char *p = s1, *spanp;
+  char c, sc;
 
-  cont:
-	c = *p++;
-	for (spanp = s2; (sc = *spanp++) != 0;)
-		if (sc == c)
-			goto cont;
-
-	return (p - 1 - s1);
+cont:
+  c = *p++;
+  for (spanp = s2; (sc = *spanp++) != 0;)
+    if (sc == c)
+      goto cont;
+  return (p - 1 - s1);
 }
 
 
+size_t strcspn(const char *s1, const char *s2)
+{
+  const char *p, *spanp;
+  char c, sc;
+
+  for (p = s1;;)
+  {
+    c = *p++;
+    spanp = s2;
+    do {
+      if ((sc = *spanp++) == c)
+	return p - 1 - s1;
+    } while (sc != 0);
+  }
+}
+
+char *strpbrk(const char *s1, const char *s2)
+{
+  const char *scanp;
+  int c, sc;
+
+  while ((c = *s1++) != 0)
+  {
+    for (scanp = s2; (sc = *scanp++) != 0;)
+      if (sc == c)
+    return (char*) s1 - 1;
+  }
+  return 0;
+}
 
 void* memchr (void* inPtr, int inChar, size_t inLength) {
 	if(inPtr == NULL)
