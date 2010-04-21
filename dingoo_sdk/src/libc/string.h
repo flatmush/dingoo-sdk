@@ -13,6 +13,8 @@ extern char* strcpy(char* outDest, const char* inSrc);
 extern char* strncpy(char* outDest, const char* inSrc, size_t inLength);
 extern char* strdup(const char* inStr);
 
+extern char *strtok(char *s, const char *delim);
+
 extern int   _strcmp(const char* inStr0, const char* inStr1);
 extern int   strncmp(const char* inStr0, const char* inStr1, size_t inLength);
 
