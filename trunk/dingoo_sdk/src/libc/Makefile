@@ -63,8 +63,8 @@ $(OBJ_S) : %.o : %.S
 clean :
 	rm -f $(OBJ)
 	rm -f $(LIB_PATH)/lib$(LIB_NAME).a
-	rm -rf $(DINGOO_SDK)/include/*.h
-	rm -rf $(DINGOO_SDK)/include/sys
+	-rm -f $(DINGOO_SDK)/include/*.h
+	-rm -rf $(DINGOO_SDK)/include/sys
 
 
 
