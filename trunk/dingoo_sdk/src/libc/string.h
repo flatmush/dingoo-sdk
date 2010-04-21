@@ -1,5 +1,5 @@
-#ifndef __string_h__
-#define __string_h__
+#ifndef __libc_string_h__
+#define __libc_string_h__
 
 #include <stddef.h>
 
@@ -11,6 +11,7 @@ extern const char* strstr(const char* inStr, const char* inFind);
 
 extern char* strcpy(char* outDest, const char* inSrc);
 extern char* strncpy(char* outDest, const char* inSrc, size_t inLength);
+extern char* strdup(const char* inStr);
 
 extern int   _strcmp(const char* inStr0, const char* inStr1);
 extern int   strncmp(const char* inStr0, const char* inStr1, size_t inLength);

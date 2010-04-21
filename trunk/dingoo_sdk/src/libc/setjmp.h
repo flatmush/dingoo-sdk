@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-typedef uintptr_t jmp_buf[31];
+typedef uintptr_t jmp_buf[32];
 
 extern int  setjmp(jmp_buf env);
 extern void longjmp(jmp_buf env, int value);

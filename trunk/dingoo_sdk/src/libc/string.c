@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 
@@ -83,6 +84,16 @@ char* strncpy(char* outDest, const const char* inSrc, size_t inLength) {
 		outDest[i] = inSrc[i];
 	outDest[i] = '\0';
 	return outDest;
+}
+
+char* strdup(const char* inStr) {
+	if(inStr == NULL)
+		return NULL;
+	int tempLen = strlen(inStr) + 1;
+	char* tempOut = (char*)malloc(tempLen);
+	if(tempOut != NULL)
+		memcpy(tempOut, inStr, tempLen);
+	return tempOut;
 }
 
 
