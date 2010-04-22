@@ -57,7 +57,7 @@ const char* strstr(const char* inStr, const char* inFind) {
 	for(i = 0; inStr[i] != '\0'; i++) {
 		if(inStr[i] == inFind[0]) {
 			for(j = 0; inStr[i + j] == inFind[j]; j++) {
-				if(inFind[j] == '\0')
+				if(inFind[j + 1] == '\0')
 					return &inStr[i];
 			}
 		}
