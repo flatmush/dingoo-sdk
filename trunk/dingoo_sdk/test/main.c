@@ -32,12 +32,11 @@
 #define VERSION_MINOR    0
 #define VERSION_REVISION 0
 
-#define TEST_SUCCEEDED 1
-#define TEST_FAILED    2
+#define TEST_SUCCEEDED 0
+#define TEST_FAILED    255
 
-char* testResultText[] = {"not tested", "OK", "FAILED"};
-
-#define NMBR_OF_TESTS 5
+#define NMBR_OF_TESTS 3
+uint16_t curAddTest = 0;
 
 gfx_font*    gameFont            = NULL;
 display*     gameDisplay         = NULL;
@@ -52,7 +51,7 @@ void*        testArg[5];
 
 void (*testCleanup)();
 void (*testDraw)();
-bool (*test[NMBR_OF_TESTS])();
+uint8_t (*test[NMBR_OF_TESTS])();
 
 void do_cleanup() {
 	testCleanup();
@@ -62,103 +61,170 @@ void do_cleanup() {
 	}
 }
 
-// MEMSET
-bool test1() {
-	char str[] = "ABCDE";
-	memset(&str[1], '-', 3);
-	if (str[0] != 'A' || str[4] != 'E')
-		return false;
+// STRING.H (not complete)
+uint8_t testStringH()
+{
+	char* testStr1 = "Hello this is a test string";
+	char* testStr2 = "yet another";
+	char testBuf[256];
+
+	// memchr
+	char* pch;
+	pch = (char*) memchr (testStr1, 't', strlen(testStr1));
+	if (pch == NULL)
+		return 1;
+
+	if (pch - testStr1 != 6)
+		return 2;
+
+	pch = (char*) memchr (testStr2, 'r', strlen(testStr2));
+	if (pch == NULL)
+		return 3;
+
+	if (pch - testStr2 != 10)
+		return 4;
+
+	pch = (char*) memchr (testStr2, 'w', strlen(testStr2));
+	if (pch != NULL)
+		return 5;
+
+	// strchr
+	int count = -1;
+	pch = testStr1 - 1;
+	do {
+		count++;
+		pch = strchr(pch + 1, 's');
+		if (pch != NULL)
+		{
+			if (pch - testStr1 != 9 && pch - testStr1 != 12 && 
+				pch - testStr1 != 18 && pch - testStr1 != 21)
+			{
+				return 6;
+			}
+		}
+	} while(pch != NULL);
+
+	if (count != 4)
+		return 7;
+
+	// strcpy, strcmp, strlen, strncmp
+	char* testPtr = strcpy(testBuf, testStr1);
+	if (testPtr != testBuf)
+		return 8;
+
+	if (strlen(testBuf) != 27)
+		return 9;
+
+	if (strcmp(testBuf, testStr1) != 0)
+		return 10;
+
+	testBuf[strlen(testBuf) - 1] = '?';
+
+	if (strcmp(testBuf, testStr1) == 0)
+		return 11;
+
+	testBuf[strlen(testBuf) - 1] = '\0';
+
+	if (strcmp(testBuf, testStr1) == 0)
+		return 12;
+
+	if (strncmp(testBuf, testStr1, strlen(testBuf)) != 0)
+		return 13;
+
+	strncpy(&testBuf[6], &testStr2[4], 7);
+	
+	if (strncmp(testBuf, testStr1, strlen(testBuf)) == 0)
+		return 14;
+
+	if (strncmp(testBuf, "Hello another a", 15) != 0)
+		return 15;
+
+	strncpy(testBuf, &testStr2[10], 3);
+	if (testBuf[0] != 'r' || testBuf[1] != '\0' || testBuf[2] != '\0' || testBuf[3] != 'l')
+		return 16;
+
+	// memmove
+	char memMoveStr[] = "memmove can be very useful......";
+	memmove (memMoveStr + 20, memMoveStr + 15, 11);
+	if (strcmp(memMoveStr, "memmove can be very very useful.") != 0)
+		return 17;
+
+	// memcpy, memcmp
+	char* strMemcpy = "Hello this is a test";
+	char tempMemcpy1[16];
+	char tempMemcpy2[20];
+	memcpy(tempMemcpy1, strMemcpy, 16);
+	memcpy(tempMemcpy2, strMemcpy, 20);
+	if (memcmp(strMemcpy, tempMemcpy1, 16) != 0)
+		return 18;
+	if (memcmp(strMemcpy, tempMemcpy2, 20) != 0)
+		return 19;
+	tempMemcpy1[1] = '?';
+	if (memcmp(strMemcpy, tempMemcpy1, 16) == 0)
+		return 20;
+
+	// memset
+	char strMemset[] = "ABCDE";
+	memset(&strMemset[1], '-', 3);
+	if (strMemset[0] != 'A' || strMemset[4] != 'E')
+		return 21;
 	uint8_t i;
 	for (i = 1; i < 4; i++) {
-		if (str[i] != '-')
-			return false;
+		if (strMemset[i] != '-')
+			return 22;
 	}
 
-	return true;
-}
-
-// MEMCMP
-bool test2() {
-	char str[] = "ABCDEFGHIJKLMNOP";
-	char str2[16];
-	uint8_t i;
-	char j;
-	for (i = 0, j = 'A'; i < 16; i++, j++) {
-		str2[i] = j;
-	}
-
-	if (memcmp(str, str2, 16) != 0)
-		return false;
-
-	if (memcmp(&str[5], &str2[5], 7) != 0)
-		return false;
-
-	return true;
-}
-
-// MEMCPY
-bool test3() {
-	char* str = "Hello this is a test";
-	char temp1[16];
-	char temp2[20];
-	memcpy(temp1, str, 16);
-	memcpy(temp2, str, 20);
-	if (memcmp(str, temp1, 16) != 0)
-		return false;
-	if (memcmp(str, temp2, 20) != 0)
-		return false;
-
-	return true;
+	return 0;
 }
 
 // SPRITE (buffer)
-void test4gfx() {
+void testSprite_gfx() {
 	sprite* tempSprite = (sprite*)testArg[0];
 	gfx_font_print_center(10, gameFont, "Does the image display correctly?");
 	sprite_draw(tempSprite, 40, 40, 0);
 }
 
-void test4cleanup() {
+void testSprite_cleanup() {
 	sprite_delete((sprite*)testArg[0]);
 }
 
-bool test4() {
-	testDraw = test4gfx;
-	testCleanup = test4cleanup;
+uint8_t testSprite() {
+	testDraw = testSprite_gfx;
+	testCleanup = testSprite_cleanup;
 	curTestReqUserInput = true;
 
 	sprite* tempSprite = sprite_load_from_buffer(testspt, testsptSize);
 	if (tempSprite == NULL)
-		return false;
+		return 1;
 
 	testArg[0] = tempSprite;
 
-	return true;
+	return 0;
 }
 
 // GFX_TEXTURE (file)
-void test5gfx() {
+void testTexture_gfx() {
 	gfx_texture* tempTex = (gfx_texture*)testArg[0];
 	gfx_font_print_center(10, gameFont, "Does the image display correctly?");
 	gfx_tex_draw(40, 40, tempTex);
 }
 
-void test5cleanup() {
+void testTexture_cleanup() {
 	free(testArg[0]);
 }
 
-bool test5() {
-	testDraw = test5gfx;
-	testCleanup = test5cleanup;
+uint8_t testTexture() {
+	testDraw = testTexture_gfx;
+	testCleanup = testTexture_cleanup;
 	curTestReqUserInput = true;
 
 	gfx_texture* tempTex = gfx_tex_load_tga("testimg.tga");
 	if (tempTex == NULL)
-		return false;
+		return 1;
 
 	testArg[0] = tempTex;
 
-	return true;
+	return 0;
 }
 
 
@@ -189,11 +255,9 @@ int main(int argc, char** argv) {
 		testResults[ti] = 0;
 	}
 
-	test[0] = test1;
-	test[1] = test2;
-	test[2] = test3;
-	test[3] = test4;
-	test[4] = test5;
+	test[0] = testStringH;
+	test[1] = testSprite;
+	test[2] = testTexture;
 
 	uint32_t tempTick    = 0;
 	uint32_t tempPauseOS = 0;
@@ -248,14 +312,14 @@ int main(int argc, char** argv) {
 				curTest++;
 			}
 		} else {
-			bool tempResult = (*test[curTest])();
-			if (tempResult == true) {
+			uint8_t tempResult = (*test[curTest])();
+			if (tempResult == 0) {
 				if (!curTestReqUserInput) { // this could be set by the test function
 					testResults[curTest] = TEST_SUCCEEDED;
 					curTest++;
 				}
 			} else {
-				testResults[curTest] = TEST_FAILED;
+				testResults[curTest] = tempResult;
 				curTest++;
 			}
 		}
@@ -266,7 +330,7 @@ int main(int argc, char** argv) {
 			// Print results
 			uint16_t i;
 			for (i = 0; i < NMBR_OF_TESTS; i++) {
-				sprintf(tempString, "Test %u: %s", i + 1, testResultText[testResults[i]]);
+				sprintf(tempString, "Test %u: %s (code %u)", i + 1, testResults[i] == 0 ? "OK" : "FAILED", testResults[i]);
 				gfx_font_print(10, 10 + i*10, gameFont, tempString);
 				gfx_font_print_center(220, gameFont, "Press A or B to quit");
 			}
