@@ -36,6 +36,7 @@ char* gamePathInit(const char* inPath) {
 			j = i + 1;
 	}
 	strncpy(gamePath, inPath, j);
+	gamePath[j] = '\0';
 	return gamePath;
 }
 
@@ -91,9 +92,7 @@ int main(int argc, char** argv) {
 	display_flip(gameDisplay);
 	control_lock(timer_resolution / 4);
 
-	char tempString[256];
-	sprintf(tempString, "%sfont.tga", gamePath);
-	gameFont = gfx_font_load(tempString, COLOR_BLACK);
+	gameFont = gfx_font_load("font.tga", COLOR_BLACK);
 
 	drawFiles();
 	display_flip(gameDisplay);

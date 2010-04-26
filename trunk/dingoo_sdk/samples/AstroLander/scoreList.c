@@ -21,6 +21,7 @@ score* scoreCreate(uint32_t inTotal, uint32_t inLevel, uint32_t inDifficulty, co
 	tempScore->difficulty = inDifficulty;
 	tempScore->name = (char*)((uintptr_t)tempScore + sizeof(score));
 	strncpy(tempScore->name, inName, 15);
+	tempScore->name[15] = '\0';
 	return tempScore;
 }
 
