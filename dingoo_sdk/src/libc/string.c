@@ -83,7 +83,8 @@ char* strncpy(char* outDest, const const char* inSrc, size_t inLength) {
 	size_t i;
 	for(i = 0; (inSrc[i] != '\0') && (i < inLength); i++)
 		outDest[i] = inSrc[i];
-	outDest[i] = '\0';
+	for(; i < inLength; i++)
+		outDest[i] = '\0';
 	return outDest;
 }
 
