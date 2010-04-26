@@ -77,6 +77,7 @@ char* _app_path_init(const char* inPath) {
 	if(_app_path == NULL)
 		return NULL;
 	strncpy(_app_path, inPath, j);
+	_app_path[j] = '\0';
 	return _app_path;
 }
 
