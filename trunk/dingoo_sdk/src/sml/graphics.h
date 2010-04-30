@@ -1,5 +1,5 @@
-#ifndef __graphics_h__
-#define __graphics_h__
+#ifndef __sml_graphics_h__
+#define __sml_graphics_h__
 
 #include <stdint.h>
 #include <stdbool.h>

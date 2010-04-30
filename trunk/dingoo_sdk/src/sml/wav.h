@@ -1,5 +1,5 @@
-#ifndef __wav_h__
-#define __wav_h__
+#ifndef __sml_wav_h__
+#define __sml_wav_h__
 
 #include <stdbool.h>
 #include <stdint.h>

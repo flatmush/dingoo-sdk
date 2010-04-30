@@ -1,5 +1,5 @@
-#ifndef __sound_h__
-#define __sound_h__
+#ifndef __sml_sound_h__
+#define __sml_sound_h__
 
 #include <stdbool.h>
 #include <stdint.h>

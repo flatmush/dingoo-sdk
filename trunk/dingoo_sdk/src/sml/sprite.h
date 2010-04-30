@@ -1,5 +1,5 @@
-#ifndef __sprite_h__
-#define __sprite_h__
+#ifndef __sml_sprite_h__
+#define __sml_sprite_h__
 
 #include <stdbool.h>
 #include <stdint.h>

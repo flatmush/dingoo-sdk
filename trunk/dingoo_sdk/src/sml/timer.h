@@ -1,5 +1,5 @@
-#ifndef __timer_h__
-#define __timer_h__
+#ifndef __sml_timer_h__
+#define __sml_timer_h__
 
 #include <stdbool.h>
 #include <stdint.h>

@@ -1,5 +1,5 @@
-#ifndef __mtaudio_h__
-#define __mtaudio_h__
+#ifndef __sml_mtaudio_h__
+#define __sml_mtaudio_h__
 
 #include <stdbool.h>
 #include <stdint.h>

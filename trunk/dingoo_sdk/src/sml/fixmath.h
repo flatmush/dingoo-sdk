@@ -1,5 +1,5 @@
-#ifndef __fixmath_h__
-#define __fixmath_h__
+#ifndef __sml_fixmath_h__
+#define __sml_fixmath_h__
 /*!
 	\file fixmath.h
 	\brief Functions to perform fast fixed-point math operations.
