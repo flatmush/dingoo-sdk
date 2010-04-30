@@ -1,5 +1,5 @@
-#ifndef __display_h__
-#define __display_h__
+#ifndef __sml_display_h__
+#define __sml_display_h__
 /*!
 	\file display.h
 	\brief Defines flags and functions to manage the LCD display.

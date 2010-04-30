@@ -1,5 +1,5 @@
-#ifndef __control_h__
-#define __control_h__
+#ifndef __sml_control_h__
+#define __sml_control_h__
 /*!
 	\file control.h
 	\brief Defines the button codes and methods for polling the buttons for changes in
