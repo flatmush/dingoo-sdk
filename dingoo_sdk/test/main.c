@@ -61,7 +61,7 @@ void do_cleanup() {
 	}
 }
 
-// STRING.H (not complete)
+// STRING.H (Untested: strcoll, strxfrm, strpbrk, strstr, strtok, strerror)
 uint8_t testStringH()
 {
 	char* testStr1 = "Hello this is a test string";
@@ -70,21 +70,21 @@ uint8_t testStringH()
 
 	// memchr
 	char* pch;
-	pch = (char*) memchr (testStr1, 't', strlen(testStr1));
+	pch = (char*) memchr(testStr1, 't', strlen(testStr1));
 	if (pch == NULL)
 		return 1;
 
 	if (pch - testStr1 != 6)
 		return 2;
 
-	pch = (char*) memchr (testStr2, 'r', strlen(testStr2));
+	pch = (char*) memchr(testStr2, 'r', strlen(testStr2));
 	if (pch == NULL)
 		return 3;
 
 	if (pch - testStr2 != 10)
 		return 4;
 
-	pch = (char*) memchr (testStr2, 'w', strlen(testStr2));
+	pch = (char*) memchr(testStr2, 'w', strlen(testStr2));
 	if (pch != NULL)
 		return 5;
 
@@ -107,72 +107,115 @@ uint8_t testStringH()
 	if (count != 4)
 		return 7;
 
+	// strrchr
+	pch = strrchr(testStr1, 's');
+	if (pch - testStr1 != 21)
+		return 8;
+	pch = strrchr(testStr1, 'h');
+	if (pch - testStr1 != 7)
+		return 9;
+	pch = strrchr(testStr1, '?');
+	if (pch != NULL)
+		return 10;
+
 	// strcpy, strcmp, strlen, strncmp
 	char* testPtr = strcpy(testBuf, testStr1);
 	if (testPtr != testBuf)
-		return 8;
+		return 11;
 
 	if (strlen(testBuf) != 27)
-		return 9;
+		return 12;
 
 	if (strcmp(testBuf, testStr1) != 0)
-		return 10;
+		return 13;
 
 	testBuf[strlen(testBuf) - 1] = '?';
 
 	if (strcmp(testBuf, testStr1) == 0)
-		return 11;
+		return 14;
 
 	testBuf[strlen(testBuf) - 1] = '\0';
 
 	if (strcmp(testBuf, testStr1) == 0)
-		return 12;
+		return 15;
 
 	if (strncmp(testBuf, testStr1, strlen(testBuf)) != 0)
-		return 13;
+		return 16;
 
 	strncpy(&testBuf[6], &testStr2[4], 7);
 	
 	if (strncmp(testBuf, testStr1, strlen(testBuf)) == 0)
-		return 14;
+		return 17;
 
 	if (strncmp(testBuf, "Hello another a", 15) != 0)
-		return 15;
+		return 18;
 
 	strncpy(testBuf, &testStr2[10], 3);
 	if (testBuf[0] != 'r' || testBuf[1] != '\0' || testBuf[2] != '\0' || testBuf[3] != 'l')
-		return 16;
+		return 19;
 
 	// memmove
 	char memMoveStr[] = "memmove can be very useful......";
 	memmove (memMoveStr + 20, memMoveStr + 15, 11);
 	if (strcmp(memMoveStr, "memmove can be very very useful.") != 0)
-		return 17;
+		return 20;
 
 	// memcpy, memcmp
 	char* strMemcpy = "Hello this is a test";
+	char* strMemcpy2 = "abc";
 	char tempMemcpy1[16];
 	char tempMemcpy2[20];
 	memcpy(tempMemcpy1, strMemcpy, 16);
 	memcpy(tempMemcpy2, strMemcpy, 20);
 	if (memcmp(strMemcpy, tempMemcpy1, 16) != 0)
-		return 18;
+		return 21;
 	if (memcmp(strMemcpy, tempMemcpy2, 20) != 0)
-		return 19;
+		return 22;
 	tempMemcpy1[1] = '?';
 	if (memcmp(strMemcpy, tempMemcpy1, 16) == 0)
-		return 20;
+		return 22;
+	memcpy(&tempMemcpy1[1], strMemcpy2, 3);
+	if (memcmp(tempMemcpy1, "Habco", 5) != 0)
+		return 23;
 
 	// memset
 	char strMemset[] = "ABCDE";
 	memset(&strMemset[1], '-', 3);
 	if (strMemset[0] != 'A' || strMemset[4] != 'E')
-		return 21;
+		return 24;
 	uint8_t i;
 	for (i = 1; i < 4; i++) {
 		if (strMemset[i] != '-')
-			return 22;
+			return 25;
 	}
+
+	// strcat
+	strcpy(testBuf,"these ");
+	strcat(testBuf,"strings ");
+	strcat(testBuf,"are ");
+	strcat(testBuf,"concatenated.");
+	if (strcmp(testBuf, "these strings are concatenated.") != 0)
+		return 26;
+
+	// strncat
+	memset(testBuf, '-', 20);
+	strcpy(testBuf,"a ");
+	strncat(testBuf,"s", 3);
+	if (strcmp(testBuf, "a s") != 0 || testBuf[3] != '\0' || testBuf[4] != '-')
+		return 27;
+
+	// strcspn
+	if (strcspn("fcba73", "1234567890") != 4)
+		return 28;
+	if (strcspn("fcba73", "xyz") != 6)
+		return 29;
+
+	// strspn
+	if (strspn("129th", "1234567890") != 3)
+		return 30;
+	if (strspn("a129th", "1234567890") != 0)
+		return 31;
+	
 
 	return 0;
 }
