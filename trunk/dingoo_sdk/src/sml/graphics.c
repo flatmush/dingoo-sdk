@@ -218,6 +218,13 @@ bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {
 	return true;
 }
 
+void gfx_tex_delete(gfx_texture* inTexture) {
+	if (inTexture == NULL)
+		return;
+
+	free(inTexture);
+}
+
 
 
 inline void gfx_point_draw(int16_t inX, int16_t inY, gfx_color inColor) {
