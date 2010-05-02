@@ -44,6 +44,7 @@ extern gfx_texture* gfx_tex_allocate(uint32_t width, uint32_t height);
 extern gfx_texture* gfx_tex_load_tga(const char* inPath);
 extern gfx_texture* gfx_tex_load_tga_from_buffer(uint8_t* buffer, size_t size);
 extern bool         gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture);
+extern void         gfx_tex_delete(gfx_texture* inTexture);
 
 extern void         gfx_point_draw(int16_t inX, int16_t inY, gfx_color inColor);
 extern void         gfx_line_draw(int16_t inX0, int16_t inY0, int16_t inX1, int16_t inY1, gfx_color inColor);
