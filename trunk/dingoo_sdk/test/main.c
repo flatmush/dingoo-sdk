@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -35,7 +36,7 @@
 #define TEST_SUCCEEDED 0
 #define TEST_FAILED    255
 
-#define NMBR_OF_TESTS 3
+#define NMBR_OF_TESTS 4
 uint16_t curAddTest = 0;
 
 gfx_font*    gameFont            = NULL;
@@ -139,26 +140,29 @@ uint8_t testStringH()
 	if (strcmp(testBuf, testStr1) == 0)
 		return 15;
 
-	if (strncmp(testBuf, testStr1, strlen(testBuf)) != 0)
+	if (strcmp(testStr1, testBuf) == 0)
 		return 16;
+
+	if (strncmp(testBuf, testStr1, strlen(testBuf)) != 0)
+		return 17;
 
 	strncpy(&testBuf[6], &testStr2[4], 7);
 	
 	if (strncmp(testBuf, testStr1, strlen(testBuf)) == 0)
-		return 17;
+		return 18;
 
 	if (strncmp(testBuf, "Hello another a", 15) != 0)
-		return 18;
+		return 19;
 
 	strncpy(testBuf, &testStr2[10], 3);
 	if (testBuf[0] != 'r' || testBuf[1] != '\0' || testBuf[2] != '\0' || testBuf[3] != 'l')
-		return 19;
+		return 20;
 
 	// memmove
 	char memMoveStr[] = "memmove can be very useful......";
 	memmove (memMoveStr + 20, memMoveStr + 15, 11);
 	if (strcmp(memMoveStr, "memmove can be very very useful.") != 0)
-		return 20;
+		return 21;
 
 	// memcpy, memcmp
 	char* strMemcpy = "Hello this is a test";
@@ -168,25 +172,25 @@ uint8_t testStringH()
 	memcpy(tempMemcpy1, strMemcpy, 16);
 	memcpy(tempMemcpy2, strMemcpy, 20);
 	if (memcmp(strMemcpy, tempMemcpy1, 16) != 0)
-		return 21;
-	if (memcmp(strMemcpy, tempMemcpy2, 20) != 0)
 		return 22;
+	if (memcmp(strMemcpy, tempMemcpy2, 20) != 0)
+		return 23;
 	tempMemcpy1[1] = '?';
 	if (memcmp(strMemcpy, tempMemcpy1, 16) == 0)
-		return 22;
+		return 24;
 	memcpy(&tempMemcpy1[1], strMemcpy2, 3);
 	if (memcmp(tempMemcpy1, "Habco", 5) != 0)
-		return 23;
+		return 25;
 
 	// memset
 	char strMemset[] = "ABCDE";
 	memset(&strMemset[1], '-', 3);
 	if (strMemset[0] != 'A' || strMemset[4] != 'E')
-		return 24;
+		return 26;
 	uint8_t i;
 	for (i = 1; i < 4; i++) {
 		if (strMemset[i] != '-')
-			return 25;
+			return 27;
 	}
 
 	// strcat
@@ -195,27 +199,64 @@ uint8_t testStringH()
 	strcat(testBuf,"are ");
 	strcat(testBuf,"concatenated.");
 	if (strcmp(testBuf, "these strings are concatenated.") != 0)
-		return 26;
+		return 28;
 
 	// strncat
 	memset(testBuf, '-', 20);
 	strcpy(testBuf,"a ");
 	strncat(testBuf,"s", 3);
 	if (strcmp(testBuf, "a s") != 0 || testBuf[3] != '\0' || testBuf[4] != '-')
-		return 27;
+		return 29;
 
 	// strcspn
 	if (strcspn("fcba73", "1234567890") != 4)
-		return 28;
-	if (strcspn("fcba73", "xyz") != 6)
 		return 29;
+	if (strcspn("fcba73", "xyz") != 6)
+		return 30;
 
 	// strspn
 	if (strspn("129th", "1234567890") != 3)
-		return 30;
-	if (strspn("a129th", "1234567890") != 0)
 		return 31;
+	if (strspn("a129th", "1234567890") != 0)
+		return 32;
 	
+
+	return 0;
+}
+
+uint8_t testStringsH()
+{
+	char* testStr1 = "Hello this is a test string";
+	char* testStr2 = "hello this is a test string";
+	char* testStr3 = "HELLO this is a test STRING";
+	char* testStr4 = "helloo yet another";
+	char* testStr5 = "yet another";
+	char testBuf[256];
+
+	if (ffs(0x00) != 0 || ffs(0x01) != 1 || ffs(0x02) != 2 || ffs(0xFF) != 1 ||
+		ffs(0x800) != 12 || ffs(0xFFFFFFFF) != 1 || ffs(0x80000000) != 32)
+	{
+		return 1;
+	}
+
+	testBuf[0] = '\0';
+
+	if (strcasecmp(testStr1, testStr2) != 0 || strcasecmp(testStr1, testStr3) != 0 ||
+		strcasecmp(testStr3, testStr1) != 0 || strcasecmp(testStr1, testStr1) != 0 ||
+		strcasecmp(testStr1, testBuf) != 104 || strcasecmp(testBuf, testStr1) != -104 ||
+		strcasecmp(testStr4, testStr1) != 79 || strcasecmp(testStr1, testStr4) != -79 ||
+		strcasecmp(testStr5, testStr1) != 17 || strcasecmp(testStr1, testStr5) != -17)
+	{
+		return 2;
+	}
+
+	if (strncasecmp(testStr1, testStr2, 100) != 0 || strncasecmp(testStr2, testStr1, 2) != 0 ||
+		strncasecmp(testStr1, testStr4, 5) != 0 || strncasecmp(testStr1, testStr4, 6) != -79 ||
+		strncasecmp(testStr1, testStr4, 0) != 0 || strncasecmp(testStr1, testStr5, 0) != 0 ||
+		strncasecmp(testStr1, testStr5, 10) != -17 || strncasecmp(testStr5, testStr1, 10) != 17)
+	{
+		return 3;
+	}
 
 	return 0;
 }
@@ -299,8 +340,9 @@ int main(int argc, char** argv) {
 	}
 
 	test[0] = testStringH;
-	test[1] = testSprite;
-	test[2] = testTexture;
+	test[1] = testStringsH;
+	test[2] = testSprite;
+	test[3] = testTexture;
 
 	uint32_t tempTick    = 0;
 	uint32_t tempPauseOS = 0;
