@@ -149,14 +149,14 @@ int strncmp(const char* inStr0, const char* inStr1, size_t inLength) {
 
 int _stricmp(const char *s1, const char *s2)
 {
-	while (toupper(*s1) == toupper(*s2))
+	while (tolower(*s1) == tolower(*s2))
 	{
 		if (*s1 == 0)
 			return 0;
 		s1++;
 		s2++;
 	}
-	return toupper(*(unsigned const char *)s1) - toupper(*(unsigned const char *)(s2));
+	return tolower(*(unsigned const char *)s1) - tolower(*(unsigned const char *)(s2));
 }
 
 int _strnicmp(const char *s1, const char *s2, size_t n)
@@ -165,8 +165,8 @@ int _strnicmp(const char *s1, const char *s2, size_t n)
 		return 0;
 	do
 	{
-		if (toupper(*s1) != toupper(*s2++))
-			return toupper(*(unsigned const char *)s1) - toupper(*(unsigned const char *)--s2);
+		if (tolower(*s1) != tolower(*s2++))
+			return tolower(*(unsigned const char *)s1) - tolower(*(unsigned const char *)--s2);
 		if (*s1++ == 0)
 			break;
 	}
