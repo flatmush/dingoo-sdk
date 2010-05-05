@@ -1,6 +1,11 @@
 #ifndef __fgl_vertex_h__
 #define __fgl_vertex_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -14,5 +19,9 @@ typedef struct {
 } fgl_vertex_t;
 
 extern void fgl_vertex_print(fgl_vertex_t inVertex);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

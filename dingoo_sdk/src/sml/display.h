@@ -1,5 +1,11 @@
 #ifndef __sml_display_h__
 #define __sml_display_h__
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /*!
 	\file display.h
 	\brief Defines flags and functions to manage the LCD display.
@@ -73,5 +79,9 @@ extern void     display_clear(display* inDisplay);
 extern void*    display_flip(display* inDisplay);
 
 // TODO - Support non-native palette formats.
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

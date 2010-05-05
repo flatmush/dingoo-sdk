@@ -1,6 +1,11 @@
 #ifndef __sml_sprite_h__
 #define __sml_sprite_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -25,5 +30,9 @@ extern sprite* sprite_load_from_tga(const char* inPath, gfx_color inKey);
 extern sprite* sprite_load_from_tga_buffer(uint8_t* tgaFileData, size_t bufferSize, gfx_color inKey);
 
 extern void    sprite_draw(sprite* inSprite, int16_t inX, int16_t inY, uint16_t inFrame);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

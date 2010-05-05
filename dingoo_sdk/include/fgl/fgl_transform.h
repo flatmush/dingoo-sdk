@@ -1,6 +1,11 @@
 #ifndef __fgl_transform_h__
 #define __fgl_transform_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -21,5 +26,9 @@ extern void fgl_ortho_2d(fgl_fix16_t inLeft, fgl_fix16_t inRight, fgl_fix16_t in
 extern void fgl_frustum(fgl_fix16_t inLeft, fgl_fix16_t inRight, fgl_fix16_t inTop, fgl_fix16_t inBottom, fgl_fix16_t inNear, fgl_fix16_t inFar);
 extern void fgl_perspective(fgl_fix16_t inFovY, fgl_fix16_t inAspect, fgl_fix16_t inNear, fgl_fix16_t inFar);
 extern void fgl_viewport(fgl_fix16_t inX, fgl_fix16_t inY, fgl_fix16_t inWidth, fgl_fix16_t inHeight);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

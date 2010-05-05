@@ -1,6 +1,11 @@
 #ifndef __dingoo_time_h__
 #define __dingoo_time_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <dingoo/ucos2.h>
 
 extern unsigned int GetTickCount();
@@ -14,5 +19,9 @@ extern void udelay(uint32_t);
 extern void mdelay(uint32_t);
 
 extern void delay_ms(uint32_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -8,6 +8,11 @@
 
 #include "defines.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /*
 #define MIXER_TYPE  u64
 #define MIXER_SHIFT 32
@@ -73,5 +78,9 @@ int copybuf_final(int flags, void *dest, void *src, int nSamples);
 int clearbuf_final(int flags, void *dest, int nSamples);
 
 int mix_destbufsize(int flags);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

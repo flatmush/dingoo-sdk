@@ -1,6 +1,11 @@
 #ifndef __dingoo_audio_h__
 #define __dingoo_audio_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /* Audio Sample Format */
 #define	AFMT_U8			8
 #define AFMT_S16_LE		16
@@ -86,5 +91,9 @@ extern void replay_fill_2x16_s(unsigned long src_start, int count, int id);
 
 extern void jz_i2s_replay_dma_irq(unsigned int);
 extern void jz_i2s_record_dma_irq(unsigned int);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef __fgl_matrix_h__
 #define __fgl_matrix_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
 #include <fgl/fgl_fixmath.h>
 
@@ -27,5 +32,9 @@ extern void    fgl_matrix_set(fgl_fix16_t* inMatrix);
 extern void    fgl_matrix_get(fgl_fix16_t* outMatrix);
 
 extern void    fgl_matrix_mult(fgl_fix16_t* inMatrix);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,11 @@
 #ifndef __MODPLAY_CORE_H__
 #define __MODPLAY_CORE_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "defines.h"
 #include "mixer.h"
 #include "envelope.h"
@@ -210,5 +215,9 @@ void MODFILE_SubVolume(MODFILE *mod, int channel, u8 sub);
 void MODFILE_AddVolume(MODFILE *mod, int channel, u8 add);
 int MODFILE_getplaystatus(MODFILE *mod);
 int MODFILE_getofsstatus(MODFILE *mod);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
