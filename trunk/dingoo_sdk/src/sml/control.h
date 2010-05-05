@@ -1,5 +1,11 @@
 #ifndef __sml_control_h__
 #define __sml_control_h__
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /*!
 	\file control.h
 	\brief Defines the button codes and methods for polling the buttons for changes in
@@ -71,5 +77,9 @@ extern control_state control_check(uint32_t inControl);
 	\param inDuration the duration, in milliseconds, to ignore changes in state
 */
 extern void          control_lock(uint32_t inDuration);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef __fgl_fixmath_h__
 #define __fgl_fixmath_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -47,5 +52,9 @@ extern fgl_fract32_t fgl_fract32_create(uint32_t inNumerator, uint32_t inDenomin
 extern fgl_fract32_t fgl_fract32_invert(fgl_fract32_t inFract);
 extern uint32_t  fgl_fract32_usmul(uint32_t inVal, fgl_fract32_t inFract);
 extern int32_t   fgl_fract32_smul(int32_t inVal, fgl_fract32_t inFract);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef __fgl_texture_h__
 #define __fgl_texture_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -27,5 +32,9 @@ extern bool         fgl_texture_save_tga(const char* inPath, fgl_texture* inText
 extern bool         fgl_texture_bind(fgl_texture* inTexture);
 extern void         fgl_texture_clear(fgl_texture* inTexture);
 extern bool         fgl_texture_mipmap(fgl_texture* inTexture);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

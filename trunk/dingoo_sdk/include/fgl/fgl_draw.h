@@ -1,6 +1,11 @@
 #ifndef __fgl_draw_h__
 #define __fgl_draw_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -16,5 +21,9 @@
 #define FGL_SPRITES        8
 
 extern void fgl_draw_array(uint8_t inType, fgl_vertex_t* inVerts, uintptr_t inVertCount);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

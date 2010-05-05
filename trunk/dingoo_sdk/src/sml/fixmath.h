@@ -1,5 +1,11 @@
 #ifndef __sml_fixmath_h__
 #define __sml_fixmath_h__
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /*!
 	\file fixmath.h
 	\brief Functions to perform fast fixed-point math operations.
@@ -119,5 +125,9 @@ extern uint32_t  fract32_usmul(uint32_t inVal, fract32_t inFract);
 /*! Performs saturated (overflow-protected) multiplication with the two given fractions and returns the result as a signed integer.
 */
 extern int32_t   fract32_smul(int32_t inVal, fract32_t inFract);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

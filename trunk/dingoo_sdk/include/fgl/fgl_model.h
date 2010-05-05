@@ -1,6 +1,11 @@
 #ifndef __fgl_model_h__
 #define __fgl_model_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <fgl/fgl_fixmath.h>
@@ -16,5 +21,9 @@ extern fgl_model* fgl_model_load_md2(const char* inPath);
 extern void       fgl_model_delete(fgl_model* inModel);
 
 extern void       fgl_model_draw(fgl_model* inModel, fgl_fix16_t inFrame);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

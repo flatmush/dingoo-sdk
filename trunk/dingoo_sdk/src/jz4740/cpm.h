@@ -1,10 +1,13 @@
 #ifndef __jz4740_cpm_h__
 #define __jz4740_cpm_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
-
-
 
 typedef struct {
 	unsigned int cdiv   : 4;
@@ -83,5 +86,9 @@ extern bool      cpm_pll_freq_calc(uintptr_t inFreq, uintptr_t* outM, uintptr_t*
 extern bool      cpm_pll_freq_set(uintptr_t inM, uintptr_t inN, uintptr_t inD);
 
 extern bool      cpm_pll_ctrl_dump(const char* inPath);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

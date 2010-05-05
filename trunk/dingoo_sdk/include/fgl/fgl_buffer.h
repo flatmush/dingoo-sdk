@@ -1,6 +1,11 @@
 #ifndef __fgl_buffer_h__
 #define __fgl_buffer_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -20,5 +25,9 @@ extern void         fgl_clear_color(fgl_color_t inColor);
 extern void         fgl_clear_depth(uint16_t inDepth);
 
 extern void         fgl_clear(uint8_t inMask);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,10 +1,13 @@
 #ifndef __jz4740_emc_h__
 #define __jz4740_emc_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
-
-
 
 typedef union {
 	struct {
@@ -63,5 +66,9 @@ extern bool              emc_sdram_timings_safe(emc_sdram_timings inTimings);
 extern bool              emc_sdram_timings_dump(const char* inPath, uintptr_t inFreq);
 
 extern bool emc_sdram_ctrl_reg_dump(const char* inPath);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef __fgl_color_h__
 #define __fgl_color_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <fgl/fgl_fixmath.h>
@@ -31,5 +36,9 @@ extern void fgl_color_get(fgl_color_t* outColor);
 extern void fgl_color_get_3f(fgl_fix16_t* outRed, fgl_fix16_t* outGreen, fgl_fix16_t* outBlue);
 extern void fgl_color_get_3ub(uint8_t* outRed, uint8_t* outGreen, uint8_t* outBlue);
 extern void fgl_color_get_3uh(uint16_t* outRed, uint16_t* outGreen, uint16_t* outBlue);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

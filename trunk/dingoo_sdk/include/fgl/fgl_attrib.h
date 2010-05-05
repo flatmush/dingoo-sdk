@@ -1,6 +1,11 @@
 #ifndef __fgl_attrib_h__
 #define __fgl_attrib_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -14,5 +19,9 @@
 
 extern bool fgl_enable(uint8_t inCap);
 extern bool fgl_disable(uint8_t inCap);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

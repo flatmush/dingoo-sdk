@@ -1,6 +1,11 @@
 #ifndef __fgl_image_h__
 #define __fgl_image_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -49,5 +54,9 @@ extern bool fgl_image_scale_half_horizontal(fgl_image_basic* inImage);
 extern bool fgl_image_scale_half_vertical(fgl_image_basic* inImage);
 extern bool fgl_image_scale_half(fgl_image_basic* inImage);
 extern bool fgl_image_scale(fgl_image_basic* inImage, uintptr_t inWidth, uintptr_t inHeight);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

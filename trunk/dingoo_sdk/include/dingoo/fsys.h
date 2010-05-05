@@ -1,6 +1,11 @@
 #ifndef __fsys_h__
 #define __fsys_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <dingoo/entry.h>
 
 typedef void FSYS_FILE;
@@ -40,5 +45,9 @@ typedef struct {
 extern int        fsys_findfirst(const char*, int, fsys_file_info_t*);
 extern int        fsys_findnext(fsys_file_info_t*);
 extern int        fsys_findclose(fsys_file_info_t*);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

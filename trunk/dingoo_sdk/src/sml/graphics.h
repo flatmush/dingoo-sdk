@@ -1,6 +1,11 @@
 #ifndef __sml_graphics_h__
 #define __sml_graphics_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -65,5 +70,9 @@ extern void         gfx_font_print_char(int16_t inX, int16_t inY, gfx_font* inFo
 extern void         gfx_font_print(int16_t inX, int16_t inY, gfx_font* inFont, char* inString);
 extern void         gfx_font_print_center(int16_t inY, gfx_font* inFont, char* inString);
 extern void         gfx_font_print_fromright(int16_t inX, int16_t inY, gfx_font* inFont, char* inString);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

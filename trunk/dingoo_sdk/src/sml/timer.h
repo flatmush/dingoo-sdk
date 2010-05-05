@@ -1,11 +1,14 @@
 #ifndef __sml_timer_h__
 #define __sml_timer_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
-
-
 
 typedef struct {
 	uint32_t start;
@@ -18,5 +21,9 @@ extern timer*   timer_create();
 extern void     timer_delete(timer* inTimer);
 extern uint32_t timer_delta(timer* inTimer);
 extern uint32_t timer_total(timer* inTimer);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
