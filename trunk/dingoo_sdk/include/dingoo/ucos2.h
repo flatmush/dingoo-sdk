@@ -1,6 +1,11 @@
 #ifndef __ucos2_h__
 #define __ucos2_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
 
 #define OS_TICKS_PER_SEC 100
@@ -27,5 +32,9 @@ extern OS_EVENT* OSSemCreate(uint16_t cnt);
 extern OS_EVENT* OSSemDel(OS_EVENT *event, uint8_t option, uint8_t* error);
 extern void      OSSemPend(OS_EVENT* event, uint16_t timeout, uint8_t* error);
 extern uint8_t   OSSemPost(OS_EVENT* event);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

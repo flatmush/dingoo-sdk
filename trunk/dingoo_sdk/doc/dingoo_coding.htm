@@ -148,8 +148,6 @@ for(int x=0;x&lt;320;x++)
 	REG_DMAC_DCMD(0)=DMAC_DCMD_SAI|DMAC_DCMD_SWDH_32|
 	DMAC_DCMD_DWDH_16|DMAC_DCMD_DS_16BYTE|DMAC_DCMD_TM;
 
-	__dcache_writeback_all();
-
 	// No DMA descriptor used.
 	REG_DMAC_DCCSR(0)|=DMAC_DCCSR_NDES;
 

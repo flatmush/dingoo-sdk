@@ -354,7 +354,10 @@ void* display_flip(display* inDisplay) {
 	if(inDisplay == NULL)
 		return NULL;
 
-	if((inDisplay->width == SCREEN_WIDTH) && (inDisplay->height == SCREEN_HEIGHT) && (inDisplay->stride == inDisplay->width) && ((inDisplay->flags & (DISPLAY_HFLIP | DISPLAY_VFLIP | DISPLAY_ROTATE)) == 0)) {
+	if((inDisplay->width == SCREEN_WIDTH) &&
+       (inDisplay->height == SCREEN_HEIGHT) &&
+       (inDisplay->stride == inDisplay->width) &&
+       ((inDisplay->flags & (DISPLAY_HFLIP | DISPLAY_VFLIP | DISPLAY_ROTATE)) == 0)) {
 		if((inDisplay->flags & 0xF) == DISPLAY_FORMAT_RGB565) {
 			uint32_t* tempDispBuff32 = (uint32_t*)_lcd_get_frame();
 			uint32_t* tempDispEnd32  = (uint32_t*)((uintptr_t)tempDispBuff32 + _display_buffer_size(inDisplay));

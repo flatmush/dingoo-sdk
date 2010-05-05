@@ -167,7 +167,7 @@ void _align_block_cleanup(_align_block* inBlock) {
 
 
 
-void* _malloc(size_t size) {
+void *_malloc(size_t size) {
 	void* tempAlloc = __malloc(size);
 	if(tempAlloc == NULL)
 		return NULL;
