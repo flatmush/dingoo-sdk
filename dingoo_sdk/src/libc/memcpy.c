@@ -343,3 +343,36 @@ void* _memcpy_fast(void* dst, const void* src, uintptr_t size) {
 
 	return dst;
 }
+
+/*
+ * Copy a block of memory, handling overlap.
+ * This is the routine that actually implements
+ * (the portable versions of) bcopy, memcpy, and memmove.
+ */
+void *memcpy(dst0, src0, length)
+	void *dst0;
+	const void *src0;
+	size_t length;
+{
+	char *dst = dst0;
+	const char *src = src0;
+
+	if (length == 0 || dst == src)		/* nothing to do */
+		goto done;
+
+	if (((unsigned long)dst < (unsigned long)src) &&
+	    ((unsigned long)dst < (unsigned long)src + length)) {
+		/* Copy backwards. */
+		src += length;
+		dst += length;
+		while (length--) {
+			*--dst = *--src;
+		}
+	} else {
+		while (length--) {
+			*dst++ = *src++;
+		}
+	}
+done:
+	return (dst0);
+}

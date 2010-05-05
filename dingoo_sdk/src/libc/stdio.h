@@ -21,7 +21,7 @@ extern FILE* stderr;
 
 extern int    fprintf(FILE*, const char*, ...);
 extern int    printf(const char*, ...);
-extern int    sprintf(char*, const char*, ...);
+int    sprintf(char*, const char*, ...);
 
 extern void   perror(const char* prefix);
 

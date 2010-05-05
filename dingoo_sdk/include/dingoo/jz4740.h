@@ -861,9 +861,9 @@ static inline void jz_sync(void)
 #define GPIO_PXDIRC(n)	(GPIO_BASE + (0x68 + (n)*0x100)) /* Direction Clear Register */
 #define GPIO_PXTRG(n)	(GPIO_BASE + (0x70 + (n)*0x100)) /* Trigger Register */
 #define GPIO_PXTRGS(n)	(GPIO_BASE + (0x74 + (n)*0x100)) /* Trigger Set Register */
-#define GPIO_PXTRGC(n)	(GPIO_BASE + (0x78 + (n)*0x100)) /* Trigger Set Register */
+#define GPIO_PXTRGC(n)	(GPIO_BASE + (0x78 + (n)*0x100)) /* Trigger Clear Register */
 #define GPIO_PXFLG(n)	(GPIO_BASE + (0x80 + (n)*0x100)) /* Port Flag Register */
-#define GPIO_PXFLGC(n)	(GPIO_BASE + (0x14 + (n)*0x100)) /* Port Flag clear Register */
+#define GPIO_PXFLGC(n)	(GPIO_BASE + (0x84 + (n)*0x100)) /* Port Flag clear Register */
 
 #define REG_GPIO_PXPIN(n)	REG32(GPIO_PXPIN((n)))  /* PIN level */
 #define REG_GPIO_PXDAT(n)	REG32(GPIO_PXDAT((n)))  /* 1: interrupt pending */
@@ -2480,151 +2480,151 @@ static inline void jz_sync(void)
 // PORT 0:
 //
 // PIN/BIT N		FUNC0		FUNC1
-//	0		D0		-
-//	1		D1		-
-//	2		D2		-
-//	3		D3		-
-//	4		D4		-
-//	5		D5		-
-//	6		D6		-
-//	7		D7		-
-//	8		D8		-
-//	9		D9		-
-//	10		D10		-
-//	11		D11		-
-//	12		D12		-
-//	13		D13		-
-//	14		D14		-
-//	15		D15		-
-//	16		D16		-
-//	17		D17		-
-//	18		D18		-
-//	19		D19		-
-//	20		D20		-
-//	21		D21		-
-//	22		D22		-
-//	23		D23		-
-//	24		D24		-
-//	25		D25		-
-//	26		D26		-
-//	27		D27		-
-//	28		D28		-
-//	29		D29		-
-//	30		D30		-
-//	31		D31		-
+//	0		        D0		-
+//	1		        D1		-
+//	2		        D2		-
+//	3		        D3		-
+//	4		        D4		-
+//	5		        D5		-
+//	6		        D6		-
+//	7		        D7		-
+//	8		        D8		-
+//	9		        D9		-
+//	10		        D10		-
+//	11		        D11		-
+//	12		        D12		-
+//	13		        D13		-
+//	14		        D14		-
+//	15		        D15		-
+//	16		        D16		-
+//	17		        D17		-
+//	18		        D18		-
+//	19		        D19		-
+//	20		        D20		-
+//	21		        D21		-
+//	22		        D22		-
+//	23		        D23		-
+//	24		        D24		-
+//	25		        D25		-
+//	26		        D26		-
+//	27		        D27		-
+//	28		        D28		-
+//	29		        D29		-
+//	30		        D30		-
+//	31		        D31		-
 //
 //------------------------------------------------------
 // PORT 1:
 //
 // PIN/BIT N		FUNC0		FUNC1
-//	0		A0		-
-//	1		A1		-
-//	2		A2		-
-//	3		A3		-
-//	4		A4		-
-//	5		A5		-
-//	6		A6		-
-//	7		A7		-
-//	8		A8		-
-//	9		A9		-
-//	10		A10		-
-//	11		A11		-
-//	12		A12		-
-//	13		A13		-
-//	14		A14		-
-//	15		A15/CL		-
-//	16		A16/AL		-
-//	17		LCD_CLS		A21
-//	18		LCD_SPL		A22
-//	19		DCS#		-
-//	20		RAS#		-
-//	21		CAS#		-
-//	22		RDWE#/BUFD#	-
-//	23		CKE		-
-//	24		CKO		-
-//	25		CS1#		-
-//	26		CS2#		-
-//	27		CS3#		-
-//	28		CS4#		-
-//	29		RD#		-
-//	30		WR#		-
-//	31		WE0#		-
+//	0		        A0		-
+//	1		        A1		-
+//	2		        A2		-
+//	3		        A3		-
+//	4		        A4		-
+//	5		        A5		-
+//	6		        A6		-
+//	7		        A7		-
+//	8		        A8		-
+//	9		        A9		-
+//	10		        A10		-
+//	11		        A11		-
+//	12		        A12		-
+//	13		        A13		-
+//	14		        A14		-
+//	15		        A15/CL		-
+//	16		        A16/AL		-
+//	17		        LCD_CLS		A21
+//	18		        LCD_SPL		A22
+//	19		        DCS#		-
+//	20		        RAS#		-
+//	21		        CAS#		-
+//	22		        RDWE#/BUFD#	-
+//	23		        CKE		-
+//	24		        CKO		-
+//	25		        CS1#		-
+//	26		        CS2#		-
+//	27		        CS3#		-
+//	28		        CS4#		-
+//	29		        RD#		-
+//	30		        WR#		-
+//	31		        WE0#		-
 //
 // Note: PIN15&16 are CL&AL when connecting to NAND flash.
 //------------------------------------------------------
 // PORT 2:
 //
 // PIN/BIT N		FUNC0		FUNC1
-//	0		LCD_D0		-
-//	1		LCD_D1		-
-//	2		LCD_D2		-
-//	3		LCD_D3		-
-//	4		LCD_D4		-
-//	5		LCD_D5		-
-//	6		LCD_D6		-
-//	7		LCD_D7		-
-//	8		LCD_D8		-
-//	9		LCD_D9		-
-//	10		LCD_D10		-
-//	11		LCD_D11		-
-//	12		LCD_D12		-
-//	13		LCD_D13		-
-//	14		LCD_D14		-
-//	15		LCD_D15		-
-//	16		LCD_D16		-
-//	17		LCD_D17		-
-//	18		LCD_PCLK	-
-//	19		LCD_HSYNC	-
-//	20		LCD_VSYNC	-
-//	21		LCD_DE		-
-//	22		LCD_PS		A19
-//	23		LCD_REV		A20
-//	24		WE1#		-
-//	25		WE2#		-
-//	26		WE3#		-
-//	27		WAIT#		-
-//	28		FRE#		-
-//	29		FWE#		-
+//	0		        LCD_D0		-
+//	1		        LCD_D1		-
+//	2		        LCD_D2		-
+//	3		        LCD_D3		-
+//	4		        LCD_D4		-
+//	5		        LCD_D5		-
+//	6		        LCD_D6		-
+//	7		        LCD_D7		-
+//	8		        LCD_D8		-
+//	9		        LCD_D9		-
+//	10		        LCD_D10		-
+//	11		        LCD_D11		-
+//	12		        LCD_D12		-
+//	13		        LCD_D13		-
+//	14		        LCD_D14		-
+//	15		        LCD_D15		-
+//	16		        LCD_D16		-
+//	17		        LCD_D17		-
+//	18		        LCD_PCLK	-
+//	19		        LCD_HSYNC	-
+//	20		        LCD_VSYNC	-
+//	21		        LCD_DE		-
+//	22		        LCD_PS		A19
+//	23		        LCD_REV		A20
+//	24		        WE1#		-
+//	25		        WE2#		-
+//	26		        WE3#		-
+//	27		        WAIT#		-
+//	28		        FRE#		-
+//	29		        FWE#		-
 //	30(NOTE:FRB#)	-		-
-//	31		-		-
+//	31		        -		-
 //
 // NOTE(1): PIN30 is used for FRB# when connecting to NAND flash.
 //------------------------------------------------------
 // PORT 3:
 //
 // PIN/BIT N		FUNC0		FUNC1
-//	0		CIM_D0		-
-//	1		CIM_D1		-
-//	2		CIM_D2		-
-//	3		CIM_D3		-
-//	4		CIM_D4		-
-//	5		CIM_D5		-
-//	6		CIM_D6		-
-//	7		CIM_D7		-
-//	8		MSC_CMD		-
-//	9		MSC_CLK		-
-//	10		MSC_D0		-
-//	11		MSC_D1		-
-//	12		MSC_D2		-
-//	13		MSC_D3		-
-//	14		CIM_MCLK	-
-//	15		CIM_PCLK	-
-//	16		CIM_VSYNC	-
-//	17		CIM_HSYNC	-
-//	18		SSI_CLK		SCLK_RSTN
-//	19		SSI_CE0#	BIT_CLK(AIC)
-//	20		SSI_DT		SDATA_OUT(AIC)
-//	21		SSI_DR		SDATA_IN(AIC)
-//	22		SSI_CE1#&GPC	SYNC(AIC)
-//	23		PWM0		I2C_SDA
-//	24		PWM1		I2C_SCK
-//	25		PWM2		UART0_TxD
-//	26		PWM3		UART0_RxD
-//	27		PWM4		A17
-//	28		PWM5		A18
-//	29		-		-
-//	30		PWM6		UART0_CTS/UART1_RxD
-//	31		PWM7		UART0_RTS/UART1_TxD
+//	0		        CIM_D0		-
+//	1		        CIM_D1		-
+//	2		        CIM_D2		-
+//	3		        CIM_D3		-
+//	4		        CIM_D4		-
+//	5		        CIM_D5		-
+//	6		        CIM_D6		-
+//	7		        CIM_D7		-
+//	8		        MSC_CMD		-
+//	9		        MSC_CLK		-
+//	10		        MSC_D0		-
+//	11		        MSC_D1		-
+//	12		        MSC_D2		-
+//	13		        MSC_D3		-
+//	14		        CIM_MCLK	-
+//	15		        CIM_PCLK	-
+//	16		        CIM_VSYNC	-
+//	17		        CIM_HSYNC	-
+//	18		        SSI_CLK		SCLK_RSTN
+//	19		        SSI_CE0#	BIT_CLK(AIC)
+//	20		        SSI_DT		SDATA_OUT(AIC)
+//	21		        SSI_DR		SDATA_IN(AIC)
+//	22		        SSI_CE1#&GPC	SYNC(AIC)
+//	23		        PWM0		I2C_SDA
+//	24		        PWM1		I2C_SCK
+//	25		        PWM2		UART0_TxD
+//	26		        PWM3		UART0_RxD
+//	27		        PWM4		A17
+//	28		        PWM5		A18
+//	29		        -		-
+//	30		        PWM6		UART0_CTS/UART1_RxD
+//	31		        PWM7		UART0_RTS/UART1_TxD
 //
 //////////////////////////////////////////////////////////
 
@@ -4458,7 +4458,7 @@ do {						\
 #define __lcd_set_burst_length(n) 		\
 do {						\
 	REG_LCD_CTRL &= ~LCD_CTRL_BST_MASK;	\
-	REG_LCD_CTRL |= LCD_CTRL_BST_n##;	\
+	REG_LCD_CTRL |= LCD_CTRL_BST_##n;	\
 } while (0)
 
 #define __lcd_select_rgb565()		( REG_LCD_CTRL &= ~LCD_CTRL_RGB555 )
@@ -4471,7 +4471,7 @@ do {						\
 #define __lcd_set_stn_frc(n) 			\
 do {						\
 	REG_LCD_CTRL &= ~LCD_CTRL_FRC_MASK;	\
-	REG_LCD_CTRL |= LCD_CTRL_FRC_n##;	\
+	REG_LCD_CTRL |= LCD_CTRL_FRC_##n;	\
 } while (0)
 
 
@@ -4529,7 +4529,7 @@ do { 						\
 	REG_LCD_CFG |= LCD_CFG_PDW_n##;		\
 } while (0)
 
-/* m=LCD_CFG_MODE_GENERUIC_TFT_xxx */
+/* m=LCD_CFG_MODE_GENERIC_TFT_xxx */
 #define __lcd_set_panel_mode(m) 		\
 do {						\
 	REG_LCD_CFG &= ~LCD_CFG_MODE_MASK;	\

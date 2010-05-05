@@ -36,27 +36,42 @@ cp $MIPSTOOLS/lib/gcc/mipsel-linux/*/libgcc.a $DINGOO_SDK/lib
 rm -f $DINGOO_SDK/lib/dingoo.xn
 echo "ENTRY(AppMain)
 OUTPUT_FORMAT("elf32-tradlittlemips")
-SECTIONS { .dingoo 0x80A00000 : { $DINGOO_SDK/lib/dingoo.o (.text)
-                                  *(.text*)
-                                  *(.rodata*)
-                                  *(.data*)
-                                  *(.eh_frame*)
-                                  *(.gcc_except_table*)
-                                  *(.lit8)
-                                  *(.lit4)
-                                  *(.sdata)
-                                }
-                                  _fbss = .;
-           .bss :               {
-                                  *(.sbss)
-                                  *(.scommon)
-                                  *(.bss)
-                                  *(COMMON)
-                                }
-                                  _end = . ;
-           /DISCARD/ : { *(*) }
-         }
-
+SECTIONS
+{
+    .dingoo 0x80A00000 :
+    { 
+        $DINGOO_SDK/lib/dingoo.o (.text)
+        *(.text*)
+        *(.rodata*)
+        *(.data*)
+        *(.eh_frame*)
+        *(.gcc_except_table*)
+        *(.lit8)
+        *(.lit4)
+        *(.sdata)
+    }
+    _fbss = .;
+    .bss :
+    {
+        *(.sbss)
+        *(.scommon)
+        *(.bss)
+        *(COMMON)
+    }
+    _end = .;
+    .export_table :
+    {
+        KEEP(*(.export_table))
+    }
+	.export_string :
+    {
+        KEEP(*(.export_string))
+    }
+    /DISCARD/ :
+    {
+        *(*)
+    }
+}
 " > $DINGOO_SDK/lib/dingoo.xn
 
 echo "Dingoo SDK installed."
