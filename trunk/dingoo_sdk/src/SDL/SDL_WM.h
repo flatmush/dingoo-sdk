@@ -1,6 +1,11 @@
 #ifndef __SDL_WM_h__
 #define __SDL_WM_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "SDL_TYPES.h"
 
 typedef enum {
@@ -20,5 +25,9 @@ extern void         SDL_WM_SetIcon(SDL_Surface* icon, Uint8* mask);
 extern int          SDL_WM_IconifyWindow();
 extern int          SDL_WM_ToggleFullScreen(SDL_Surface* surface);
 extern SDL_GrabMode SDL_WM_GrabInput(SDL_GrabMode mode);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

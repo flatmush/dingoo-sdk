@@ -1,6 +1,11 @@
 #ifndef __SDL_CDROM_h__
 #define __SDL_CDROM_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "SDL_TYPES.h"
 
 #define SDL_INIT_CDROM (1 << 3)
@@ -42,5 +47,9 @@ extern int         SDL_CDResume(SDL_CD* cdrom);
 extern int         SDL_CDStop(SDL_CD* cdrom);
 extern int         SDL_CDEject(SDL_CD* cdrom);
 extern void        SDL_CDClose(SDL_CD* cdrom);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef __libc_signal_h__
 #define __libc_signal_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #define SIGABRT    1
 #define SIGALRM    2
 #define SIGBUS     3
@@ -37,5 +42,9 @@ extern void* signal(int sig, void (*func)(int));
 extern void* SIG_IGN;
 extern void* SIG_DFL;
 extern void* SIG_ERR;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

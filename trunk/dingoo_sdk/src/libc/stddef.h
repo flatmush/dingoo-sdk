@@ -1,6 +1,11 @@
 #ifndef __stddef_h__
 #define __stddef_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
 
 #ifndef NULL
@@ -13,5 +18,9 @@
 typedef intptr_t ptrdiff_t;
 typedef uintptr_t size_t;
 typedef uint16_t wchar_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

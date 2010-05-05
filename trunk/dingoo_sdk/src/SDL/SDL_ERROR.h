@@ -1,6 +1,11 @@
 #ifndef __SDL_ERROR_h__
 #define __SDL_ERROR_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "SDL_TYPES.h"
 
 typedef enum {
@@ -20,5 +25,9 @@ extern void  SDL_ClearError();
 
 extern void  SDL_OutOfMemory();
 extern void  SDL_Unsupported();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef __stdlib_h__
 #define __stdlib_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stddef.h>
 #include <malloc.h>
 
@@ -38,5 +43,9 @@ extern long long atoll(const char* str);
 extern double    atof(const char* str);
 
 extern void qsort(void* base, size_t num, size_t size, int(* comparator) (const void*, const void*));
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef __SDL_MOUSE_h__
 #define __SDL_MOUSE_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "SDL_TYPES.h"
 
 typedef struct {
@@ -13,5 +18,9 @@ extern void        SDL_FreeCursor(SDL_Cursor* cursor);
 extern void*       SDL_SetCursor(SDL_Cursor* cursor);
 extern SDL_Cursor* SDL_GetCursor();
 extern int         SDL_ShowCursor(int toggle);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

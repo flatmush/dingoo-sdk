@@ -1,6 +1,11 @@
 #ifndef __errno_h__
 #define __errno_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #define EACCES 1
 #define EADDRINUSE 2
 #define EADDRNOTAVAIL 3
@@ -84,5 +89,9 @@
 #define ETOOBIG E2BIG
 
 extern int errno;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

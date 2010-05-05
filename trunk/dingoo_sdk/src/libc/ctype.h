@@ -1,6 +1,11 @@
 #ifndef __ctype_h__
 #define __ctype_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <ctype.h>
 
 extern int iscntrl(int chr);
@@ -22,5 +27,9 @@ extern int tolower(int chr);
 
 extern int isascii(int chr);
 extern int toascii(int chr);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
