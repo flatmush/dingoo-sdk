@@ -1,6 +1,11 @@
 #ifndef __libc_stdio_h__
 #define __libc_stdio_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stddef.h>
 #include <dingoo/fsys.h>
 
@@ -57,5 +62,9 @@ extern int ungetc(int _c, FILE *_stream);
 
 #define getc fgetc
 #define getchar() fgetc(stdin)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

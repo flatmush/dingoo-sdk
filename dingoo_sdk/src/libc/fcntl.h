@@ -1,6 +1,11 @@
 #ifndef __libc_fcntl_h__
 #define __libc_fcntl_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #define O_RDONLY   (1 << 0)
 #define O_WRONLY   (2 << 0)
 #define O_RDWR     (3 << 0)
@@ -38,5 +43,9 @@
 
 extern int open(const char* path, int oflag, ...);
 extern int fcntl(int fildes, int cmd, ...);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef __SDL_GL_h__
 #define __SDL_GL_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef enum {
 	SDL_GL_RED_SIZE,
 	SDL_GL_GREEN_SIZE,
@@ -21,5 +26,9 @@ extern void* SDL_GL_GetProcAddress(const char* proc);
 extern int   SDL_GL_GetAttribute(SDL_GLattr attr, int* value);
 extern int   SDL_GL_SetAttribute(SDL_GLattr attr, int value);
 extern void  SDL_GL_SwapBuffers();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

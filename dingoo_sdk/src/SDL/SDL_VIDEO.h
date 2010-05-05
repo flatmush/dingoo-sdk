@@ -1,6 +1,11 @@
 #ifndef __SDL_VIDEO_h__
 #define __SDL_VIDEO_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "SDL_TYPES.h"
 
 #define SDL_INIT_VIDEO (1 << 2)
@@ -49,5 +54,9 @@ extern int          SDL_LockYUVOverlay(SDL_Overlay* overlay);
 extern void         SDL_UnlockYUVOverlay(SDL_Overlay* overlay);
 extern int          SDL_DisplayYUVOverlay(SDL_Overlay* overlay, SDL_Rect* dstrect);
 extern void         SDL_FreeYUVOverlay(SDL_Overlay* overlay);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

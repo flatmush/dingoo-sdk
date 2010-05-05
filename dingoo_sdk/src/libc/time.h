@@ -1,6 +1,11 @@
 #ifndef __libc_time_h__
 #define __libc_time_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stddef.h>
 #include <dingoo/ucos2.h>
 
@@ -12,5 +17,9 @@ typedef long int time_t;
 extern clock_t clock();
 
 extern time_t time(time_t* timer);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

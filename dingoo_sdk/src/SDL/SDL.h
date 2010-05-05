@@ -1,6 +1,11 @@
 #ifndef __SDL_h__
 #define __SDL_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "SDL_TYPES.h"
 
 #include "SDL_ERROR.h"
@@ -35,5 +40,9 @@ extern void*  SDL_LoadFunction(void* handle, const char* name);
 extern void   SDL_UnloadObject(void *handle);
 
 extern const  SDL_version* SDL_Linked_Version();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

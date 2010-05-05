@@ -1,6 +1,11 @@
 #ifndef __stdbool_h__
 #define __stdbool_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef int bool;
 
 #ifndef false
@@ -17,5 +22,9 @@ typedef int bool;
 typedef bool bool_t;
 #define TRUE true
 #define FALSE false
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

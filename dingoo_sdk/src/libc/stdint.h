@@ -1,6 +1,10 @@
 #ifndef __stdint_h__
 #define __stdint_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #define INT64_MIN (int64_t)0x8000000000000000ULL
 #define INT64_MAX (int64_t)0x7FFFFFFFFFFFFFFFULL
@@ -138,5 +142,9 @@ typedef uint8_t uintmin_t;
 #define SIG_ATOMIC_MAX INT8_MAX
 #define SIG_ATOMIC_MIN INT8_MIN
 #define SIZE_MAX INT32_MAX
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

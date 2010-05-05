@@ -1,6 +1,11 @@
 #ifndef __libc_locale_h__
 #define __libc_locale_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef NULL
 #define NULL ((void*)0)
 #endif
@@ -34,5 +39,9 @@ struct lconv {
 
 extern struct lconv* localeconv();
 extern char*         setlocale(int category, const char* locale);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

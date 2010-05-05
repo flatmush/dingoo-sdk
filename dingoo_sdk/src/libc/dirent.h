@@ -1,6 +1,11 @@
 #ifndef __libc_dirent_h__
 #define __libc_dirent_h__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <sys/types.h>
 
 struct dirent {
@@ -18,5 +23,9 @@ extern struct dirent* readdir(DIR* dir);
 extern void rewinddir(DIR* dir);
 extern void seekdir(DIR* dir, long offset);
 extern long telldir(DIR* dir);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
