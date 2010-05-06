@@ -1,6 +1,6 @@
 #include "dma.h"
 
-#include <jz4740/jz4740.h>
+#include <dingoo/jz4740.h>
 
 #include <dingoo/cache.h>
 #include <dingoo/ucos2.h>

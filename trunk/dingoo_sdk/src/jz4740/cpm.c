@@ -6,7 +6,7 @@
 
 #include <dingoo/time.h>
 
-#include <jz4740/jz4740.h>
+#include <dingoo/jz4740.h>
 
 
 
