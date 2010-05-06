@@ -92,20 +92,21 @@ FILE* fopen(const char* filename, const char* mode) {
 	if(strcmp(filename, "COM0") == 0)
 		return _serial;
 
-	char* tempPath = _file_path(filename);
-	if(tempPath == NULL)
-		return (FILE*)fsys_fopen(filename, mode);
-
 	_file_t* tempFile = (_file_t*)malloc(sizeof(_file_t));
 	if(tempFile == NULL) {
-		free(tempPath);
 		return NULL;
 	}
 
 	tempFile->type = _file_type_file;
-	tempFile->data = (void*)fsys_fopen(tempPath, mode);
 
-	free(tempPath);
+	char* tempPath = _file_path(filename);
+	if(tempPath == NULL) {
+		tempFile->data = (void*)fsys_fopen(filename, mode);
+	} else {
+		tempFile->data = (void*)fsys_fopen(tempPath, mode);
+		free(tempPath);
+	}
+
 	if(tempFile->data == NULL) {
 		free(tempFile);
 		return NULL;
