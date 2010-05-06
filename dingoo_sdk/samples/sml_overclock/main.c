@@ -7,7 +7,7 @@
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
 
-#include <jz4740/jz4740.h>
+#include <dingoo/jz4740.h>
 #include <jz4740/emc.h>
 #include <jz4740/cpm.h>
 #include <jz4740/cpu.h>
