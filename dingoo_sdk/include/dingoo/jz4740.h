@@ -4526,7 +4526,7 @@ do {						\
 #define __lcd_set_panel_datawidth(n) 		\
 do { 						\
 	REG_LCD_CFG &= ~LCD_CFG_PDW_MASK; 	\
-	REG_LCD_CFG |= LCD_CFG_PDW_n##;		\
+	REG_LCD_CFG |= LCD_CFG_PDW_##n;		\
 } while (0)
 
 /* m=LCD_CFG_MODE_GENERIC_TFT_xxx */
