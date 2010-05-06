@@ -63,7 +63,7 @@ char* _file_path(const char* inPath) {
 	if(inPath[1] == ':')
 		strcpy(tempPath, inPath);
 	else
-		sprintf(tempPath, "%s\\%s", _app_path, inPath);
+		sprintf(tempPath, "%s%s", _app_path, inPath);
 
 	for(i = 0, j = 0; tempPath[i] != '\0'; i++) {
 		if(tempPath[i] == '/')
