@@ -19,7 +19,7 @@ void*    _audio_buffer          = NULL;
 uint32_t _audio_buffer_size     = 0;
 
 uint8_t  _audio_buffer_channels = 2;
-uint8_t  _audio_buffer_volume   = 100;
+uint8_t  _audio_buffer_volume   = 30;
 
 uint32_t _audio_buffer_rate     = 48000;
 uint8_t  _audio_buffer_bits     = AFMT_S16_LE;
@@ -59,7 +59,7 @@ bool mtaudio_init(void* inCallback,uint32_t inRate) {
 		return false;
 
 	waveout_args tempArgs = { inRate, _audio_buffer_bits, _audio_buffer_channels, _audio_buffer_volume };
-  
+
 	_audio_inst = waveout_open(&tempArgs);
 	if(_audio_inst == NULL) {
 		free(_audio_thread_stack);
@@ -116,8 +116,8 @@ void mtaudio_buffer_set(void* inBuffer, uintptr_t inSize, uint8_t inChannels, ui
 	if((inChannels == 0) || (inChannels > 2))
 		return;
 
-	if(inVolume > 100)
-		inVolume = 100;
+	if(inVolume > 30)
+		inVolume = 30;
 
 	if ((inChannels != _audio_buffer_channels) || (inRate != _audio_buffer_rate))  {
 		waveout_close(_audio_inst);

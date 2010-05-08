@@ -12,7 +12,7 @@ extern "C"
 typedef unsigned long int clock_t;
 typedef long int time_t;
 
-#define CLOCKS_PER_SEC OS_TICKS_PER_SEC
+#define CLOCKS_PER_SEC (OS_TICKS_PER_SEC * 10000)
 
 extern clock_t clock();
 
