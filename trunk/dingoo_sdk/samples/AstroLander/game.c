@@ -41,7 +41,7 @@ background* gameBackground = NULL;
 score_list* gameScores     = NULL;
 uintptr_t   gameScoreListOffset = 0;
 
-uintptr_t gameVolume     = 50;
+uintptr_t gameVolume     = 15;
 uintptr_t gameVolumeShow = 0;
 
 display*  gameDisplay  = NULL;

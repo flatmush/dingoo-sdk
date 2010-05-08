@@ -21,6 +21,8 @@
 #include "background.h"
 #include "scoreList.h"
 
+//#include "font.h"
+
 #ifndef max
 #define max(x, y) ((x) > (y) ? (x) : (y))
 #endif
@@ -58,6 +60,7 @@ int main(int argc, char** argv) {
 	char tempString[256];
 
 	gameFont   = gfx_font_load("font.tga", COLOR_BLACK);
+	//gameFont   = gfx_font_load_from_buffer(font, font_size, COLOR_BLACK);
 	gameSplash = gfx_tex_load_tga("splash.tga");
 	gameScores = scoreListLoad("scores.dat");
 
@@ -84,10 +87,6 @@ int main(int argc, char** argv) {
 			while(tempTick < gameTickRate)
 				tempTick += timer_delta(gameTimer);
 		}
-
-
-		/*if(tempTick > (gameTickRate << 2))
-			tempTick = 0;*/
 
 		while(tempTick >= gameTickRate) {
 			tempTick -= gameTickRate;
@@ -142,11 +141,11 @@ int main(int argc, char** argv) {
 								if(control_just_pressed(CONTROL_TRIGGER_RIGHT))
 									gameDifficultyNext(); // cycle through difficulties if the right shoulder button is pressed while paused
 								if(control_just_pressed(CONTROL_DPAD_UP)) {
-									gameVolume = sound_volume_set(gameVolume + 10);
+									gameVolume = sound_volume_set(gameVolume + 3);
 									gameVolumeShow = 15;
 								}
 								if(control_just_pressed(CONTROL_DPAD_DOWN)) {
-									gameVolume = sound_volume_set(gameVolume >= 10 ? (gameVolume - 10) : 0);
+									gameVolume = sound_volume_set(gameVolume >= 3 ? (gameVolume - 3) : 0);
 									gameVolumeShow = 15;
 								}
 							}
