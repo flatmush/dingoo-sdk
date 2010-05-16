@@ -240,8 +240,8 @@ int main(int argc, char** argv) {
 
 	levelDelete(gameLevel);
 	timer_delete(gameTimer);
-	free(gameSplash);
-	free(gameFont);
+	gfx_tex_delete(gameSplash);
+	gfx_font_delete(gameFont);
 
 	sound_term();
 	gfx_term();
