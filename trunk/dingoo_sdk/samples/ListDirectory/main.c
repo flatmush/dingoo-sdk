@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
 		OSTimeDly(1);
 	}
 
-	free(gameFont);
+	gfx_font_delete(gameFont);
 
 	gfx_term();
 	display_delete(gameDisplay);

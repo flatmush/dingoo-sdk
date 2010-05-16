@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
 		tempSprite = sprite_create(tempSpriteBmp[0]->width, tempSpriteBmp[0]->height);
 		for(i = 0; i < 4; i++) {
 			tempSprite = sprite_frame_add_bitmap(tempSprite, tempSpriteBmp[i]->address, gfx_color_rgb(0xFF, 0x00, 0xFF));
-			free(tempSpriteBmp[i]);
+			gfx_tex_delete(tempSpriteBmp[i]);
 		}
 		sprite_save(tempSprite, "sprite.spt");
 	} else {
@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
 	}
 
 	timer_delete(gameTimer);
-	free(gameFont);
+	gfx_font_delete(gameFont);
 
 	gfx_term();
 	display_delete(gameDisplay);

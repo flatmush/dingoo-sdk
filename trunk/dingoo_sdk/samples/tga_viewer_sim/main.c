@@ -56,10 +56,7 @@ void splitPath(char* outPath, char* outFilename, char* inPath) {
 }
 
 void unloadCurrentImage() {
-	if (appImage == NULL)
-		return;
-
-	free(appImage);
+	gfx_tex_delete(appImage);
 	appImage = NULL;
 }
 

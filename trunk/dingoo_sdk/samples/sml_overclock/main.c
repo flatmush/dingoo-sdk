@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
 	}
 
 	timer_delete(appTimer);
-	free(appFont);
+	gfx_font_delete(appFont);
 
 	gfx_term();
 	display_delete(appDisplay);

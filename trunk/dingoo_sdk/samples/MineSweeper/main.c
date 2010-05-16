@@ -493,7 +493,7 @@ int main(int argc, char** argv) {
 
 	gridDelete();
 	timer_delete(gameTimer);
-	free(fontDefault);
+	gfx_font_delete(fontDefault);
 	gfx_term();
 	display_delete(gameDisplay);
 	control_term();
