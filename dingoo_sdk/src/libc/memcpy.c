@@ -313,6 +313,7 @@ inline void _memcpy_128(uint8_t* dst, const uint8_t* src, uint8_t* dst_end) {
 
 
 
+// Please note that this is WIP and does not yet work correctly
 void* _memcpy_fast(void* dst, const void* src, uintptr_t size) {
 	if((dst == NULL) || (src == NULL))
 		return NULL;
