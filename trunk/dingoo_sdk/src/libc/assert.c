@@ -8,3 +8,8 @@ void _assert(char* inProgram, char* inFile, unsigned int inLine, char* inFunctio
 		abort();
 	}
 }
+
+/* This prints an "Assertion failed" message and aborts.  */
+void __assert_fail (const char *__assertion, const char *__file, unsigned int __line, const char *__function) {
+  abort();
+}

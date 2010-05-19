@@ -89,6 +89,7 @@ extern "C"
 #define ETOOBIG E2BIG
 
 extern int errno;
+extern int * __errno_location(void);
 
 #ifdef __cplusplus
 }
