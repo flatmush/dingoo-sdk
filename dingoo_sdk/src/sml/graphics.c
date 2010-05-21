@@ -776,6 +776,7 @@ gfx_font* gfx_font_load(const char* inPath, gfx_color inKey) {
 
 	tempFont->texture  = tempTexture;
 	tempFont->colorKey = inKey;
+	tempFont->colorize = false;
 
 	return tempFont;
 }
@@ -793,6 +794,7 @@ gfx_font* gfx_font_load_from_buffer(uint8_t* buffer, size_t size, gfx_color inKe
 
 	tempFont->texture  = tempTexture;
 	tempFont->colorKey = inKey;
+	tempFont->colorize = false;
 
 	return tempFont;
 }
@@ -805,6 +807,17 @@ void gfx_font_delete(gfx_font* inFont) {
 		free(inFont->texture);
 
 	free(inFont);
+}
+
+
+
+void gfx_font_color_set(gfx_font* inFont, gfx_color inColor) {
+	inFont->colorize = true;
+	inFont->fontColor = inColor;
+}
+
+void gfx_font_color_clear(gfx_font* inFont) {
+	inFont->colorize = false;
 }
 
 
@@ -866,10 +879,21 @@ void gfx_font_print(int16_t inX, int16_t inY, gfx_font* inFont, char* inString) 
 			tempY += (inFont->texture->height >> 4);
 			continue;
 		}
-		for(j = ((*tempChar >> 4) * (inFont->texture->height >> 4)), y = tempY; (j < (((*tempChar >> 4) + 1) * (inFont->texture->height >> 4))) && (y < gfx_render_target->height); j++, y++) {
-			for(i = ((*tempChar & 0x0F) * (inFont->texture->width >> 4)), x = tempX; (i < (((*tempChar & 0x0F) + 1) * (inFont->texture->width >> 4))) && (x < gfx_render_target->width); i++, x++) {
-				if (tempFont[(j * inFont->texture->width) + i] != inFont->colorKey) {
-					tempBuffer[(y * gfx_render_target->width) + x] = tempFont[(j * inFont->texture->width) + i];
+
+		if (inFont->colorize) {
+			for(j = ((*tempChar >> 4) * (inFont->texture->height >> 4)), y = tempY; (j < (((*tempChar >> 4) + 1) * (inFont->texture->height >> 4))) && (y < gfx_render_target->height); j++, y++) {
+				for(i = ((*tempChar & 0x0F) * (inFont->texture->width >> 4)), x = tempX; (i < (((*tempChar & 0x0F) + 1) * (inFont->texture->width >> 4))) && (x < gfx_render_target->width); i++, x++) {
+					if (tempFont[(j * inFont->texture->width) + i] != inFont->colorKey) {
+						tempBuffer[(y * gfx_render_target->width) + x] = ~(tempFont[(j * inFont->texture->width) + i]) | inFont->fontColor;
+					}
+				}
+			}
+		} else {
+			for(j = ((*tempChar >> 4) * (inFont->texture->height >> 4)), y = tempY; (j < (((*tempChar >> 4) + 1) * (inFont->texture->height >> 4))) && (y < gfx_render_target->height); j++, y++) {
+				for(i = ((*tempChar & 0x0F) * (inFont->texture->width >> 4)), x = tempX; (i < (((*tempChar & 0x0F) + 1) * (inFont->texture->width >> 4))) && (x < gfx_render_target->width); i++, x++) {
+					if (tempFont[(j * inFont->texture->width) + i] != inFont->colorKey) {
+						tempBuffer[(y * gfx_render_target->width) + x] = tempFont[(j * inFont->texture->width) + i];
+					}
 				}
 			}
 		}
