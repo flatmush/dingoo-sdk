@@ -32,6 +32,8 @@ typedef struct {
 typedef struct {
 	gfx_texture*  texture;
 	gfx_color     colorKey;
+	bool          colorize;
+	gfx_color     fontColor;
 } gfx_font;
 
 extern gfx_texture* gfx_render_target;
@@ -63,6 +65,9 @@ extern void         gfx_tex_draw(int16_t inX, int16_t inY, gfx_texture* inTextur
 extern gfx_font*    gfx_font_load(const char* inPath, gfx_color inKey);
 extern gfx_font*    gfx_font_load_from_buffer(uint8_t* buffer, size_t size, gfx_color inKey);
 extern void         gfx_font_delete(gfx_font* inFont);
+
+extern void         gfx_font_color_set(gfx_font* inFont, gfx_color inColor);
+extern void         gfx_font_color_clear(gfx_font* inFont);
 
 extern uint16_t     gfx_font_width(gfx_font* inFont, char* inString);
 extern uint16_t     gfx_font_height(gfx_font* inFont);
