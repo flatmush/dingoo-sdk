@@ -901,8 +901,14 @@ void gfx_font_print(int16_t inX, int16_t inY, gfx_font* inFont, char* inString) 
 	}
 }
 
-void gfx_font_print_center(int16_t inY, gfx_font* inFont, char* inString) {
-	int16_t tempX = (gfx_render_target->width - gfx_font_width(inFont, inString)) >> 1;
+void gfx_font_print_center(int16_t inY, gfx_font* inFont, char* inString)
+{
+	gfx_font_print_center_ex(inY, gfx_render_target->width, 0, inFont, inString);
+}
+
+void gfx_font_print_center_ex(int16_t inY, int16_t areaWidth, int16_t offsetX, gfx_font* inFont, char* inString)
+{
+	int16_t tempX = ((areaWidth - gfx_font_width(inFont, inString)) >> 1) + offsetX;
 	gfx_font_print(tempX, inY, inFont, inString);
 }
 
