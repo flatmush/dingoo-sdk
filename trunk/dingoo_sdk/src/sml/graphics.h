@@ -74,6 +74,7 @@ extern uint16_t     gfx_font_height(gfx_font* inFont);
 extern void         gfx_font_print_char(int16_t inX, int16_t inY, gfx_font* inFont, char inChar);
 extern void         gfx_font_print(int16_t inX, int16_t inY, gfx_font* inFont, char* inString);
 extern void         gfx_font_print_center(int16_t inY, gfx_font* inFont, char* inString);
+extern void         gfx_font_print_center_ex(int16_t inY, int16_t areaWidth, int16_t offsetX, gfx_font* inFont, char* inString);
 extern void         gfx_font_print_fromright(int16_t inX, int16_t inY, gfx_font* inFont, char* inString);
 
 #ifdef __cplusplus
