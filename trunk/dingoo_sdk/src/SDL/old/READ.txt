@@ -1,0 +1,3 @@
+These are the files from flatmush' started attempt to do a reimplementation of SDL.
+They are kept here for now, since they may contain some parts useful for the real port of SDL,
+or if flatmush or anyone else wants to continue building a lightweight SDL implementation...
