@@ -150,7 +150,7 @@ int _fseek(FILE* stream, long int offset, int origin) {
 	_file_t* tempFile = (_file_t*)stream;
 
 	if(tempFile->type == _file_type_file)
-		return fsys_fseek((FILE*)tempFile->data, offset, origin);
+		return (fsys_fseek((FILE*)tempFile->data, offset, origin) == offset ? 0 : -1); // Fix for non-standard behavior
 
 	if(tempFile->type == _file_type_mem) {
 		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
