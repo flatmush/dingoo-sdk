@@ -12,11 +12,11 @@ int isspace(int chr) {
 }
 
 int isupper(int chr) {
-	return ((chr >= 'A') || (chr <= 'Z'));
+	return ((chr >= 'A') && (chr <= 'Z'));
 }
 
 int islower(int chr) {
-	return ((chr >= 'a') || (chr <= 'z'));
+	return ((chr >= 'a') && (chr <= 'z'));
 }
 
 int isalpha(int chr) {
