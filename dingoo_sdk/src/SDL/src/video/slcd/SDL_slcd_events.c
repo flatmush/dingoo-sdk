@@ -21,8 +21,7 @@
 */
 #include "SDL_config.h"
 
-/* Being a null driver, there's no event stream. We just define stubs for
-   most of the API. */
+// FIXME bind START+SELECT+R+L to quit event?
 
 #include "SDL.h"
 #include "../../events/SDL_sysevents.h"
@@ -31,14 +30,68 @@
 #include "SDL_slcd_video.h"
 #include "SDL_slcd_events_c.h"
 
+#include <sml/control.h>
+
+static SDLKey keymap[32];
+static SDL_keysym *TranslateKey(int scancode, SDL_keysym *keysym);
+
 void SLCD_PumpEvents(_THIS)
 {
-	/* do nothing. */
+	SDL_keysym keysym;
+	int pressed, scancode;
+
+	// Poll keys
+	control_poll();
+
+	for (scancode = 0; scancode < 32; scancode++)
+	{
+		if (control_check(scancode).changed)
+		{
+			if (control_check(scancode).pressed)
+				pressed = SDL_PRESSED;
+			else
+				pressed = SDL_RELEASED;
+
+			SDL_PrivateKeyboard(pressed, TranslateKey(scancode, &keysym));
+		}
+	}
 }
 
 void SLCD_InitOSKeymap(_THIS)
 {
-	/* do nothing. */
+	int i;
+	for (i = 0; i < 32; i++)
+		keymap[i] = SDLK_UNKNOWN;
+
+	keymap[CONTROL_POWER] = SDLK_PAUSE;
+	keymap[CONTROL_BUTTON_A] = SDLK_LCTRL;
+	keymap[CONTROL_BUTTON_B] = SDLK_LALT;
+	keymap[CONTROL_BUTTON_X] = SDLK_SPACE;
+	keymap[CONTROL_BUTTON_Y] = SDLK_LSHIFT;
+	keymap[CONTROL_BUTTON_START] = SDLK_RETURN;
+	keymap[CONTROL_BUTTON_SELECT] = SDLK_ESCAPE;
+	keymap[CONTROL_TRIGGER_LEFT] = SDLK_TAB;
+	keymap[CONTROL_TRIGGER_RIGHT] = SDLK_BACKSPACE;
+	keymap[CONTROL_DPAD_UP] = SDLK_UP;
+	keymap[CONTROL_DPAD_DOWN] = SDLK_DOWN;
+	keymap[CONTROL_DPAD_LEFT] = SDLK_LEFT;
+	keymap[CONTROL_DPAD_RIGHT] = SDLK_RIGHT;
+}
+
+static SDL_keysym *TranslateKey(int scancode, SDL_keysym *keysym)
+{
+	/* Set the keysym information */
+	keysym->scancode = scancode;
+	keysym->sym = keymap[scancode];
+	keysym->mod = KMOD_NONE;
+
+	/* If UNICODE is on, get the UNICODE value for the key */
+	keysym->unicode = 0;
+	if ( SDL_TranslateUNICODE ) {
+		/* Populate the unicode field with the ASCII value */
+		keysym->unicode = scancode;
+	}
+	return(keysym);
 }
 
 /* end of SDL_slcd_events.c ... */
