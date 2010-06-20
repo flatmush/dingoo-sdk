@@ -31,9 +31,11 @@
 #include "SDL_slcd_events_c.h"
 
 #include <sml/control.h>
+#include <sml/timer.h>
 
 static SDLKey keymap[32];
 static SDL_keysym *TranslateKey(int scancode, SDL_keysym *keysym);
+static int posted = 0;
 
 void SLCD_PumpEvents(_THIS)
 {
@@ -52,13 +54,22 @@ void SLCD_PumpEvents(_THIS)
 			else
 				pressed = SDL_RELEASED;
 
-			SDL_PrivateKeyboard(pressed, TranslateKey(scancode, &keysym));
+			posted += SDL_PrivateKeyboard(pressed, TranslateKey(scancode, &keysym));
 		}
+	}
+
+	// Quit on system events
+	if (_sys_judge_event(NULL) < 0)
+	{
+		posted = SDL_PrivateQuit();
 	}
 }
 
 void SLCD_InitOSKeymap(_THIS)
 {
+	control_init();
+	control_lock(timer_resolution / 4);
+
 	int i;
 	for (i = 0; i < 32; i++)
 		keymap[i] = SDLK_UNKNOWN;
