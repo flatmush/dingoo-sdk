@@ -110,7 +110,7 @@ typedef unsigned long uintptr_t;*/
 #define SDL_THREADS_DISABLED	1
 
 /* Enable the stub timer support (src/timer/dummy/\*.c) */
-#define SDL_TIMERS_DISABLED	1
+#define SDL_TIMER_DINGOO	1
 
 /* Enable the dummy video driver (src/video/dummy/\*.c) */
 #define SDL_VIDEO_DRIVER_SLCD 1
