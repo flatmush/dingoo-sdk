@@ -1,3 +1,0 @@
-This is just here temporarily...
-I can't build the SDL audio files and dummy audio driver since it uses floating point.
-So I'll either remove support for parts using floating point, or rewrite them in fixed point math.
