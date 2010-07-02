@@ -205,7 +205,7 @@ static size_t SDL_ScanUnsignedLongLong(const char *text, int radix, Uint64 *valu
 #endif /* SDL_HAS_64BIT_TYPE */
 
 #if !defined(HAVE_SSCANF) || !defined(HAVE_STRTOD)
-static size_t SDL_ScanFloat(const char *text, double *valuep) // FIXME hack... fix in some other way?
+static size_t SDL_ScanFloat(const char *text, double *valuep)
 {
     const char *textstart = text;
     unsigned long lvalue = 0;
@@ -216,27 +216,25 @@ static size_t SDL_ScanFloat(const char *text, double *valuep) // FIXME hack... f
         negative = SDL_TRUE;
         ++text;
     }
-	
     text += SDL_ScanUnsignedLong(text, 10, &lvalue);
-    //value += lvalue;
+    value += lvalue;
     if ( *text == '.' ) {
         int mult = 10;
         ++text;
         while ( SDL_isdigit((unsigned char) *text) ) {
             lvalue = *text - '0';
-            //value += (double)lvalue / mult;
+            value += (double)lvalue / mult;
             mult *= 10;
             ++text;
         }
     }
-    /*if ( valuep ) {
+    if ( valuep ) {
         if ( negative && value ) {
             *valuep = -value;
         } else {
             *valuep = value;
         }
-    }*/
-	*valuep = 0.0;
+    }
     return (text - textstart);
 }
 #endif
@@ -1070,11 +1068,11 @@ static size_t SDL_PrintUnsignedLongLong(char *text, Uint64 value, int radix, siz
     return size;
 }
 #endif /* SDL_HAS_64BIT_TYPE */
-static size_t SDL_PrintFloat(char *text, double arg, size_t maxlen) // FIXME rewrite without double?
+static size_t SDL_PrintFloat(char *text, double arg, size_t maxlen)
 {
     char *textstart = text;
-    /*if ( arg ) {
-        // This isn't especially accurate, but hey, it's easy. :)
+    if ( arg ) {
+        /* This isn't especially accurate, but hey, it's easy. :) */
         const double precision = 0.00000001;
         size_t len;
         unsigned long value;
@@ -1103,12 +1101,7 @@ static size_t SDL_PrintFloat(char *text, double arg, size_t maxlen) // FIXME rew
         }
     } else {
         *text++ = '0';
-    }*/
-	*text++ = 'u';
-	*text++ = 'n';
-	*text++ = 's';
-	*text++ = 'u';
-	*text++ = 'p';
+    }
     return (text - textstart);
 }
 static size_t SDL_PrintString(char *text, const char *string, size_t maxlen)
@@ -1139,7 +1132,7 @@ int SDL_vsnprintf(char *text, size_t maxlen, const char *fmt, va_list ap)
             } inttype = DO_INT;
 
             ++fmt;
-            // FIXME: implement more of the format specifiers
+            /* FIXME: implement more of the format specifiers */
             while ( *fmt == '.' || (*fmt >= '0' && *fmt <= '9') ) {
                 ++fmt;
             }
@@ -1151,13 +1144,13 @@ int SDL_vsnprintf(char *text, size_t maxlen, const char *fmt, va_list ap)
                         done = SDL_TRUE;
                         break;
                     case 'c':
-                        // char is promoted to int when passed through (...)
+                        /* char is promoted to int when passed through (...) */
                         *text = (char)va_arg(ap, int);
                         len = 1;
                         done = SDL_TRUE;
                         break;
                     case 'h':
-                        // short is promoted to int when passed through (...)
+                        /* short is promoted to int when passed through (...) */
                         break;
                     case 'l':
                         if ( inttype < DO_LONGLONG ) {
@@ -1192,7 +1185,7 @@ int SDL_vsnprintf(char *text, size_t maxlen, const char *fmt, va_list ap)
                     case 'p':
                     case 'x':
                         do_lowercase = SDL_TRUE;
-                        // Fall through to 'X' handling
+                        /* Fall through to 'X' handling */
                     case 'X':
                         if ( radix == 10 ) {
                             radix = 16;
@@ -1200,12 +1193,12 @@ int SDL_vsnprintf(char *text, size_t maxlen, const char *fmt, va_list ap)
                         if ( *fmt == 'p' ) {
                             inttype = DO_LONG;
                         }
-                        // Fall through to unsigned handling
+                        /* Fall through to unsigned handling */
                     case 'o':
                         if ( radix == 10 ) {
                             radix = 8;
                         }
-                        // Fall through to unsigned handling
+                        /* Fall through to unsigned handling */
                     case 'u':
                         switch (inttype) {
                             case DO_INT:
