@@ -28,11 +28,13 @@ SOURCE    = \
 	./src/stdlib \
 	./src/timer \
 	./src/timer/dummy \
-	./src/thread/ \
+	./src/timer/dingoo \
+	./src/thread \
 	./src/thread/generic \
 	./src/video \
 	./src/video/dummy \
 	./src/video/slcd \
+	./SDL_ttf \
 
 INCLUDE   = -I. -I./include -I$(DINGOO_SDK)/include
 
