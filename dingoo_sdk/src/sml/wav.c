@@ -38,11 +38,7 @@ void wav_error(const char* inError, const uint32_t inNumber) {
 	// TODO - Report error somehow.
 }
 
-sound_t* wav_load(char* inFile) {
-	if(inFile == NULL)
-		return NULL;
-
-	FILE* tempFile = fopen(inFile, "rb");
+sound_t* _wav_load(FILE* tempFile) {
 	if(tempFile == NULL) {
 		wav_error("Unable to open file.", 2);
 		return NULL;
@@ -145,6 +141,22 @@ sound_t* wav_load(char* inFile) {
 wav_load_end:
 	fclose(tempFile);
 	return tempOut;
+}
+
+sound_t* wav_load(char* inFile) {
+	if(inFile == NULL)
+		return NULL;
+
+	FILE* tempFile = fopen(inFile, "rb");
+	return _wav_load(tempFile);
+}
+
+sound_t* wav_load_from_buffer(uint8_t* buffer, size_t size) {
+	if(buffer == NULL)
+		return NULL;
+
+	FILE* tempFile = fmemopen(buffer, size, "rb");
+	return _wav_load(tempFile);
 }
 
 void wav_delete(sound_t* inBuffer) {

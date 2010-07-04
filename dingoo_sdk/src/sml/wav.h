@@ -8,10 +8,12 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #include <sml/sound.h>
 
 extern sound_t* wav_load(char* inFile);
+extern sound_t* wav_load_from_buffer(uint8_t* buffer, size_t size);
 extern void     wav_delete(sound_t* inBuffer);
 
 #ifdef __cplusplus
