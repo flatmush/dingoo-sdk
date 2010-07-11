@@ -69,6 +69,7 @@ Linux users will need to do the following:
 	- Install these compiler tools to an appropriate place.
 	- Set the environment variable MIPSTOOLS to the location of your mips compiler tools.
 	- Set the environment variable DINGOO_SDK to this directory.
+	- Set the environment variable PATH to "$PATH:$MIPSTOOLS/bin"
 	- Type "cd $DINGOO_SDK && ./install"
 
 The dingoo SDK is now installed.
