@@ -4,7 +4,7 @@
 /* file extension name */
 int GetFileType(char* pname) {
 	if(pname != NULL)
-		strcpy(pname, "TGA"); // Emulator ROM extensions (use "EXT|EXT|EXT" for several file-type associations, not more than six)
+		strcpy(pname, "TGA"); // Emulator ROM extensions (use "EXT|EXT|EXT" for several file-type associations, not more than five)
 	return 0;
 }
 
