@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 	system(tempCommand);
 
 	//printf("Status: Reading program binary.\n");
-	char tempPath[strlen(argv[1]) + 5];
+	char tempPath[1024];
 	sprintf(tempPath, "%s.bin", argv[1]);
 	FILE* tempFile = fopen(tempPath, "rb");
 	if(tempFile == NULL) {
