@@ -3,6 +3,7 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <inttypes.h>
 
@@ -25,8 +26,15 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
-	fprintf(tempOutFile, "#ifndef __bin2h_%s_h__\n", argv[2]);
-	fprintf(tempOutFile, "#define __bin2h_%s_h__\n", argv[2]);
+	// get only name without path
+	char* name = argv[2] + strlen(argv[2]);
+	while(name > argv[2] && *name != '/' && *name != '\\')
+		--name;
+	if(name != argv[2])
+		++name;
+
+	fprintf(tempOutFile, "#ifndef __bin2h_%s_h__\n", name);
+	fprintf(tempOutFile, "#define __bin2h_%s_h__\n", name);
 	fprintf(tempOutFile, "\n");
 
 	fprintf(tempOutFile, "#ifdef __cplusplus\n");
@@ -47,8 +55,8 @@ int main(int argc, char** argv) {
 	unsigned long int tempSize = ftell(tempInFile);
 	fseek(tempInFile, 0, SEEK_SET);
 
-	fprintf(tempOutFile, "uintptr_t %s_size = %lu;\n", argv[2], tempSize);
-	fprintf(tempOutFile, "uint8_t   %s[%lu] = {\n", argv[2], tempSize);
+	fprintf(tempOutFile, "uintptr_t %s_size = %lu;\n", name, tempSize);
+	fprintf(tempOutFile, "uint8_t   %s[%lu] = {\n", name, tempSize);
 
 	unsigned char tempByte;
 	unsigned int tempHex;
