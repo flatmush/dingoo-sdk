@@ -34,7 +34,7 @@ extern void   perror(const char* prefix);
 //#define eprintf(...) fprintf(stderr, __VA_ARGS__)
 
 extern FILE* fopen(const char* filename, const char* mode);
-extern void  fclose(FILE* stream);
+extern int  fclose(FILE* stream);
 
 extern int      fseek(FILE* stream, long int offset, int origin);
 extern long int ftell(FILE* stream);

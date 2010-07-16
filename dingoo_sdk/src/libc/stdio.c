@@ -115,20 +115,21 @@ FILE* fopen(const char* filename, const char* mode) {
 	return (FILE*)tempFile;
 }
 
-void fclose(FILE* stream) {
+int fclose(FILE* stream) {
 	if(stream == stdin)
-		return;
+		return 0;
 	if(stream == stdout)
-		return;
+		return 0;
 	if(stream == stderr)
-		return;
+		return 0;
 	if(stream == _serial)
-		return;
+		return 0;
 
 	_file_t* tempFile = (_file_t*)stream;
 
+	int res = 0;
 	if(tempFile->type == _file_type_file)
-		fsys_fclose((FILE*)tempFile->data);
+		res = fsys_fclose((FILE*)tempFile->data);
 
 	if(tempFile->type == _file_type_mem) {
 		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
@@ -137,6 +138,7 @@ void fclose(FILE* stream) {
 	}
 
 	free(tempFile);
+	return res;
 }
 
 
@@ -150,7 +152,14 @@ int _fseek(FILE* stream, long int offset, int origin) {
 	_file_t* tempFile = (_file_t*)stream;
 
 	if(tempFile->type == _file_type_file)
-		return (fsys_fseek((FILE*)tempFile->data, offset, origin) == offset ? 0 : -1); // Fix for non-standard behavior
+	{
+		int pos = fsys_fseek((FILE*)tempFile->data, offset, origin);
+		//we can detect success only when SET mode
+		if(origin == FSYS_SEEK_SET)
+			return pos == offset ? 0 : -1; // Fix for non-standard behavior
+		else
+			return 0;
+	}
 
 	if(tempFile->type == _file_type_mem) {
 		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
