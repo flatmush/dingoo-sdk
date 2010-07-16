@@ -6,6 +6,8 @@ extern "C"
 {
 #endif
 
+#ifndef __cplusplus
+
 typedef int bool;
 
 #ifndef false
@@ -15,6 +17,8 @@ typedef int bool;
 #ifndef true
 #define true !false
 #endif
+
+#endif//__cplusplus
 
 #define __bool_true_false_are_defined (defined(true) && defined(false))
 

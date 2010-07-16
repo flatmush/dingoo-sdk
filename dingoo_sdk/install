@@ -22,11 +22,13 @@ fi
 
 cd $DINGOO_SDK/src/jz4740 && make clean && make headers
 cd $DINGOO_SDK/src/libc && make clean && make headers
+cd $DINGOO_SDK/src/libstdc++ && make clean && make headers
 cd $DINGOO_SDK/src/sml && make clean && make headers
 cd $DINGOO_SDK/src/modplay && make clean && make headers
 
 cd $DINGOO_SDK/src/jz4740 && make
 cd $DINGOO_SDK/src/libc && make
+cd $DINGOO_SDK/src/libstdc++ && make
 cd $DINGOO_SDK/src/sml && make
 cd $DINGOO_SDK/src/modplay && make
 
@@ -40,12 +42,21 @@ SECTIONS
 {
     .dingoo 0x80A00000 :
     { 
-        $DINGOO_SDK/lib/dingoo.o (.text)
+        dingoo.o (.text)
         *(.text*)
         *(.rodata*)
         *(.data*)
         *(.eh_frame*)
         *(.gcc_except_table*)
+
+        . = ALIGN(8);
+        __CTOR_LIST__ = ABSOLUTE(.);
+        KEEP(*(SORT(.ctors*)))
+        __CTOR_END__ = ABSOLUTE(.);
+        __DTOR_LIST__ = ABSOLUTE(.);
+        KEEP(*(SORT(.dtors*)))
+        __DTOR_END__ = ABSOLUTE(.);
+
         *(.lit8)
         *(.lit4)
         *(.sdata)
@@ -55,7 +66,7 @@ SECTIONS
     {
         *(.sbss)
         *(.scommon)
-        *(.bss)
+        *(.bss*)
         *(COMMON)
     }
     _end = .;
