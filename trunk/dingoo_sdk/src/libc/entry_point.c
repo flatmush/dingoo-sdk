@@ -34,6 +34,12 @@ typedef void (*_atexit_func_t)(void);
 extern uintptr_t       _atexit_count;
 extern _atexit_func_t* _atexit_table;
 
+typedef void (*_PVFV)();
+extern _PVFV __CTOR_LIST__[];
+extern _PVFV __CTOR_END__[];
+extern _PVFV __DTOR_LIST__[];
+extern _PVFV __DTOR_END__[];
+
 extern int _fread(void* ptr, size_t size, size_t count, FILE* stream);
 extern int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
 extern int _fseek(FILE* stream, long int offset, int origin);
@@ -81,6 +87,14 @@ char* _app_path_init(const char* inPath) {
 	return _app_path;
 }
 
+void initterm(const _PVFV* beg, const _PVFV* end) {
+	for(; beg < end; ++beg)
+	{
+		if(*beg)
+			(**beg)();
+	}
+}
+
 int GameMain(char* respath) {
 	// Patch functions to use our own fixed versions
 	__fread  = dl_patch(&fread, &_fread);
@@ -111,11 +125,17 @@ int GameMain(char* respath) {
 	strcpy(tempPath, __to_locale_ansi((wchar_t*)respath));
 	_app_path_init(tempPath);
 
+	// invoke C++ constructors
+	initterm(__CTOR_LIST__, __CTOR_END__);
+
 	int tempOut;
 	if(!setjmp(_libc_exit_jmp_buf))
 		tempOut = main(1, &tempPath);
 	else
 		tempOut = _libc_exit_status;
+
+	// invoke C++ destructors
+	initterm(__DTOR_LIST__, __DTOR_END__);
 
 	// Do atexit stuff.
 	uintptr_t i;
