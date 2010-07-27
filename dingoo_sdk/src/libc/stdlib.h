@@ -44,6 +44,8 @@ extern double    atof(const char* str);
 
 extern void qsort(void* base, size_t num, size_t size, int(* comparator) (const void*, const void*));
 
+extern double strtod(const char *string, char **endPtr);
+
 #ifdef __cplusplus
 }
 #endif
