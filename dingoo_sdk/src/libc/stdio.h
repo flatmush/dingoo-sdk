@@ -8,6 +8,7 @@ extern "C"
 
 #include <stddef.h>
 #include <dingoo/fsys.h>
+#include <stdarg.h>
 
 typedef FSYS_FILE FILE;
 typedef long int fpos_t;
@@ -27,6 +28,11 @@ extern FILE* stderr;
 extern int    fprintf(FILE*, const char*, ...);
 extern int    printf(const char*, ...);
 int    sprintf(char*, const char*, ...);
+
+extern int vsnprintf (char *str, size_t count, const char *fmt, va_list args);
+extern int snprintf(char *str,size_t count,const char *fmt,...);
+extern int vasprintf(char **ptr, const char *format, va_list ap);
+extern int asprintf(char **ptr, const char *format, ...);
 
 extern void   perror(const char* prefix);
 
