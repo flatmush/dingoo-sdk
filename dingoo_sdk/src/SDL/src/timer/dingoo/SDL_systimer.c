@@ -20,9 +20,6 @@
     slouken@libsdl.org
 */
 
-// We use OSTimeGet and OSTimeDly which works in 1/100 of a second
-// so the accuracy isn't perfect...
-
 #include "SDL_config.h"
 
 #ifdef SDL_TIMER_DINGOO
@@ -38,21 +35,21 @@ static uint32_t start;
 
 void SDL_StartTicks(void)
 {
-	/* Set first ticks value */
-	start = OSTimeGet();
+	/* Set first ticks value. */
+	start = OSTimeGet() * 10.01;
 }
 
 Uint32 SDL_GetTicks(void)
 {
-	uint32_t now = OSTimeGet();
-	return((now - start) * 10);
+	uint32_t now = OSTimeGet() * 10.01;
+	return(now - start);
 }
 
 void SDL_Delay(Uint32 ms)
 {
-	Uint32 h = ms / 10;
-	OSTimeDly(h);
-	delay_ms(ms - h);
+	Uint32 h = ms * 1.001;
+	OSTimeDly(h / 10);
+	delay_ms(h % 10); // delay_ms seems to be a bit inaccurate, but here it's better than nothing I guess
 }
 
 /* This is only called if the event thread is not running */
