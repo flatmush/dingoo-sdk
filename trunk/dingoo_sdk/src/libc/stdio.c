@@ -392,11 +392,15 @@ char* gets(char* s) {
 	for(i = 0; !feof(stdin); i++) {
 		c = getchar();
 		if((c == '\n') || (c == EOF)) {
+			if (c == EOF && i == 0)
+				return NULL;
 			s[i] = '\0';
 			return s;
 		}
 		s[i] = c;
 	}
+	if (i == 0)
+		return NULL;
 	s[i] = '\0';
 	return s;
 }
@@ -435,8 +439,11 @@ char* fgets(char* s, int n, FILE* stream) {
 	int i;
 	for(i = 0; i < (n - 1); i++) {
 		c = fgetc(stream);
-		if(c == EOF)
+		if(c == EOF) {
+			if (i == 0)
+				return NULL;
 			break;
+		}
 		s[i] = c;
 		if(c == '\n') {
 			i++;
