@@ -8,15 +8,9 @@ extern "C"
 
 #ifndef __cplusplus
 
-typedef int bool;
-
-#ifndef false
+#define bool _Bool
+#define true 1
 #define false 0
-#endif
-
-#ifndef true
-#define true !false
-#endif
 
 #endif//__cplusplus
 
