@@ -52,7 +52,7 @@ extern int      fwrite(const void* ptr, size_t size, size_t count, FILE* stream)
 extern FILE* fmemopen(void* buf, size_t size, const char* mode);
 
 // TODO - Make a function for remove that parses paths correctly.
-#define remove(filename) fsys_remove(filename)
+extern int remove(const char* filename);
 
 extern int   getc(FILE* stream);
 extern int   getchar();

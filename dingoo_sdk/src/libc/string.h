@@ -33,7 +33,7 @@ extern char *strpbrk(const char *s1, const char *s2);
 extern char *strcat(char *outDest, const char *inSrc);
 extern char *strncat(char *dst, const char *src, size_t n);
 
-extern void *memchr(void *inPtr, int inChar, size_t inLength);
+extern void *memchr(const void *inPtr, int inChar, size_t inLength);
 extern void *memcpy(void *outDest, const void *inSrc, size_t inLength);
 extern void *memmove(void *outDest, const void *inSrc, size_t inLength);
 extern void *memset(void *outDest, int inValue, size_t inLength);

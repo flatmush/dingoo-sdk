@@ -240,7 +240,7 @@ char *strpbrk(const char *s1, const char *s2)
   return 0;
 }
 
-void* memchr (void* inPtr, int inChar, size_t inLength) {
+void* memchr (const void* inPtr, int inChar, size_t inLength) {
 	if(inPtr == NULL)
 		return NULL;
 	if((inChar < -128) || (inChar >= 256))
