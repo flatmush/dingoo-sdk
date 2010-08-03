@@ -14,5 +14,6 @@
 
 == Applications ==
   * [http://code.google.com/p/dingoo-sdk/downloads/list Overclocker] (included with the SDK)
+  * [http://boards.dingoonity.org/dingoo-releases/samegoo-1-2-stopwatch-1-1/ StopWatch]
 
 Know of another game or application? Have a correction that needs to be made? Please [http://code.google.com/p/dingoo-sdk/issues/entry submit an issue ticket].
