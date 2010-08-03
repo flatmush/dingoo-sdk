@@ -10,7 +10,7 @@
   * [http://boards.dingoonity.org/dingoo-releases/spoout-v3/ Spoout]
   * [http://boards.dingoonity.org/dingoo-releases/wolfenstein-3d-v1-0/ Wolfenstein 3D and Spear of Destiny]
   * [http://boards.dingoonity.org/dingoo-releases/chip-world-1-0/ Chipworld]
-  * [http://boards.dingoonity.org/dingoo-releases/arcade-volleyball-0-2/ Arcade Volleyball 0.2]
+  * [http://boards.dingoonity.org/dingoo-releases/arcade-volleyball-0-2/ Arcade Volleyball]
 
 == Applications ==
   * [http://code.google.com/p/dingoo-sdk/downloads/list Overclocker] (included with the SDK)
