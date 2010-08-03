@@ -297,7 +297,7 @@ uint8_t testMath() {
 	if(!IsEqual(log10(1000.0), 3.0))
 		return 7;
 	if(!IsEqual(acos(0.5), M_PI/3))
-		return 7;
+		return 8;
 	return 0;
 }
 
