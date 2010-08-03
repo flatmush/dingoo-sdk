@@ -52,7 +52,7 @@ bool elf_symbol_table_add(elf_symbol_table* inTable, elf_symbol_entry* inEntry) 
 
 elf_symbol_entry* elf_symbol_entry_parse(const char* inLine) {
 	uint32_t tempOffset;
-	char     tempName[256];
+	char     tempName[2048];
 
 	tempName[0] = '\0';
 	if(sscanf(inLine, "%" SCNx32 " %*c %*c .dingoo %*x %s", &tempOffset, tempName) < 0)
