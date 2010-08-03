@@ -9,7 +9,7 @@
   * [http://boards.dingoonity.org/dingoo-development/new-example-for-flatmusk-plateform-sdk/ Voxel engine demo]
   * [http://boards.dingoonity.org/dingoo-releases/spoout-v3/ Spoout]
   * [http://boards.dingoonity.org/dingoo-releases/wolfenstein-3d-v1-0/ Wolfenstein 3D and Spear of Destiny]
-  * Chipworld (on its way)
+  * [http://boards.dingoonity.org/dingoo-releases/chip-world-1-0/ Chipworld]
 
 == Applications ==
   * [http://code.google.com/p/dingoo-sdk/downloads/list Overclocker] (included with the SDK)
