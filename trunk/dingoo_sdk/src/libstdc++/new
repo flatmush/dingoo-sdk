@@ -1,0 +1,19 @@
+#ifndef __NEW_H__
+#define __NEW_H__
+
+#include "stddef.h"
+
+#pragma once
+
+void* operator new(size_t size);
+void* operator new[](size_t size);
+void operator delete(void* p);
+void operator delete[](void* p);
+
+//placement new/delete
+inline void* operator new(size_t, void* __p)	{ return __p; }
+inline void* operator new[](size_t, void* __p)	{ return __p; }
+inline void  operator delete  (void*, void*) {}
+inline void  operator delete[](void*, void*) {}
+
+#endif//__NEW_H__
