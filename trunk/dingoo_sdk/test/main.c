@@ -12,6 +12,7 @@
 #include <strings.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <math.h>
 
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
@@ -36,7 +37,7 @@
 #define TEST_SUCCEEDED 0
 #define TEST_FAILED    255
 
-#define NMBR_OF_TESTS 4
+#define NMBR_OF_TESTS 5
 uint16_t curAddTest = 0;
 
 gfx_font*    gameFont            = NULL;
@@ -261,6 +262,45 @@ uint8_t testStringsH()
 	return 0;
 }
 
+void testMathPrint() {
+//	char buf[256];
+//	double e = exp(1.0);
+//	sprintf(buf, "Math test: exp(1.0) = %lf", e);
+//	double p = pow(7.0, 3.0);
+//	sprintf(buf, "Math test: pow(7.0, 3.0) = %lf", p);
+//	gfx_font_print(10, 10, gameFont, buf);
+}
+void testMathCleanup() {
+}
+
+#define EPSILON 0.00001
+bool IsEqual(double v1, double v2)
+{
+	return v1 > v2 - EPSILON && v1 < v2 + EPSILON;
+}
+uint8_t testMath() {
+//	testDraw = testMathPrint;
+//	testCleanup = testMathCleanup;
+//	curTestReqUserInput = true;
+	if(sin(M_PI_2) != 1.0)
+		return 1;
+	if(cos(0.0) != 1.0)
+		return 2;
+	if(tan(0.0) != 0.0)
+		return 3;
+	if(!IsEqual(exp(5.0), 148.413159))
+		return 4;
+	if(!IsEqual(pow(9.21, 3.5), 2370.875264))
+		return 5;
+	if(!IsEqual(log(5.5), 1.704748))
+		return 6;
+	if(!IsEqual(log10(1000.0), 3.0))
+		return 7;
+	if(!IsEqual(acos(0.5), M_PI/3))
+		return 7;
+	return 0;
+}
+
 // SPRITE (buffer)
 void testSprite_gfx() {
 	sprite* tempSprite = (sprite*)testArg[0];
@@ -341,8 +381,9 @@ int main(int argc, char** argv) {
 
 	test[0] = testStringH;
 	test[1] = testStringsH;
-	test[2] = testSprite;
-	test[3] = testTexture;
+	test[2] = testMath;
+	test[3] = testSprite;
+	test[4] = testTexture;
 
 	uint32_t tempTick    = 0;
 	uint32_t tempPauseOS = 0;
@@ -393,6 +434,7 @@ int main(int argc, char** argv) {
 			} else if (control_just_pressed(CONTROL_BUTTON_B)) {
 				// Fail current test
 				testResults[curTest] = TEST_FAILED;
+				curTestReqUserInput = false;
 				do_cleanup();
 				curTest++;
 			}
