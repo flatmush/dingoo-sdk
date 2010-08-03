@@ -322,7 +322,10 @@ int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
 	return 0;
 }
 
-
+int remove(const char* filename)
+{
+	return fsys_remove((char*)filename);
+}
 
 FILE* fmemopen(void* buf, size_t size, const char* mode) {
 	if(mode == NULL)
