@@ -15,6 +15,7 @@ SOURCE    = \
 	./libc_ext \
 	./src \
 	./src/audio \
+	./src/audio/dingoo \
 	./src/audio/dummy \
 	./src/cdrom \
 	./src/cdrom/dummy \
@@ -36,12 +37,14 @@ SOURCE    = \
 	./src/video/slcd \
 	./SDL_image \
 	./SDL_ttf \
+	./SDL_mixer \
 
 INCLUDE   = -I. -I./include -I$(DINGOO_SDK)/include -I$(DINGOO_SDK)/include/png -I$(DINGOO_SDK)/include/zlib
 
+SDL_MIXER = -DWAV_MUSIC -DOGG_MUSIC -DOGG_USE_TREMOR
 W_OPTS    = -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions
 CPP_OPTS  = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
-CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
+CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 $(SDL_MIXER) -c
 CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
 
 LIB_PATH  = $(DINGOO_SDK)/lib
@@ -55,7 +58,8 @@ SRC_C   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.c))
 SRC_H_INC = $(foreach dir, $(SOURCE), $(wildcard $(dir)/include/*.h))
 SRC_H_TTF = ./SDL_ttf/SDL_ttf.h
 SRC_H_IMG = ./SDL_image/SDL_image.h
-SRC_H   = $(SRC_H_INC) $(SRC_H_TTF) $(SRC_H_IMG)
+SRC_H_MIX = ./SDL_mixer/SDL_mixer.h
+SRC_H   = $(SRC_H_INC) $(SRC_H_TTF) $(SRC_H_IMG) $(SRC_H_MIX)
 SRC_S   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.S))
 OBJ_CPP = $(patsubst %.cpp, %.o, $(SRC_CPP))
 OBJ_C   = $(patsubst %.c, %.o, $(SRC_C))

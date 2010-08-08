@@ -36,6 +36,9 @@
 
 /* Available audio drivers */
 static AudioBootStrap *bootstrap[] = {
+#if SDL_AUDIO_DRIVER_DINGOO
+	&DINGOO_bootstrap,
+#endif
 #if SDL_AUDIO_DRIVER_BSD
 	&BSD_AUDIO_bootstrap,
 #endif
