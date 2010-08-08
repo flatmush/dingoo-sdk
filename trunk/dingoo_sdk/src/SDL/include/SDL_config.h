@@ -53,7 +53,7 @@ typedef unsigned long uintptr_t;*/
 #define HAVE_INTTYPES_H 1
 #define HAVE_STDINT_H 1
 #define HAVE_CTYPE_H 1
-//#define HAVE_MATH_H 1
+#define HAVE_MATH_H 1
 //#define HAVE_ICONV_H 1
 
 /* C library functions */
@@ -71,7 +71,7 @@ typedef unsigned long uintptr_t;*/
 #define HAVE_MEMSET 1
 #define HAVE_MEMCPY 1
 #define HAVE_MEMMOVE 1
-//#define HAVE_MEMCMP 1 // even though we have memcmp, it doesn't work if this is defined :S
+#define HAVE_MEMCMP 1
 #define HAVE_STRLEN 1
 #define HAVE_STRLCPY 1
 #define HAVE_STRLCAT 1
@@ -90,11 +90,12 @@ typedef unsigned long uintptr_t;*/
 #define HAVE_STRCASECMP 1
 #define HAVE_STRNCASECMP 1
 //#define HAVE_SSCANF 1
-//#define HAVE_SNPRINTF 1
-//#define HAVE_VSNPRINTF 1
-//#define HAVE_SETJMP 1 // FIXME we seem to have this one, but I'm unsure if it's tested
+#define HAVE_SNPRINTF 1
+#define HAVE_VSNPRINTF 1
+#define HAVE_SETJMP 1
 
 /* Enable the dummy audio driver (src/audio/dummy/\*.c) */
+//#define SDL_AUDIO_DRIVER_DINGOO 1 // Not 100% yet
 #define SDL_AUDIO_DRIVER_DUMMY	1
 
 /* Enable the stub cdrom driver (src/cdrom/dummy/\*.c) */

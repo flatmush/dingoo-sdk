@@ -1,0 +1,142 @@
+#include "dingoo_sound.h"
+
+waveout_inst* woHandle;
+
+OS_STK   TaskStk[NO_TASKS][TASK_STK_SIZE];      // Tasks stacks 
+char     TaskData[NO_TASKS];                    // Parameters to pass to each task
+
+volatile int curReadBuffer;
+int curWriteBuffer;
+static volatile int soundThreadPause;
+static volatile int soundThreadExit;
+
+bool dingooSoundStarted = false;
+uint32_t dingooSoundBufferSize;
+
+char _lastError[256] = {0};
+
+
+uint8_t* dingooSoundBufferTotal = NULL;			// The raw allocated mixing buffer
+void* dingooSoundBuffers[SOUNDBUFFERS];			// Wave audio fragments
+
+void (*getDataCallback)(void *, uint32_t);
+
+
+int dingooSoundInit(waveout_args waveformat, uint32_t bufsize, void (*callback)(void *, uint32_t))
+{
+	getDataCallback = callback;
+
+	dingooSoundBufferSize = bufsize;
+
+	dingooSoundBufferTotal = (uint8_t*)malloc(SOUNDBUFFERS * dingooSoundBufferSize);
+	if (dingooSoundBufferTotal == NULL)
+	{
+		//SDL_SetError("Out of memory");
+		return -1;
+	}
+
+	int i;
+	for (i = 0; i < SOUNDBUFFERS; ++i)
+	{
+		dingooSoundBuffers[i] = (void *)(dingooSoundBufferTotal + ((dingooSoundBufferSize * i)));
+	}
+
+	dingooSoundClearBuffers();
+
+	sprintf(_lastError, "No Error");
+
+	woHandle = waveout_open(&waveformat);
+	
+	curReadBuffer = 0;
+	curWriteBuffer = 0;
+	soundThreadExit = 0;
+	soundThreadPause = 1;
+
+	OSTaskCreate(_dingooSoundPlay, (void *) 0, (void *)&TaskStk[0][TASK_STK_SIZE - 1], TASK_START_PRIO);
+	OSTaskCreate(_dingooSoundUpdate, (void *) 0, (void *)&TaskStk[1][TASK_STK_SIZE - 1], TASK_START_PRIO + 1);
+	dingooSoundStarted = true;
+
+	return 0;
+}
+
+void dingooSoundClose()
+{
+	if (!dingooSoundStarted)
+		return;
+
+	soundThreadPause = 1;
+	soundThreadExit = 1;
+
+	while (soundThreadExit - 1 < NO_TASKS);  // to avoid pb with waveout_close -> can hang ??
+
+	if (dingooSoundBufferTotal != NULL)
+		free(dingooSoundBufferTotal);
+
+	waveout_close(woHandle);
+}
+
+void dingooSoundPause(bool b)
+{
+	soundThreadPause = b ? 1 : 0;
+}
+
+bool dingooSoundIsPaused()
+{
+	return soundThreadPause;
+}
+
+void dingooSoundClearBuffers()
+{
+	if (dingooSoundBufferTotal != NULL)
+		memset(dingooSoundBufferTotal, 0, dingooSoundBufferSize * SOUNDBUFFERS);
+}
+
+void _dingooSoundPlay(void *none)
+{
+	do
+	{
+		if (soundThreadPause == 0)
+		{
+			curReadBuffer++;
+			if (curReadBuffer == SOUNDBUFFERS)
+				curReadBuffer = 0;
+
+			waveout_write(woHandle, dingooSoundBuffers[curReadBuffer], dingooSoundBufferSize);
+		}
+		else
+		{
+			OSTimeDly(1);
+		}
+	} while (soundThreadExit == 0); // Until the end of the sound thread
+
+	soundThreadExit++;
+
+	OSTaskDel(TASK_START_PRIO);
+}
+
+void _dingooSoundUpdate(void *none)
+{
+	while (soundThreadExit == 0)
+	{
+		while (curWriteBuffer != curReadBuffer)
+		{
+			uint8_t *pCur = dingooSoundBuffers[curWriteBuffer];
+			
+			getDataCallback(pCur, dingooSoundBufferSize);
+
+			curWriteBuffer++;
+			curWriteBuffer = curWriteBuffer % SOUNDBUFFERS;
+		}
+
+		OSTimeDly(1);
+	}
+
+	soundThreadExit++;
+
+	OSTaskDel(TASK_START_PRIO + 1);
+}
+
+char* dingooSoundLastError()
+{
+	return _lastError;
+}

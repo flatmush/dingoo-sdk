@@ -47,9 +47,15 @@ Uint32 SDL_GetTicks(void)
 
 void SDL_Delay(Uint32 ms)
 {
-	Uint32 h = ms * 1.001;
-	OSTimeDly(h / 10);
-	delay_ms(h % 10); // delay_ms seems to be a bit inaccurate, but here it's better than nothing I guess
+	if (ms <= 5000)
+	{
+		OSTimeDly(ms / 10); // Not worth it using 10.01 for small values because of rounding
+		delay_ms(ms % 10);
+	}
+	else
+	{
+		OSTimeDly(ms / 10.01);
+	}
 }
 
 /* This is only called if the event thread is not running */
