@@ -6,8 +6,6 @@ extern "C"
 {
 #endif
 
-#include <ctype.h>
-
 extern int iscntrl(int chr);
 extern int isspace(int chr);
 extern int isupper(int chr);
