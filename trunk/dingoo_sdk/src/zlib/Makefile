@@ -1,6 +1,6 @@
 # Define the applications properties here:
 
-LIB_NAME = zlib
+LIB_NAME = z
 
 
 
@@ -21,12 +21,11 @@ CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
 
 LIB_PATH  = $(DINGOO_SDK)/lib
 
-
+SRC_H = zlib.h zconf.h
 
 # Find all source files
 
 SRC_C   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.c))
-SRC_H   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.h))
 OBJ     = $(notdir $(patsubst %.c, %.o, $(SRC_C)))
 
 
@@ -55,7 +54,7 @@ $(OBJ) : %.o : %.c
 clean :
 	rm -f $(OBJ)
 	rm -f $(LIB_PATH)/lib$(LIB_NAME).a
-	rm -rf $(DINGOO_SDK)/include/$(LIB_NAME)
+	rm -rf $(DINGOO_SDK)/include/zlib
 
 
 
@@ -64,6 +63,6 @@ clean :
 .PHONY: headers
 
 headers:
-	rm -rf $(DINGOO_SDK)/include/$(LIB_NAME)
-	mkdir $(DINGOO_SDK)/include/$(LIB_NAME)
-	cp $(SRC_H) $(DINGOO_SDK)/include/$(LIB_NAME)
+	rm -rf $(DINGOO_SDK)/include/zlib
+	mkdir $(DINGOO_SDK)/include/zlib
+	cp $(SRC_H) $(DINGOO_SDK)/include/zlib
