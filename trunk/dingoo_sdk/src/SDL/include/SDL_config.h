@@ -95,8 +95,8 @@ typedef unsigned long uintptr_t;*/
 #define HAVE_SETJMP 1
 
 /* Enable the dummy audio driver (src/audio/dummy/\*.c) */
-//#define SDL_AUDIO_DRIVER_DINGOO 1 // Not 100% yet
-#define SDL_AUDIO_DRIVER_DUMMY	1
+#define SDL_AUDIO_DRIVER_DINGOO 1
+//#define SDL_AUDIO_DRIVER_DUMMY	1
 
 /* Enable the stub cdrom driver (src/cdrom/dummy/\*.c) */
 #define SDL_CDROM_DISABLED	1
