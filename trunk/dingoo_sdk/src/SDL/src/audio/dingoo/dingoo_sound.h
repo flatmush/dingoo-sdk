@@ -12,9 +12,10 @@
 
 #define min(x, y) (x < y ? x : y)
 
-#define  TASK_START_PRIO 5
-#define  TASK_STK_SIZE   1024                   // Size of each task's stacks (# of WORDs)
-#define  NO_TASKS        2                      // Number of identical tasks 
+#define TASK_START_PRIO       5
+#define TASK_STK_SIZE_PLAY    1024   // Size of the Play task's stack (# of WORDs)
+#define TASK_STK_SIZE_UPDATE  32768  // Size of the Update task's stack (# of WORDs)
+#define NO_TASKS              2      // Number of tasks 
 
 #define SOUNDBUFFERS 3
 

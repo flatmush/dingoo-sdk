@@ -2,8 +2,9 @@
 
 waveout_inst* woHandle;
 
-OS_STK   TaskStk[NO_TASKS][TASK_STK_SIZE];      // Tasks stacks 
-char     TaskData[NO_TASKS];                    // Parameters to pass to each task
+OS_STK   TaskStkPlay[TASK_STK_SIZE_PLAY];      // Play task stack
+OS_STK   TaskStkUpdate[TASK_STK_SIZE_UPDATE];  // Update task stack
+char     TaskData[NO_TASKS];                   // Parameters to pass to each task
 
 volatile int curReadBuffer;
 int curWriteBuffer;
@@ -52,8 +53,8 @@ int dingooSoundInit(waveout_args waveformat, uint32_t bufsize, void (*callback)(
 	soundThreadExit = 0;
 	soundThreadPause = 1;
 
-	OSTaskCreate(_dingooSoundPlay, (void *) 0, (void *)&TaskStk[0][TASK_STK_SIZE - 1], TASK_START_PRIO);
-	OSTaskCreate(_dingooSoundUpdate, (void *) 0, (void *)&TaskStk[1][TASK_STK_SIZE - 1], TASK_START_PRIO + 1);
+	OSTaskCreate(_dingooSoundPlay, (void *) 0, (void *)&TaskStkPlay[TASK_STK_SIZE_PLAY - 1], TASK_START_PRIO);
+	OSTaskCreate(_dingooSoundUpdate, (void *) 0, (void *)&TaskStkUpdate[TASK_STK_SIZE_UPDATE - 1], TASK_START_PRIO + 1);
 	dingooSoundStarted = true;
 
 	return 0;
