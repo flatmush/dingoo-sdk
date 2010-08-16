@@ -39,9 +39,9 @@ SOURCE    = \
 	./SDL_ttf \
 	./SDL_mixer \
 
-INCLUDE   = -I. -I./include -I$(DINGOO_SDK)/include -I$(DINGOO_SDK)/include/png -I$(DINGOO_SDK)/include/zlib
+INCLUDE   = -I. -I./include -I$(DINGOO_SDK)/include -I$(DINGOO_SDK)/include/png -I$(DINGOO_SDK)/include/zlib -I$(DINGOO_SDK)/include/mikmod
 
-SDL_MIXER = -DWAV_MUSIC -DOGG_MUSIC -DOGG_USE_TREMOR
+SDL_MIXER = -DWAV_MUSIC -DOGG_MUSIC -DOGG_USE_TREMOR -DMOD_MUSIC
 W_OPTS    = -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions
 CPP_OPTS  = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
 CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 $(SDL_MIXER) -c
