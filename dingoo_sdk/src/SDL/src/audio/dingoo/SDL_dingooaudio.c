@@ -36,6 +36,8 @@ static void DINGOO_WaitAudio(_THIS);
 static void DINGOO_PlayAudio(_THIS);
 static Uint8 *DINGOO_GetAudioBuf(_THIS);
 static void DINGOO_CloseAudio(_THIS);
+static void DINGOO_LockAudio(_THIS);
+static void DINGOO_UnlockAudio(_THIS);
 
 static SDL_AudioDevice *sdl_dingoo_audiodevice; 
 
@@ -78,6 +80,8 @@ static SDL_AudioDevice *Audio_CreateDevice(int devindex)
 	this->PlayAudio = DINGOO_PlayAudio;
 	this->GetAudioBuf = DINGOO_GetAudioBuf;	
 	this->CloseAudio = DINGOO_CloseAudio;
+	this->LockAudio   = DINGOO_LockAudio;
+    this->UnlockAudio = DINGOO_UnlockAudio;
 
 	this->free = Audio_DeleteDevice;
 
@@ -88,6 +92,17 @@ AudioBootStrap DINGOO_bootstrap = {
 	"dingoo", "Dingoo WaveOut",
 	Audio_Available, Audio_CreateDevice
 };
+
+static void DINGOO_LockAudio(_THIS)
+{
+	Uint8 tempError;
+    OSSemPend(audio_sem, 1000, &tempError);
+}
+
+static void DINGOO_UnlockAudio(_THIS)
+{
+    OSSemPost(audio_sem);
+}
 
 /* The Dingoo callback for handling the audio buffer */
 static void FillSound(void *stream, uint32_t len)
@@ -103,17 +118,17 @@ static void FillSound(void *stream, uint32_t len)
 
 	if ( ! audio->paused ) {
 		if ( audio->convert.needed ) {
-			SDL_mutexP(audio->mixer_lock);
+			SDL_LockAudio();
 			(*audio->spec.callback)(audio->spec.userdata,
 				(Uint8 *)audio->convert.buf,audio->convert.len);
-			SDL_mutexV(audio->mixer_lock);
+			SDL_UnlockAudio();
 			SDL_ConvertAudio(&audio->convert);
 			SDL_memcpy(stream,audio->convert.buf,audio->convert.len_cvt);
 		} else {
-			SDL_mutexP(audio->mixer_lock);
+			SDL_LockAudio();
 			(*audio->spec.callback)(audio->spec.userdata,
 						(Uint8 *)stream, len);
-			SDL_mutexV(audio->mixer_lock);
+			SDL_UnlockAudio();
 		}
 	}
 	return;
@@ -136,6 +151,8 @@ Uint8 *DINGOO_GetAudioBuf(_THIS)
 void DINGOO_CloseAudio(_THIS)
 {
 	dingooSoundClose();
+	Uint8 tempError;
+	audio_sem = OSSemDel(audio_sem, OS_DEL_ALWAYS, &tempError);
 }
 
 int DINGOO_OpenAudio(_THIS, SDL_AudioSpec *spec)
@@ -180,9 +197,18 @@ int DINGOO_OpenAudio(_THIS, SDL_AudioSpec *spec)
 	/* Update the fragment size as size in bytes */
 	SDL_CalculateAudioSpec(spec);
 
+	audio_sem = OSSemCreate(1);
+	if (audio_sem == NULL)
+	{
+		SDL_SetError("Unable to start Dingoo Sound (audio_sem == NULL)");
+		return(-1);
+	}
+
 	if (dingooSoundInit(waveformat, spec->samples, FillSound) < 0)
 	{
-		SDL_SetError("Unable to start Dingoo Sound");
+		SDL_SetError("Unable to start Dingoo Sound (init failed)");
+		Uint8 tempError;
+		OSSemDel(audio_sem, OS_DEL_ALWAYS, &tempError);
 		return(-1);
 	}
 	dingooSoundPause(false);

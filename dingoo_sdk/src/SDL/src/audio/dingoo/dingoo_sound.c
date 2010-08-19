@@ -32,7 +32,6 @@ int dingooSoundInit(waveout_args waveformat, uint32_t bufsize, void (*callback)(
 	dingooSoundBufferTotal = (uint8_t*)malloc(SOUNDBUFFERS * dingooSoundBufferSize);
 	if (dingooSoundBufferTotal == NULL)
 	{
-		//SDL_SetError("Out of memory");
 		return -1;
 	}
 
