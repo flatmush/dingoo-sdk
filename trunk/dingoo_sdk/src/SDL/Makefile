@@ -16,7 +16,6 @@ SOURCE    = \
 	./src \
 	./src/audio \
 	./src/audio/dingoo \
-	./src/audio/dummy \
 	./src/cdrom \
 	./src/cdrom/dummy \
 	./src/cpuinfo \
