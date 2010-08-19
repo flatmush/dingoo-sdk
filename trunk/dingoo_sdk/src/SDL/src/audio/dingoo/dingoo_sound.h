@@ -17,6 +17,9 @@
 #define TASK_STK_SIZE_UPDATE  32768  // Size of the Update task's stack (# of WORDs)
 #define NO_TASKS              2      // Number of tasks 
 
+#define VOLUME_MAX 30
+#define VOLUME_STEP 1
+
 #define SOUNDBUFFERS 3
 
 extern char _lastError[];
@@ -26,6 +29,10 @@ void dingooSoundClose();
 void dingooSoundPause(bool b);
 bool dingooSoundIsPaused();
 void dingooSoundClearBuffers();
+void dingooSoundVolumeIncrease();
+void dingooSoundVolumeDecrease();
+int8_t dingooSoundGetVolume();
+void dingooSoundSetVolume(int8_t v);
 void _dingooSoundPlay(void *none);
 void _dingooSoundUpdate(void *none);
 char* dingooSoundLastError();
