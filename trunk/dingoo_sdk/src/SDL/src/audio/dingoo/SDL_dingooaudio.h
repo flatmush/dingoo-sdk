@@ -28,24 +28,14 @@
 #include <dingoo/ucos2.h>
 #include <dingoo/audio.h>
 
-waveout_inst* woHandle;
-
 /* Hidden "this" pointer for the video functions */
 #define _THIS	SDL_AudioDevice *this
 
 struct SDL_PrivateAudioData {
-	//waveout_inst* sound;
-	////HANDLE audio_sem;
-	//Uint8 *mixbuf;		/* The raw allocated mixing buffer */
-	//void* wavebuf[NUM_BUFFERS];	/* Wave audio fragments */
-	//int next_buffer;
+	OS_EVENT* audio_sem
 };
 
 /* Old variable names */
-//#define sound			(this->hidden->sound)
-//#define audio_sem 		(this->hidden->audio_sem)
-//#define mixbuf			(this->hidden->mixbuf)
-//#define wavebuf			(this->hidden->wavebuf)
-//#define next_buffer		(this->hidden->next_buffer)
+#define audio_sem 		(this->hidden->audio_sem)
 
 #endif /* _SDL_lowaudio_h */
