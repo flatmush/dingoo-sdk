@@ -14,6 +14,8 @@ static volatile int soundThreadExit;
 bool dingooSoundStarted = false;
 uint32_t dingooSoundBufferSize;
 
+int8_t dingooSoundVolume;
+
 char _lastError[256] = {0};
 
 
@@ -45,6 +47,7 @@ int dingooSoundInit(waveout_args waveformat, uint32_t bufsize, void (*callback)(
 
 	sprintf(_lastError, "No Error");
 
+	dingooSoundVolume = waveformat.volume;
 	woHandle = waveout_open(&waveformat);
 	
 	curReadBuffer = 0;
@@ -89,6 +92,45 @@ void dingooSoundClearBuffers()
 {
 	if (dingooSoundBufferTotal != NULL)
 		memset(dingooSoundBufferTotal, 0, dingooSoundBufferSize * SOUNDBUFFERS);
+}
+
+void dingooSoundVolumeIncrease()
+{
+	if (dingooSoundVolume < VOLUME_MAX)
+		dingooSoundVolume += VOLUME_STEP;
+
+	if (dingooSoundVolume > VOLUME_MAX)
+		dingooSoundVolume = VOLUME_MAX;
+
+	waveout_set_volume(dingooSoundVolume);
+}
+
+void dingooSoundVolumeDecrease()
+{
+	if (dingooSoundVolume > 0)
+		dingooSoundVolume -= VOLUME_STEP;
+
+	if (dingooSoundVolume < 0)
+		dingooSoundVolume = 0;
+
+	waveout_set_volume(dingooSoundVolume);
+}
+
+int8_t dingooSoundGetVolume()
+{
+	return dingooSoundVolume;
+}
+
+void dingooSoundSetVolume(int8_t v)
+{
+	if (v < 0)
+		dingooSoundVolume = 0;
+	else if (v > VOLUME_MAX)
+		dingooSoundVolume = VOLUME_MAX;
+	else
+		dingooSoundVolume = v;
+
+	waveout_set_volume(dingooSoundVolume);
 }
 
 void _dingooSoundPlay(void *none)
