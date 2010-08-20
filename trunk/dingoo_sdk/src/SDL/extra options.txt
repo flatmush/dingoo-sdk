@@ -1,0 +1,13 @@
+You may use environment variables to specify extra options for SDL.
+
+Use SDL_putenv() before calling SDL_Init().
+
+Example usage:
+SDL_putenv("DINGOO_IGNORE_OS_EVENTS=1");
+
+
+Available options:
+DINGOO_IGNORE_OS_EVENTS			If set, don't quit on OS events such as holding X
+
+
+(More options are planned and will be available at a later time)
