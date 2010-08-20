@@ -21,8 +21,6 @@
 */
 #include "SDL_config.h"
 
-// FIXME bind START+SELECT+R+L to quit event?
-
 #include "SDL.h"
 #include "../../events/SDL_sysevents.h"
 #include "../../events/SDL_events_c.h"
@@ -36,6 +34,8 @@
 static SDLKey keymap[32];
 static SDL_keysym *TranslateKey(int scancode, SDL_keysym *keysym);
 static int posted = 0;
+
+static Uint8 dingooIgnoreOSEvents = 0;
 
 void SLCD_PumpEvents(_THIS)
 {
@@ -58,15 +58,23 @@ void SLCD_PumpEvents(_THIS)
 		}
 	}
 
-	// Quit on system events
-	if (_sys_judge_event(NULL) < 0)
+	if (!dingooIgnoreOSEvents)
 	{
-		posted = SDL_PrivateQuit();
+		// Quit on system events
+		if (_sys_judge_event(NULL) < 0)
+		{
+			posted = SDL_PrivateQuit();
+		}
 	}
 }
 
 void SLCD_InitOSKeymap(_THIS)
 {
+	char* env;
+	env = SDL_getenv("DINGOO_IGNORE_OS_EVENTS");
+	if (env)
+		dingooIgnoreOSEvents = 1;
+
 	control_init();
 	control_lock(timer_resolution / 4);
 
