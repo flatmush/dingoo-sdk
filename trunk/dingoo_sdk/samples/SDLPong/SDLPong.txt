@@ -1,0 +1,27 @@
+This sample is more meant to be a sample than to be a game.
+It's currently not very exciting to play because it's easy to predict how the ball bounces.
+
+The sample provides the following:
+* A makefile for C++ / SDL
+* An example game loop (there are many different ways of doing this, probably many better ways also)
+* SDL_image usage (png splash screen)
+* SDL_mixer usage (sound and music)
+* SDL_ttf usage (fonts and text)
+* A way to handle keys
+
+The sample supports optional music, simply put music.ogg in the same directory.
+
+
+
+Controls
+Player one uses Up/Down and player two uses X/B
+Select to quit
+
+
+
+Credits
+
+Sample made by Harteex
+
+Font used is Share-Tech Mono by Ralph Oliver du Carrois
+See Share-TechMono.txt for more info
