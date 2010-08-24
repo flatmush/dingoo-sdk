@@ -48,6 +48,7 @@ extern int      ferror(FILE* stream);
 extern int      feof(FILE* stream);
 extern int      fread(void* ptr, size_t size, size_t count, FILE* stream);
 extern int      fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
+extern int      fflush(FILE* stream);
 
 extern FILE* fmemopen(void* buf, size_t size, const char* mode);
 
