@@ -22,6 +22,7 @@ extern long int   fsys_ftell(FSYS_FILE*);
 extern int        fsys_ferror(FSYS_FILE*);
 extern int        fsys_feof(FSYS_FILE*);
 extern int        fsys_fwrite(const void*, size_t, size_t, FSYS_FILE*);
+extern int        fsys_flush_cache(FSYS_FILE*);
 
 extern int        fsys_removeW(const wchar_t*);
 #define fsys_remove(inFile) fsys_removeW(__to_unicode_le(inFile))
