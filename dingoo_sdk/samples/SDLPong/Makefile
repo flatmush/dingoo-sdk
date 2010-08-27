@@ -12,15 +12,16 @@ LD        = mipsel-linux-ld
 
 SOURCE    = .
 
-INCLUDE   = -I$(DINGOO_SDK)/include -I$(DINGOO_SDK)/include/SDL
+INCLUDE   = -I$(DINGOO_SDK)/include -I$(DINGOO_SDK)/include/SDL -I$(DINGOO_SDK)/include/stlport
 
-W_OPTS    = -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions
-CPP_OPTS  = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c -fno-rtti -fno-threadsafe-statics
-CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
+STD_OPTS  = -G0 -O3 $(INCLUDE) -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions -mips32 -mno-abicalls -fno-pic -DMPU_JZ4740 -DNDEBUG -D_DINGOO -DNO_PREFETCH
+CPP_OPTS  = -c $(STD_OPTS) -fno-rtti -fno-threadsafe-statics
+CC_OPTS   = -c $(STD_OPTS)
 CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
+#-D_DEBUG
 
 LIB_PATH  = $(DINGOO_SDK)/lib
-LIBS      = -lSDL -ltremor -lmikmod -lfreetype -lpng -lz -lm -lsml -lc -ljz4740 -lgcc
+LIBS      = -lSDL -ltremor -lmikmod -lfreetype -lpng -lz -lm -lsml -lc -ljz4740 -lgcc -lstdc++
 
 LD_SCRIPT = $(DINGOO_SDK)/lib/dingoo.xn
 LD_OPTS   = -nodefaultlibs --script $(LD_SCRIPT) -L$(LIB_PATH) $(LIBS) -o $(APP_NAME).elf
