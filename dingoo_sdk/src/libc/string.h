@@ -10,9 +10,9 @@ extern "C"
 
 extern int   strlen(const char *inStr);
 
-extern const char *strchr(const char *inStr, int inChar);
-extern const char *strrchr(const char *inStr, int inChar);
-extern const char *strstr(const char *inStr, const char *inFind);
+extern char *strchr(const char *inStr, int inChar);
+extern char *strrchr(const char *inStr, int inChar);
+extern char *strstr(const char *inStr, const char *inFind);
 
 extern char* strcpy(char *outDest, const char *inSrc);
 extern char* strncpy(char *outDest, const char *inSrc, size_t inLength);
