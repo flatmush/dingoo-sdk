@@ -14,7 +14,7 @@ SOURCE    = .
 
 INCLUDE   = -I$(DINGOO_SDK)/include -I$(DINGOO_SDK)/include/SDL -I$(DINGOO_SDK)/include/stlport
 
-STD_OPTS  = -G0 -O3 $(INCLUDE) -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions -mips32 -mno-abicalls -fno-pic -DMPU_JZ4740 -DNDEBUG -D_DINGOO -DNO_PREFETCH
+STD_OPTS  = -G0 -O3 $(INCLUDE) -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions -mips32 -mno-abicalls -fno-pic -DMPU_JZ4740 -DNDEBUG -D_DINGOO
 CPP_OPTS  = -c $(STD_OPTS) -fno-rtti -fno-threadsafe-statics
 CC_OPTS   = -c $(STD_OPTS)
 CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
