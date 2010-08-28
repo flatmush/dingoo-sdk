@@ -15,7 +15,7 @@ int strlen(const char* inStr) {
 
 
 
-const char* strchr(const char* inStr, int inChar) {
+char* strchr(const char* inStr, int inChar) {
 	if(inStr == NULL)
 		return NULL;
 	if((inChar < -128) || (inChar >= 256))
@@ -31,7 +31,7 @@ const char* strchr(const char* inStr, int inChar) {
 	return NULL;
 }
 
-const char* strrchr(const char* inStr, int inChar) {
+char* strrchr(const char* inStr, int inChar) {
 	if(inStr == NULL)
 		return NULL;
 	if((inChar < -128) || (inChar >= 256))
@@ -48,7 +48,7 @@ const char* strrchr(const char* inStr, int inChar) {
 	return tempOut;
 }
 
-const char* strstr(const char* inStr, const char* inFind) {
+char* strstr(const char* inStr, const char* inFind) {
 	if((inStr == NULL) || (inFind == NULL))
 		return NULL;
 	if(inFind[0] == '\0')
