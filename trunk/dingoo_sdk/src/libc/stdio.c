@@ -323,19 +323,29 @@ int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
 }
 
 int fflush(FILE* stream) {
-	if((stream == stdout) || (stream == stderr) || (stream == stdin) || (stream == _serial))
-		return 0;
 
 	_file_t* tempFile = (_file_t*)stream;
-
-	if(tempFile->type == _file_type_mem)
-		return 0;
 
 	if(tempFile->type == _file_type_file)
 		return fsys_flush_cache((FILE*)tempFile->data);
 
-	
+	return 0;
 }
+
+void clearerr(FILE *stream) {
+
+	_file_t* tempFile = (_file_t*)stream;
+
+	if(tempFile->type == _file_type_file)
+		fsys_clearerr((FILE*)tempFile->data);
+}
+
+void rewind(FILE *stream) {
+	fseek(stream, 0L, SEEK_SET);
+	clearerr(stream);
+}
+
+
 
 int remove(const char* filename)
 {
