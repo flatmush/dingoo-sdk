@@ -43,12 +43,14 @@ extern FILE* fopen(const char* filename, const char* mode);
 extern int  fclose(FILE* stream);
 
 extern int      fseek(FILE* stream, long int offset, int origin);
+extern void     rewind(FILE *stream);
 extern long int ftell(FILE* stream);
 extern int      ferror(FILE* stream);
 extern int      feof(FILE* stream);
 extern int      fread(void* ptr, size_t size, size_t count, FILE* stream);
 extern int      fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
 extern int      fflush(FILE* stream);
+extern void     clearerr(FILE *stream);
 
 extern FILE* fmemopen(void* buf, size_t size, const char* mode);
 
