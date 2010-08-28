@@ -405,9 +405,6 @@ int main(int argc, char** argv) {
 				tempTick += timer_delta(gameTimer);
 		}
 
-
-		if(tempTick > (gameTickRate << 2))
-			tempTick = 0; // HACK - Fixes timing glitch of unknown origin.
 		while(tempTick >= gameTickRate) {
 			tempTick -= gameTickRate;
 
