@@ -143,6 +143,11 @@ int SLCD_VideoInit(_THIS, SDL_PixelFormat *vformat)
 	vformat->BitsPerPixel = 16; // FIXME ?
 	vformat->BytesPerPixel = 2;
 
+	// Clear the screen to black, but don't actually update it to the display
+	// This is mostly useful for apps which does not update the whole screen,
+	// better to have those parts black than still seeing the launcher...
+	memset(lcd_get_frame(), 0, 320 * 240 * 2);
+
 	/* We're done! */
 	return(0);
 }
@@ -228,22 +233,40 @@ static void SLCD_UpdateRects(_THIS, int numrects, SDL_Rect *rects)
 	if (this->hidden->buffer == NULL)
 		return;
 
-	uint32_t* tempDispBuff32 = (uint32_t*)lcd_get_frame();
-	uint32_t* tempDrawBuff32 = (uint32_t*)this->hidden->buffer;
-	uint32_t* tempDispEnd32;
-	//if(screen->flags & SDL_FULLSCREEN) {
-		tempDispEnd32 = (uint32_t*)((uintptr_t)tempDispBuff32 + (320 * 240 * 2));
-		while(tempDispBuff32 < tempDispEnd32) {
-			*(tempDispBuff32++) = *(tempDrawBuff32++);
-			*(tempDispBuff32++) = *(tempDrawBuff32++);
-			*(tempDispBuff32++) = *(tempDrawBuff32++);
-			*(tempDispBuff32++) = *(tempDrawBuff32++);
-			*(tempDispBuff32++) = *(tempDrawBuff32++);
-			*(tempDispBuff32++) = *(tempDrawBuff32++);
-			*(tempDispBuff32++) = *(tempDrawBuff32++);
-			*(tempDispBuff32++) = *(tempDrawBuff32++);
+	// Will probably crash if user provides out of boundaries rects,
+	// but according to docs that's the user's responsibility to check
+
+	int i, j;
+	for (i = 0; i < numrects; i++)
+	{
+		int consecutive = rects[i].w;
+		int skipBetween = 320 - consecutive;
+		int rows = rects[i].h;
+		int start = (rects[i].y * 320) + rects[i].x;
+
+		uint16_t* tempDispBuff16 = (uint16_t*)lcd_get_frame();
+		uint16_t* tempDrawBuff16 = (uint16_t*)this->hidden->buffer;
+		uint16_t* tempDispEnd16;
+
+		tempDispBuff16 += start;
+		tempDrawBuff16 += start;
+
+		while (rows > 0)
+		{
+			tempDispEnd16 = tempDispBuff16;
+			tempDispEnd16 += consecutive;
+
+			while(tempDispBuff16 < tempDispEnd16)
+			{
+				*(tempDispBuff16++) = *(tempDrawBuff16++);
+			}
+
+			tempDispBuff16 += skipBetween;
+			tempDrawBuff16 += skipBetween;
+
+			rows--;
 		}
-	//}
+	}
 
 	__dcache_writeback_all();
 	lcd_set_frame();
