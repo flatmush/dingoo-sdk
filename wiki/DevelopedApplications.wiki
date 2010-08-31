@@ -5,12 +5,17 @@
   * [http://code.google.com/p/dingoo-sdk/downloads/list MineSweeper] (included with the SDK)
   * [http://www.harteex.com/?page=samegoo SameGoo]
   * [http://dingoo-scene.blogspot.com/2010/04/wubtris-mojo-so-lets-roll-smile-tower.html Wubtris]
-  * [http://www.portabledev.com/pages/dingoo/jeuxdev.-perso/smsgoo.php SmsGGOO]  (Sega Master System and Game Gear)
   * [http://boards.dingoonity.org/dingoo-development/new-example-for-flatmusk-plateform-sdk/ Voxel engine demo]
   * [http://boards.dingoonity.org/dingoo-releases/spoout-v3/ Spoout]
   * [http://boards.dingoonity.org/dingoo-releases/wolfenstein-3d-v1-0/ Wolfenstein 3D and Spear of Destiny]
-  * [http://www.harteex.com/?page=chipworld Chipworld]
+  * [http://www.harteex.com/?page=chipworld Chip World]
   * [http://boards.dingoonity.org/dingoo-releases/arcade-volleyball-0-2/ Arcade Volleyball]
+  * [http://code.google.com/p/dingoo-newraw/ New RAW (Another World)]
+  * [http://code.google.com/p/spartak-chess/ Spartak chess]
+
+== Emulators ==
+  * [http://www.portabledev.com/pages/dingoo/jeuxdev.-perso/smsgoo.php SmsGGOO]  (Sega Master System and Game Gear)
+  * [http://code.google.com/p/unrealspeccyp/ Unreal Speccy Portable] (ZX-Spectrum)
 
 == Applications ==
   * [http://code.google.com/p/dingoo-sdk/downloads/list Overclocker] (included with the SDK)
