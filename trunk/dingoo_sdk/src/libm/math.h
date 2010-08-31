@@ -76,6 +76,9 @@ extern double scalb(double, double);
 
 extern int signgam;
 
+// DINGOO EXTENSION
+extern long lrint(double x);
+
 #ifdef __cplusplus
 }
 #endif
