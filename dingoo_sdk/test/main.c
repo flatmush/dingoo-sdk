@@ -298,6 +298,17 @@ uint8_t testMath() {
 		return 7;
 	if(!IsEqual(acos(0.5), M_PI/3))
 		return 8;
+
+	// lrint
+	double dvals[] = {1.5, 0.50, 499999.0, 0.51, -0.5, -0.9, -0.1, 3.49999, 2.5};
+	long dres[] = {2, 0, 499999, 1, 0, -1, 0, 3, 2};
+	int i;
+	for (i = 0; i < 9; i++)
+	{
+		if (lrint(dvals[i]) != dres[i])
+			return 9 + i;
+	}
+
 	return 0;
 }
 
