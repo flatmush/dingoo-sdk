@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <locale.h>
+#include <sys/stat.h>
 
 
 
@@ -492,4 +493,18 @@ int fputs(const char* str, FILE* stream) {
 	if(fwrite(str, 1, len, stream) != len)
 		return EOF;
 	return 0;
+}
+
+// Maybe not the best place for this, but it's the most convinient for now
+int mkdir(const char *path, mode_t mode) {
+	int ret;
+	char* tempPath = _file_path(path);
+	if(tempPath == NULL) {
+		ret = fsys_mkdir(path);
+	} else {
+		ret = fsys_mkdir(tempPath);
+		free(tempPath);
+	}
+
+	return ret;
 }
