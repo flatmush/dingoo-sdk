@@ -1232,7 +1232,7 @@ static int add_cnk_list_entry(struct pr_chunk_x **list,
 #endif
 
 #ifndef HAVE_C99_VSNPRINTF
- /*int fprintf(FILE *stream, const char *fmt, ...)
+int _fprintf(FILE *stream, const char *fmt, ...)
 {
 	va_list ap;
 	int ret;
@@ -1249,7 +1249,7 @@ static int add_cnk_list_entry(struct pr_chunk_x **list,
 	free(s);
 
 	return ret;
-}*/
+}
 #endif
 
 #endif 
