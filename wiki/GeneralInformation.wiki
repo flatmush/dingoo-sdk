@@ -12,7 +12,7 @@ For a list of games and applications built using some variant of the SDK, see th
 == Requirements ==
 
 === Linux ===
-  * [http://flatmush.juliusparishy.com/a320/toolchain/mipsel-4.1.2-nopic.tar.bz2 Ingenic toolchain] ([http://www.mediafire.com/?pp20rk3w7ac8w mirror])
+  * [http://flatmush.juliusparishy.com/a320/toolchain/mipsel-4.1.2-nopic.tar.bz2 Ingenic toolchain] ([http://www.mediafire.com/download.php?9121dr9s0rqzcq5 mirror])
   * [http://www.stack.nl/~dimitri/doxygen/ Doxygen 1.5.8] (for building the documentation)
   * GNU make
 
