@@ -108,7 +108,18 @@ int rand() {
 	return (_rand_x & RAND_MAX);
 }
 
-
+static const char* _ato_prepare(const char* str, bool* m)
+{
+	*m = false;
+	while(isspace(*str))
+		++str;
+	if(*str == '+')
+		++str;
+	else if(*str == '-') {
+		*m = true; ++str;
+	}
+	return str;
+}
 
 int atoi(const char* str) {
 	return atol(str);
@@ -117,40 +128,45 @@ int atoi(const char* str) {
 long atol(const char* str) {
 	if(str == NULL)
 		return 0;
+	bool minus;
+	str = _ato_prepare(str, &minus);
 	long out = 0;
-	uintptr_t i;
-	for(i = 0; isdigit(str[i]); i++) {
+	for(; isdigit(*str); ++str) {
 		out *= 10;
-		out += (str[i] - '0');
+		out += (*str - '0');
 	}
-	return out;
+	return minus ? -out : out;
 }
 
 long long atoll(const char* str) {
 	if(str == NULL)
 		return 0;
+	bool minus;
+	str = _ato_prepare(str, &minus);
 	long long out = 0;
-	uintptr_t i;
-	for(i = 0; isdigit(str[i]); i++) {
+	for(; isdigit(*str); ++str) {
 		out *= 10;
-		out += (str[i] - '0');
+		out += (*str - '0');
 	}
-	return out;
+	return minus ? -out : out;
 }
 
 double atof(const char* str) {
 	if(str == NULL)
 		return 0;
+	bool minus;
+	str = _ato_prepare(str, &minus);
 	double out = 0.0;
-	uintptr_t i;
-	for(i = 0; isdigit(str[i]); i++) {
+	for(; isdigit(*str); ++str) {
 		out *= 10.0;
-		out += (str[i] - '0');
+		out += (*str - '0');
 	}
-	if(str[i] == '.') {
-		double j;
-		for(i++, j = 10; isdigit(str[i]); i++, j *= 10)
-			out += (double)(str[i] - '0') / j;
+	//@todo : parse exponent chars
+	if(*str == '.') {
+		++str;
+		double j = 0.1;
+		for(; isdigit(*str); ++str, j *= 0.1)
+			out += (double)(*str - '0') * j;
 	}
-	return out;
+	return minus ? -out : out;
 }
