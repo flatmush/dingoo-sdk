@@ -8,7 +8,7 @@ int iscntrl(int chr) {
 }
 
 int isspace(int chr) {
-	return ((chr == '\t') || (chr == 'f') || (chr == '\v') || (chr == '\n') || (chr == '\r') || (chr == ' '));
+	return ((chr == '\t') || (chr == '\f') || (chr == '\v') || (chr == '\n') || (chr == '\r') || (chr == ' '));
 }
 
 int isupper(int chr) {
