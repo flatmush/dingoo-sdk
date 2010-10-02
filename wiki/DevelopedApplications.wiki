@@ -12,13 +12,21 @@
   * [http://boards.dingoonity.org/dingoo-releases/arcade-volleyball-0-2/ Arcade Volleyball]
   * [http://code.google.com/p/dingoo-newraw/ New RAW (Another World)]
   * [http://code.google.com/p/spartak-chess/ Spartak chess]
+  * [http://code.google.com/p/dingoo-digger/ Digger Remastered]
+  * [http://code.google.com/p/nzeemin-opensrc/ Vectoroids]
+  * [http://code.google.com/p/nzeemin-opensrc/ Color Lines]
+  * [http://code.google.com/p/nzeemin-opensrc/ TCGS Car]
+  * [http://code.google.com/p/nzeemin-opensrc/ Tower Toppler]
 
 == Emulators ==
   * [http://www.portabledev.com/pages/dingoo/jeuxdev.-perso/smsgoo.php SmsGGOO]  (Sega Master System and Game Gear)
   * [http://code.google.com/p/unrealspeccyp/ Unreal Speccy Portable] (ZX-Spectrum)
+  * [http://code.google.com/p/timgoo/ VectorGOO] (Vector-06C)
+  * [http://code.google.com/p/nzeemin-opensrc/ Vectrex SDL] (Vectrex)
 
 == Applications ==
   * [http://code.google.com/p/dingoo-sdk/downloads/list Overclocker] (included with the SDK)
   * [http://www.harteex.com/?page=stopwatch StopWatch]
+  * [http://code.google.com/p/timgoo/ Game of Life]
 
 Know of another game or application? Have a correction that needs to be made? Please [http://code.google.com/p/dingoo-sdk/issues/entry submit an issue ticket].
