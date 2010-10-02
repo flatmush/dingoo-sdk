@@ -167,9 +167,9 @@ int DINGOO_OpenAudio(_THIS, SDL_AudioSpec *spec)
         spec->format = test_format;
         switch (test_format) {
 
-            /*case AUDIO_U8:
-                format.format = media_raw_audio_format::B_AUDIO_UCHAR;
-                break;*/
+            //case AUDIO_U8:
+            //    waveformat.format = 8;
+            //    break;
 
             case AUDIO_S16LSB:
                 waveformat.format = 16;
@@ -204,7 +204,7 @@ int DINGOO_OpenAudio(_THIS, SDL_AudioSpec *spec)
 		return(-1);
 	}
 
-	if (dingooSoundInit(waveformat, spec->samples, FillSound) < 0)
+	if (dingooSoundInit(waveformat, spec->size, FillSound) < 0)
 	{
 		SDL_SetError("Unable to start Dingoo Sound (init failed)");
 		Uint8 tempError;
