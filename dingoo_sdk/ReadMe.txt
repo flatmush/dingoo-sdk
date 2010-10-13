@@ -44,7 +44,7 @@ First install cygwin by executing setup.exe.
 	- Click "Finish", cygwin is now installed.
 
 Now you need to install those MIPS compiler tools you downloaded:
-	- Unzip the compiler tools into the directory you installed cygwin to (e.g. "c:\cygwin").
+	- Unzip the compiler tools into the directory you installed cygwin to (e.g. If cygwin was installed to "c:\cygwin" then there will be a "c:\cygwin\mipsel-gcc4.1-nopic" directory).
 
 Now you need to setup your cygwin environment:
 	- Go to the directory in which you installed cygwin and open "cygwin.bat"
