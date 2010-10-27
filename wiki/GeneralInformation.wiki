@@ -20,7 +20,7 @@ For a list of games and applications built using some variant of the SDK, see th
   * [http://www.cygwin.com/setup.exe CYGWIN (Latest version, though any version should work)]
     * GNU make
   * [http://www.stack.nl/~dimitri/doxygen/ Doxygen 1.5.8] (for building the documentation)
-  * [http://flatmush.juliusparishy.com/a320/toolchain/mipsel-gcc4.1-cygwin-nopic.tar.bz2 Windows MIPSEL Compiler] ([http://www.mediafire.com/download.php?zznd5ijlyiz mirror])
+  * [http://flatmush.juliusparishy.com/a320/toolchain/mipsel-gcc4.1-cygwin-nopic.tar.bz2 Windows MIPSEL Compiler] ([http://www.mediafire.com/download.php?zznd5ijlyiz mirror]) [http://code.google.com/p/dingoo-sdk/downloads local mirror]
 
 == Getting Help ==
 
