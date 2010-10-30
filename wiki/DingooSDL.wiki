@@ -1,0 +1,19 @@
+#summary Notes on Dingoo SDL
+
+= Keybindings =
+
+Native Dingo SDL key/button bindings are the same as the Dingux SDL bindings, viz.
+
+  * D-pad up            KEY_UP
+  * D-pad down          KEY_DOWN
+  * D-pad left          KEY_LEFT
+  * D-pad right         KEY_RIGHT
+  * A button            KEY_LEFTCTRL
+  * B button            KEY_LEFTALT
+  * X button            KEY_SPACE
+  * Y button            KEY_LEFTSHIFT
+  * Left shoulder       KEY_TAB
+  * Right shoulder      KEY_BACKSPACE
+  * START button        KEY_ENTER
+  * SELECT button       KEY_ESC
+  * POWER UP button     KEY_PAUSE
