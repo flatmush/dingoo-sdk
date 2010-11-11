@@ -4,16 +4,18 @@
 
 Native Dingo SDL key/button bindings are the same as the Dingux SDL bindings, viz.
 
-|| D-pad up        ||    KEY_UP ||
-|| D-pad down      ||    KEY_DOWN ||
-|| D-pad left      ||    KEY_LEFT ||
-|| D-pad right     ||    KEY_RIGHT ||
-|| A button        ||    KEY_LEFTCTRL ||
-|| B button        ||    KEY_LEFTALT ||
-|| X button        ||    KEY_SPACE ||
-|| Y button        ||    KEY_LEFTSHIFT ||
-|| Left shoulder   ||    KEY_TAB ||
-|| Right shoulder  ||    KEY_BACKSPACE ||
-|| START button    ||    KEY_ENTER ||
-|| SELECT button   ||    KEY_ESC ||
-|| POWER UP button ||    KEY_PAUSE ||
+|| http://www.dingoowiki.com/images/d/da/Up.png || D-pad up        || SDLK_UP ||
+|| http://www.dingoowiki.com/images/f/f9/Down.png || D-pad down      || SDLK_DOWN ||
+|| http://www.dingoowiki.com/images/7/7f/Leftright.png || D-pad left      || SDLK_LEFT ||
+|| http://www.dingoowiki.com/images/7/7f/Leftright.png || D-pad right     || SDLK_RIGHT ||
+|| http://www.dingoowiki.com/images/7/70/A.png || A button        || SDLK_LCTRL ||
+|| http://www.dingoowiki.com/images/5/57/B.png || B button        || SDLK_LALT ||
+|| http://www.dingoowiki.com/images/a/a5/X.png || X button        || SDLK_SPACE ||
+|| http://www.dingoowiki.com/images/8/8a/Y.png || Y button        || SDLK_LSHIFT ||
+|| http://www.dingoowiki.com/images/b/b8/Start.png || START button    || SDLK_RETURN ||
+|| http://www.dingoowiki.com/images/e/e8/Select.png || SELECT button   || SDLK_ESCAPE ||
+|| http://www.dingoowiki.com/images/f/fe/L.png || Left shoulder   || SDLK_TAB ||
+|| http://www.dingoowiki.com/images/f/f7/R.png || Right shoulder  || SDLK_BACKSPACE ||
+|| ? || POWER UP button || SDLK_PAUSE ||
+
+Images in table from http://dingoowiki.com/index.php?title=Editing:Guidelines#Controls_section
