@@ -15,7 +15,7 @@ For a list of games and applications built using some variant of the SDK, see th
   * [http://code.google.com/p/dingoo-sdk/downloads/detail?name=mipsel-4.1.2-nopic.tar.bz2&can=2&q= Ingenic toolchain] [http://flatmush.juliusparishy.com/a320/toolchain/mipsel-4.1.2-nopic.tar.bz2 mirror1] ([http://www.mediafire.com/download.php?9121dr9s0rqzcq5 mirror])
   * [http://www.stack.nl/~dimitri/doxygen/ Doxygen 1.5.8] (for building the documentation)
   * GNU make
-  * cc (i.e. native compiler, ideally gcc) needed to build elf2app and bin2h
+  * cc (i.e. native compiler, ideally gcc) needed to build elf2app and bin2h. NOTE not needed if you extract http://code.google.com/p/dingoo-sdk/downloads/detail?name=linux_x86_elf2app.tar.bz2 after installation
 
 Linux mips compiler and dingoo native SDK need ~205Mb of disk space.
 
