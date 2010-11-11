@@ -20,11 +20,16 @@ CONTENTS
 
 1 - INSTALLATION
 
+Need:
+    compiler tool chain, available from http://code.google.com/p/dingoo-sdk/downloads/
+    dingoo native sdk, either from svn checkout or prebuilt from http://code.google.com/p/dingoo-sdk/downloads/
+
 1.1 - WINDOWS INSTALLATION
 
 Windows users will need to download the following files:
 	The latest version of cygwin: http://www.cygwin.com/setup.exe
-	A copy of the MIPS compiler tools: http://flatmush.juliusparishy.com/a320/toolchain/mipsel-gcc4.1-cygwin-nopic.tar.bz2
+	A copy of the MIPS compiler tools: 
+        mipsel-gcc4.1-cygwin-nopic.tar.bz2
 
 First install cygwin by executing setup.exe.
 	- Click "Next".
@@ -65,7 +70,7 @@ The dingoo SDK is now installed.
 1.2 - UNIX INSTALLATION
 
 Linux users will need to do the following:
-	- Download http://flatmush.juliusparishy.com/a320/toolchain/mipsel-4.1.2-nopic.tar.bz2
+	- Download mipsel-4.1.2-nopic.tar.bz2
 	- Install these compiler tools to an appropriate place.
 	- Set the environment variable MIPSTOOLS to the location of your mips compiler tools.
 	- Set the environment variable DINGOO_SDK to this directory.
