@@ -37,8 +37,8 @@ The issues tracker is the best place to post bugs or other unusual errors that a
 
 === Chat ===
   * IRC:
-    * #dingoo-a320 on irc.freenode.net
-    * #dingoonity on irc.freenode.net
+    * #dingoo-a320 on irc.freenode.net [http://webchat.freenode.net/?channels=dingoo-a320 web based IRC client to  #dingoo-a320]
+    * #dingoonity on irc.freenode.net [http://webchat.freenode.net/?channels=dingoonity web based IRC client to  #dingoonity]
   * Forums:
     * [http://boards.dingoonity.org/index.php Dingoonity]
     * [http://www.gp32x.com/board/index.php?/forum/73-dingoo-a320/ gp32x]
