@@ -17,6 +17,8 @@ For a list of games and applications built using some variant of the SDK, see th
   * GNU make
   * cc (i.e. native compiler, ideally gcc) needed to build elf2app and bin2h
 
+Linux mips compiler and dingoo native SDK need ~205Mb of disk space.
+
 === Windows ===
   * [http://www.cygwin.com/setup.exe CYGWIN (Latest version, though any version should work)]
     * GNU make
