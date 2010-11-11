@@ -20,6 +20,7 @@
 
 == Emulators ==
   * [http://www.portabledev.com/pages/dingoo/jeuxdev.-perso/smsgoo.php SmsGGOO]  (Sega Master System and Game Gear)
+  * [http://boards.dingoonity.org/dingoo-releases/smsplus-beta/ SMSPLUS SDL (with SML for sound)]  (Sega Master System and Game Gear)
   * [http://code.google.com/p/unrealspeccyp/ Unreal Speccy Portable] (ZX-Spectrum)
   * [http://code.google.com/p/timgoo/ VectorGOO] (Vector-06C)
   * [http://code.google.com/p/nzeemin-opensrc/ Vectrex SDL] (Vectrex)
