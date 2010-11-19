@@ -40,12 +40,41 @@ typedef struct {
 	unsigned int  time;
 	short         padding;
 	char          name[FSYS_FILENAME_MAX];
+    /*
+    ** The whole filename field is not the actual filename. There seem to be
+    ** parts of the filename in unicode(?) or something as well. But the
+    ** extra data is always separated by 0, so string operations on filename
+    ** works without problems.
+    ** 
+    ** 
+    ** #define IsDir(fd) (fd.attributes&0x10)
+    ** #define IsDir(fd) (fd.attributes & FSYS_FIND_DIRECTORY)
+    ** #define IsFile(fd) (!IsDir(fd))
+    */
 } __attribute__((__packed__)) fsys_file_info_t;
 
 #define FSYS_FIND_FILE      0x00
 #define FSYS_FIND_DIRECTORY 0x10
 #define FSYS_FIND_DIR FSYS_FIND_DIRECTORY
 
+/* fsys_file_info_t.attributes masks; based on observation on contents of my SD card in Dingo A320 */
+#define FSYS_ATTR_DISKLABEL 0x08
+#define FSYS_ATTR_DIR       0x10
+#define FSYS_ATTR_FILE      0x20
+
+/* fstat/stat like macros for use with find tools */
+#define FSYS_ISDIR(mode) (((mode) & FSYS_ATTR_DIR) == FSYS_ATTR_DIR)
+#define FSYS_ISFILE(mode) (((mode) & FSYS_ATTR_FILE) == FSYS_ATTR_FILE)
+
+
+/*
+**  fsys_findfirst(
+**                  path and search pattern, e.g. "a:\\*", "a:\\*.mp3"
+**                  mask or some kind? FSYS_FIND_FILE finds files only, FSYS_FIND_DIRECTORY finds dirs only, -1 (for all, including disk/volume labels), 
+**                  result struct
+**                )
+**  returns 0 on success and -1 on failure
+*/
 extern int        fsys_findfirst(const char*, int, fsys_file_info_t*);
 extern int        fsys_findnext(fsys_file_info_t*);
 extern int        fsys_findclose(fsys_file_info_t*);

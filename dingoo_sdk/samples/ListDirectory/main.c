@@ -40,15 +40,25 @@ char* gamePathInit(const char* inPath) {
 	return gamePath;
 }
 
-// If you are going to draw a file list during a loop,
-// it might be better to load them into an array first.
+/*
+** If you are going to draw a file list during a loop,
+** it might be better to load them into an array first.
+*/
 void drawFiles()
 {
 	char tempString[256];
 	fsys_file_info_t fData;
-
+	int ret =0;
+	int i = 0;
+	
+	sprintf(tempString, "%d*", (int) 123);
 	sprintf(tempString, "%s*", gamePath);
-	int ret = fsys_findfirst(tempString, FSYS_FIND_FILE, &fData); // change FSYS_FIND_FILE to FSYS_FIND_DIR to list folders
+	/*
+	ret = fsys_findfirst(tempString, FSYS_FIND_FILE, &fData); // all files
+	ret = fsys_findfirst(tempString, FSYS_FIND_DIR, &fData);  // all dirs
+	*/
+	
+	ret = fsys_findfirst(tempString, -1, &fData);  /* All objects! files and dirs, also seems to list label disk name (not sure what else) */
 
 	if (ret != 0)
 	{
@@ -56,9 +66,23 @@ void drawFiles()
 		return;
 	}
 
-	int i = 0;
 	do {
 		gfx_font_print(50, 20 + i * 10, gameFont, fData.name);
+		
+		/* Info */
+		sprintf(tempString, "%u", fData.size);
+		gfx_font_print(250, 20 + i * 10, gameFont, tempString);
+		sprintf(tempString, "0x%02x", (int) fData.attributes);
+		gfx_font_print(10, 20 + i * 10, gameFont, tempString);
+		
+		if (FSYS_ISDIR(fData.attributes))
+			sprintf(tempString, "d");
+		else if (FSYS_ISFILE(fData.attributes))
+			sprintf(tempString, "f");
+		else
+			sprintf(tempString, "?");
+		
+		gfx_font_print(2, 20 + i * 10, gameFont, tempString);
 		i++;
 	} while (fsys_findnext(&fData) == 0);
 
@@ -75,7 +99,9 @@ uint8_t _rand8() {
 }
 
 int main(int argc, char** argv) {
-	gamePathInit(argv[0]);
+	(void) argc; /* not used */
+	
+	gamePathInit(argv[0]); /* workout directory containing this exe and list it */
 	int ref = EXIT_SUCCESS;
 
 	srand(OSTimeGet());
