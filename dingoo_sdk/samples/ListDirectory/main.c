@@ -37,6 +37,11 @@ char* gamePathInit(const char* inPath) {
 	}
 	strncpy(gamePath, inPath, j);
 	gamePath[j] = '\0';
+    /*
+    ** Static (hard coded) path examples
+    strcpy(gamePath, "a:\\"); // WORKS
+    strcpy(gamePath, "a:/"); // unix style path FAILS
+    */
 	return gamePath;
 }
 
@@ -51,8 +56,8 @@ void drawFiles()
 	int ret =0;
 	int i = 0;
 	
-	sprintf(tempString, "%d*", (int) 123);
 	sprintf(tempString, "%s*", gamePath);
+	gfx_font_print(0, 0, gameFont, tempString);
 	/*
 	ret = fsys_findfirst(tempString, FSYS_FIND_FILE, &fData); // all files
 	ret = fsys_findfirst(tempString, FSYS_FIND_DIR, &fData);  // all dirs
