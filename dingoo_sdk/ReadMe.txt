@@ -61,7 +61,7 @@ NB: Your dingoo_sdk path has to be posix style (e.g "c:\dingoo_sdk" would be "/c
 
 Now for the final step, open up cygwin from the icon in your start menu or desktop:
 	- Type "cd $DINGOO_SDK"
-	- Type "./install"
+	- Type "sh ./install"
 
 The dingoo SDK is now installed.
 
@@ -75,7 +75,7 @@ Linux users will need to do the following:
 	- Set the environment variable MIPSTOOLS to the location of your mips compiler tools.
 	- Set the environment variable DINGOO_SDK to this directory.
 	- Set the environment variable PATH to "$PATH:$MIPSTOOLS/bin"
-	- Type "cd $DINGOO_SDK && ./install"
+	- Type "cd $DINGOO_SDK && sh ./install"
 
 The dingoo SDK is now installed.
 
