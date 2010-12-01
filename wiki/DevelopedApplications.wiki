@@ -24,8 +24,9 @@
   * [http://code.google.com/p/unrealspeccyp/ Unreal Speccy Portable] (ZX-Spectrum)
   * [http://code.google.com/p/timgoo/ VectorGOO] (Vector-06C)
   * [http://code.google.com/p/nzeemin-opensrc/ Vectrex SDL] (Vectrex)
-  * [http://code.google.com/p/gnuboy/wiki/DingooPort gnuboy]
+  * [http://code.google.com/p/gnuboy/wiki/DingooPort gnuboy a Gameboy emulator]
   * [http://code.google.com/p/ohboy  Oh Boy (sdlgnuboy with menu)]
+  * [http://code.google.com/p/gngb/source/clones gnb Gameboy emu, unreleased performance not as good as gnuboy]
 
 == Applications ==
   * [http://code.google.com/p/dingoo-sdk/downloads/list Overclocker] (included with the SDK)
