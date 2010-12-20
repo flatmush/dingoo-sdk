@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 
 	gameFont = gfx_font_load("font.tga", COLOR_BLACK);
 
-	gfx_texture* tempSpriteBmp[4];
+	gfx_texture* tempSpriteBmp;
 	sprite* tempSprite;
 	uintptr_t i;
 
@@ -58,14 +58,16 @@ int main(int argc, char** argv) {
 
 	FILE* tempFile = fopen("sprite.spt", "rb");
 	if(tempFile == NULL) {
-		for(i = 0; i < 4; i++) {
+		tempSprite = sprite_load_from_tga("sprite0.tga", gfx_color_rgb(0xFF, 0x00, 0xFF));
+		if(tempSprite == NULL)
+			return EXIT_SUCCESS;
+		for(i = 1; true; i++) {
 			sprintf(tempString, "sprite%i.tga", i);
-			tempSpriteBmp[i] = gfx_tex_load_tga(tempString);
-		}
-		tempSprite = sprite_create(tempSpriteBmp[0]->width, tempSpriteBmp[0]->height);
-		for(i = 0; i < 4; i++) {
-			tempSprite = sprite_frame_add_bitmap(tempSprite, tempSpriteBmp[i]->address, gfx_color_rgb(0xFF, 0x00, 0xFF));
-			gfx_tex_delete(tempSpriteBmp[i]);
+			tempSpriteBmp = gfx_tex_load_tga(tempString);
+			if(tempSpriteBmp == NULL)
+				break;
+			tempSprite = sprite_frame_add_bitmap(tempSprite, tempSpriteBmp->address, gfx_color_rgb(0xFF, 0x00, 0xFF));
+			gfx_tex_delete(tempSpriteBmp);
 		}
 		sprite_save(tempSprite, "sprite.spt");
 	} else {
@@ -108,7 +110,7 @@ int main(int argc, char** argv) {
 			}
 			if(control_check(CONTROL_BUTTON_A).pressed && control_check(CONTROL_BUTTON_A).changed) {
 				tempFrame++;
-				tempFrame &= 0x3;
+				tempFrame %= tempSprite->frame_count;
 			}
 
 			gfx_render_target_clear(gfx_color_rgb(0x00, 0x00, 0x00));
