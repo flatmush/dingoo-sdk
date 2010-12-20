@@ -33,4 +33,10 @@
   * [http://www.harteex.com/?page=stopwatch StopWatch]
   * [http://code.google.com/p/timgoo/ Game of Life]
 
+== Sample code ==
+
+  * [http://franck.charlet.pagesperso-orange.fr/sources.html VSync on Dingoo A320 demo/sample code]
+  * [http://code.google.com/p/dingoo-sdk/source/browse/#svn%2Ftrunk%2Fdingoo_sdk%2Fsamples SDK samples]
+
+
 Know of another game or application? Have a correction that needs to be made? Please [http://code.google.com/p/dingoo-sdk/issues/entry submit an issue ticket].
