@@ -35,6 +35,8 @@ The wiki is currently a work-in-progress and may not contain much helpful inform
 === Documentation ===
 Use Doxygen to build HTML documentation in the $DINGOO_SDK/doc directory. See the [http://code.google.com/p/dingoo-sdk/source/browse/trunk/dingoo_sdk/ReadMe.txt ReadMe.txt] for instructions.
 
+Also see http://wakaba.c3.cx/w/dingoo_coding
+
 === Issues ===
 The issues tracker is the best place to post bugs or other unusual errors that aren't the result of a failed or incorrect installation (see the [http://code.google.com/p/dingoo-sdk/source/browse/trunk/dingoo_sdk/ReadMe.txt ReadMe.txt] file). We are also open to feature requests and suggestions as time allows.
 
