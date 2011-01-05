@@ -64,7 +64,7 @@ DIR* opendir(const char* name) {
 	if(!tempDir->eod) {
 		/* TODO hide attributes & FSYS_ATTR_DISKLABEL ?*/
 		tempDir->cur_entry.d_ino  = tempDir->info.handle;
-		tempDir->cur_entry.d_name = tempDir->info.name;
+		strcpy(tempDir->cur_entry.d_name, tempDir->info.name);
 		tempDir->cur_entry.d_type = tempDir->info.attributes;
 	}
 	tempDir->was_read = false;
@@ -111,7 +111,7 @@ struct dirent* readdir(DIR* dir) {
 	tempDir->offset++;
 	/* TODO hide attributes & FSYS_ATTR_DISKLABEL ?*/
 	tempDir->cur_entry.d_ino  = tempDir->info.handle;
-	tempDir->cur_entry.d_name = tempDir->info.name;
+	strcpy(tempDir->cur_entry.d_name, tempDir->info.name);
 	tempDir->cur_entry.d_type = tempDir->info.attributes;
 
 	return &(tempDir->cur_entry);
@@ -153,7 +153,7 @@ void rewinddir(DIR* dir) {
 
 	if(!tempDir->eod) {
 		tempDir->cur_entry.d_ino  = tempDir->info.handle;
-		tempDir->cur_entry.d_name = tempDir->info.name;
+		strcpy(tempDir->cur_entry.d_name, tempDir->info.name);
 	}
 	tempDir->was_read = false;
 }

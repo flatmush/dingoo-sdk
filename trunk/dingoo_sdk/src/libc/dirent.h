@@ -6,12 +6,13 @@ extern "C"
 {
 #endif
 
+#include <stdio.h> /* for FILENAME_MAX */
 #include <sys/types.h>
 
 struct dirent {
 	ino_t d_ino;
 	unsigned int d_type; /* NOTE using the same type that fsys uses for file type mask; unsigned int  attributes;*/
-	char* d_name;
+	char d_name[FILENAME_MAX];
 };
 
 #define DT_DIR FSYS_ATTR_DIR
