@@ -62,6 +62,30 @@ inline uint16_t _display_blend4_rgb565(uint16_t inColor0, uint16_t inColor1, uin
 	return (((tempR0 << 10) & 0xF800) | (tempG0 << 5) | (tempB0 >> 1));
 }
 
+void _display_resize_rgb565(uint16_t* inDst, uint16_t* inSrc, uint16_t inSrcWidth, uint16_t inSrcHeight) {
+	uintptr_t j_dst, j_src;
+	uint32_t j_fract = ((inSrcHeight - 1) << 16) / SCREEN_HEIGHT;
+	uint32_t i_fract = ((inSrcWidth  - 1) << 16) / SCREEN_WIDTH;
+	for(j_src = 0, j_dst = 0; j_dst < SCREEN_HEIGHT; j_dst++) {
+		uintptr_t s_a = ((j_src >> 16) * inSrcWidth);
+		uint16_t j_blend = (j_src & 0xFFFF);
+		j_src += j_fract;
+		uintptr_t s_b = ((j_src >> 16) * inSrcWidth);
+		uintptr_t i_src, i_dst;
+		for(i_src = 0, i_dst = 0; i_dst < SCREEN_WIDTH; i_dst++) {
+			uint16_t i_blend = (i_src & 0xFFFF);
+			uint16_t a = inSrc[s_a + (i_src >> 16)];
+			uint16_t c = inSrc[s_b + (i_src >> 16)];
+			i_src += i_fract;
+			uint16_t b = inSrc[s_a + (i_src >> 16)];
+			uint16_t d = inSrc[s_b + (i_src >> 16)];
+			inDst[(j_dst * SCREEN_WIDTH) + i_dst] = _display_blend4_rgb565(a, b, c, d, i_blend, j_blend);
+		}
+	}
+}
+
+
+
 bool _display_lut_create_blend6() {
 	if(_display_lut_blend6 != NULL)
 		free(_display_lut_blend6);
@@ -542,7 +566,7 @@ void* display_flip(display* inDisplay) {
 			}
 		} else if(inDisplay->flags & DISPLAY_STRETCH) {
 			if((inDisplay->flags & 0xF) == DISPLAY_FORMAT_RGB565) {
-				if((inDisplay->flags & DISPLAY_FILTER_LINEAR) && (inDisplay->width == (SCREEN_WIDTH << 1)) && (inDisplay->height = (SCREEN_HEIGHT << 1))) {
+				if((inDisplay->flags & DISPLAY_FILTER_LINEAR) && (inDisplay->width == (SCREEN_WIDTH << 1)) && (inDisplay->height == (SCREEN_HEIGHT << 1))) {
 					uint16_t* tempDispBuff16 = (uint16_t*)_lcd_get_frame();
 					uint16_t* tempDispLineEnd16 = (uint16_t*)((uintptr_t)tempDispBuff16 + (SCREEN_WIDTH << 1));
 					uint16_t* tempDispBuffEnd16 = (uint16_t*)((uintptr_t)tempDispBuff16 + _display_buffer_size(inDisplay));
@@ -565,20 +589,7 @@ void* display_flip(display* inDisplay) {
 					if(inDisplay->flags & DISPLAY_FILTER_LINEAR) {
 						if(_display_lut_blend6 == NULL)
 							_display_lut_create_blend6();
-						uint16_t* tempDispBuff16 = (uint16_t*)_lcd_get_frame();
-						uint16_t* tempDrawBuff16 = (uint16_t*)inDisplay->buffer;
-						uint16_t* tempDrawLine16a;
-						uint16_t* tempDrawLine16b;
-						uint32_t i_disp, i_draw;
-						uint32_t j_disp, j_draw;
-						uint32_t i_draw_dx = ((inDisplay->width - 1) << 16) / (SCREEN_WIDTH - 1);
-						uint32_t j_draw_dx = ((inDisplay->height - 1) << 16) / (SCREEN_HEIGHT - 1);
-						for(j_disp = 0, j_draw = 0; j_disp < SCREEN_HEIGHT; j_disp++, j_draw += j_draw_dx) {
-							tempDrawLine16a = &tempDrawBuff16[(j_draw >> 16) * inDisplay->stride];
-							tempDrawLine16b = &tempDrawLine16a[inDisplay->stride];
-							for(i_disp = 0, i_draw = 0; i_disp < SCREEN_WIDTH; i_disp++, i_draw += i_draw_dx)
-								*(tempDispBuff16++) = _display_blend4_rgb565(tempDrawLine16a[i_draw >> 16], tempDrawLine16a[(i_draw >> 16) + 1], tempDrawLine16b[i_draw >> 16], tempDrawLine16b[(i_draw >> 16) + 1], i_draw, j_draw);
-						}
+						_display_resize_rgb565((uint16_t*)_lcd_get_frame(), (uint16_t*)inDisplay->buffer, inDisplay->width, inDisplay->height);
 					} else {
 						uint16_t* tempDispBuff16 = (uint16_t*)_lcd_get_frame();
 						uint16_t* tempDrawBuff16 = (uint16_t*)inDisplay->buffer;
