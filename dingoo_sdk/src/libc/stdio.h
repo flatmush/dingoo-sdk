@@ -69,6 +69,8 @@ extern int   fputs(const char* str, FILE* stream);
 
 extern int ungetc(int _c, FILE *_stream);
 
+extern int sscanf(const char *text, const char *fmt, ...);
+
 #define getc fgetc
 #define putc fputc
 #define getchar() fgetc(stdin)
