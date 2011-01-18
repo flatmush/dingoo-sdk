@@ -19,3 +19,5 @@ Native Dingo SDL key/button bindings are the same as the Dingux SDL bindings, vi
 || ? || POWER UP button || SDLK_PAUSE ||
 
 Images in table from http://dingoowiki.com/index.php?title=Editing:Guidelines#Controls_section
+
+See [http://code.google.com/p/pirate-dev/downloads/detail?name=keyCodes.zip keyCodes.zip] from http://code.google.com/p/pirate-dev/downloads/list for key identification.
