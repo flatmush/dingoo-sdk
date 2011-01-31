@@ -48,16 +48,22 @@
 #endif
 
 /* get errno and strerror definition */
-#if defined UNDER_CE
-#  include <windows.h>
-#  define zstrerror() gz_strwinerror((DWORD)GetLastError())
-#else
-#  ifdef STDC
-#    include <errno.h>
-#    define zstrerror() strerror(errno)
+#ifndef LIBZ_NO_STRERROR
+#  if defined UNDER_CE
+#    include <windows.h>
+#    define zstrerror() gz_strwinerror((DWORD)GetLastError())
 #  else
-#    define zstrerror() "stdio error (consult errno)"
+#    ifdef STDC
+#      include <errno.h>
+#      define zstrerror() strerror(errno)
+#    else
+#      define LIBZ_NO_STRERROR
+#    endif
 #  endif
+#endif
+
+#ifdef LIBZ_NO_STRERROR
+#    define zstrerror() "stdio error (consult errno)"
 #endif
 
 /* provide prototypes for these when building zlib without LFS */
