@@ -39,13 +39,14 @@ off_t lseek(int fildes, off_t offset, int whence) {
 
 
 ssize_t read(int fildes, void* buf, size_t nbyte) {
+	int tempRead = 0;
 	if((fildes < 0) || (fildes >= _fd_count) || (_fd_list[fildes].stream == NULL)) {
 		errno = EINVAL;
 		return -1;
 	}
-	int tempRead = fread(buf, 1, nbyte, _fd_list[fildes].stream);
-	if(tempRead == 0)
-		return -1;
+    if (nbyte == 0)
+        return 0;
+	tempRead = fread(buf, 1, nbyte, _fd_list[fildes].stream);
 	return tempRead;
 }
 

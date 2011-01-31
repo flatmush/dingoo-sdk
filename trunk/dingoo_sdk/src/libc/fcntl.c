@@ -17,16 +17,24 @@ int    _fd_count = 0;
 
 
 int open(const char* path, int oflag, ... ) {
+    FILE* tempFile = NULL;
+    int tempFD = 0;
+	char tempMode[16];
+	_fd_t* tempFdList;
+	int i;
+    
 	if(oflag & _O_UNSUPPORTED) {
 		errno = EINVAL;
 		return -1;
 	}
 	// TODO - Deal more correctly with certain flags.
 
-	FILE* tempFile = fopen(path, "rb");
+	tempFile = fopen(path, "rb");
 	if(oflag & O_CREAT) {
 		if(tempFile == NULL)
+        {
 			tempFile = fopen(path, "wb");
+        }
 		if(tempFile == NULL)
 			return -1;
 	} else if(tempFile == NULL) {
@@ -38,7 +46,6 @@ int open(const char* path, int oflag, ... ) {
 	}
 	fclose(tempFile);
 
-	char tempMode[16];
 	if((oflag & 0x3) == O_RDONLY) {
 		sprintf(tempMode, "rb");
 	} else if((oflag & 0x3) == O_WRONLY) {
@@ -55,9 +62,10 @@ int open(const char* path, int oflag, ... ) {
 
 	tempFile = fopen(path, tempMode);
 	if(tempFile == NULL)
+    {
 		return -1;
+    }
 
-	int i;
 	for(i = 0; i < _fd_count; i++) {
 		if(_fd_list[i].stream == NULL) {
 			_fd_list[i].stream = tempFile;
@@ -66,22 +74,29 @@ int open(const char* path, int oflag, ... ) {
 		}
 	}
 
-	_fd_t* tempFdList;
 	if(_fd_count == 0)
+    {
 		tempFdList = (_fd_t*)malloc((8 * sizeof(_fd_t)));
+    }
 	else
+    {
 		tempFdList = (_fd_t*)realloc(_fd_list, ((_fd_count << 1) * sizeof(_fd_t)));
+    }
 
 	if(tempFdList == NULL) {
 		fclose(tempFile);
 		return -1;
 	}
+	else if (_fd_list == NULL)
+		_fd_list = tempFdList;
 
 	for(i = _fd_count; i < (_fd_count == 0 ? 8 : (_fd_count << 1)); i++)
+    {
 		_fd_list[i].stream = NULL;
+    }
 
 	_fd_list = tempFdList;
-	int tempFD = _fd_count;
+	tempFD = _fd_count;
 
 	_fd_list[tempFD].stream = tempFile;
 	_fd_list[tempFD].flags  = oflag;
@@ -91,6 +106,9 @@ int open(const char* path, int oflag, ... ) {
 }
 
 int fcntl(int fildes, int cmd, ...) {
+	int   arg=0;
+	void* flock=NULL;
+    
 	if((fildes < 0) || (fildes >= _fd_count) || (_fd_list[fildes].stream == NULL)) {
 		errno = EINVAL;
 		return -1;
@@ -102,8 +120,6 @@ int fcntl(int fildes, int cmd, ...) {
 
 	va_list ap;
 
-	int   arg;
-	void* flock;
 	switch(cmd) {
 		case F_SETFD:
 		case F_SETOWN:
