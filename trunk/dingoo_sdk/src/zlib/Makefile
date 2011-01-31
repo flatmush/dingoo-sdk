@@ -17,6 +17,8 @@ INCLUDE   = -I. -I$(DINGOO_SDK)/include
 W_OPTS    = -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions
 CPP_OPTS  = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
 CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
+CC_OPTS += -DLIBZ_NO_STRERROR=1
+
 CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
 
 LIB_PATH  = $(DINGOO_SDK)/lib
