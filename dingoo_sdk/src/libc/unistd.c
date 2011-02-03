@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 
 typedef struct {
@@ -59,4 +60,29 @@ ssize_t write(int fildes, const void* buf, size_t nbyte) {
 	if(tempWrite == 0)
 		return -1;
 	return tempWrite;
+}
+
+extern char* _app_path;
+
+char *getcwd(char *buf, size_t size) {
+	if (size == 0) {
+		errno = EINVAL;
+		return NULL;
+	}
+
+	// The reason we're not using + 1 here is because _app_path contains a trailing \ that we don't want
+	// We only want the trailing \ when at root (A:\, B:\)
+	size_t requiredSize = strlen(_app_path);
+	if (requiredSize == 3)
+		requiredSize = 4; // include \ for root
+
+	if (size < requiredSize) {
+		errno = ERANGE;
+		return NULL;
+	}
+
+	strncpy(buf, _app_path, requiredSize);
+	buf[requiredSize - 1] = '\0';
+
+	return buf;
 }
