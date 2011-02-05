@@ -70,9 +70,16 @@ char *getcwd(char *buf, size_t size) {
 		return NULL;
 	}
 
-	// The reason we're not using + 1 here is because _app_path contains a trailing \ that we don't want
+	char* lastMatch = strrchr(_app_path, '\\');
+	if (lastMatch == NULL) {
+		errno = EACCES; // For lack of a better one...
+		return NULL;
+	}
+
+	int requiredSize = lastMatch - _app_path + 1;
+
+	// The reason we're not using + 1 for \0 here is because _app_path contains a trailing \ that we don't want
 	// We only want the trailing \ when at root (A:\, B:\)
-	size_t requiredSize = strlen(_app_path);
 	if (requiredSize == 3)
 		requiredSize = 4; // include \ for root
 
