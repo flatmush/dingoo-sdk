@@ -19,6 +19,47 @@ sound_t*  _shipBoostSound     = NULL;
 uintptr_t _shipThrustRefCount = 0;
 uintptr_t _shipThrustLoop     = 0;
 
+gfx_color _shipParticleColor[64];
+
+void _shipParticleColorInit() {
+	uintptr_t i, j;
+
+	for(i = 0, j = 0; i < 16; i++, j++) // Blue->White
+		_shipParticleColor[i] = gfx_color_rgb((j << 4), (j << 4), 0xFF);
+	for(i = 16, j = 15; i < 32; i++, j--) // White->Yellow
+		_shipParticleColor[i] = gfx_color_rgb(0xFF, 0xFF, (j << 4));
+	for(i = 32, j = 15; i < 48; i++, j--) // Yellow->Red
+		_shipParticleColor[i] = gfx_color_rgb(0xFF, (j << 4), 0x00);
+	for(i = 48, j = 15; i < 64; i++, j--) // Red->Black
+		_shipParticleColor[i] = (j << 12);
+}
+
+
+void _shipParticleDraw(particle* inParticle, int32_t inOffX, int32_t inOffY) {
+	if(inParticle == NULL)
+		return;
+
+	int32_t tempX = fix16_to_int(inParticle->x + inOffX);
+	int32_t tempY = fix16_to_int(fix16_from_int(gameDisplay->height) - (inParticle->y + inOffY));
+
+	gfx_point_draw(tempX, tempY, _shipParticleColor[inParticle->age]);
+}
+
+bool _shipParticleTick(particle* inParticle) {
+	if(inParticle == NULL)
+		return false;
+
+	inParticle->age++;
+	fract32_t tempFriction = fract32_create(127, 128);
+	inParticle->vel_y -= gameLevel->gravity;
+	inParticle->vel_x = fract32_smul(inParticle->vel_x, tempFriction);
+	inParticle->vel_y = fract32_smul(inParticle->vel_y, tempFriction);
+	inParticle->x += inParticle->vel_x;
+	inParticle->y += inParticle->vel_y;
+
+	return (inParticle->age < 64);
+}
+
 
 
 ship* shipCreate(int32_t inX, int32_t inY) {
@@ -35,6 +76,7 @@ ship* shipCreate(int32_t inX, int32_t inY) {
 	tempShip->y = inY;
 	tempShip->vel_x = 0;
 	tempShip->vel_y = 0;
+	tempShip->avg_vel = 0;
 	tempShip->angle = 0;
 
 	/* read the current difficulty and configure the ship as such -- don't worry
@@ -50,7 +92,10 @@ ship* shipCreate(int32_t inX, int32_t inY) {
 	tempShip->thrust_y = (1 << 13);
 	tempShip->thrust_x = (tempShip->thrust_y >> 1);
 
-	tempShip->thrust_visible = 0;
+	tempShip->thrust_power = 0;
+
+	tempShip->exploding = false;
+	tempShip->dead = false;
 
 	if((_shipThrustRefCount == 0) || (_shipThrustSound == NULL)) {
 		_shipThrustSound = wav_load("thrust.wav");
@@ -58,10 +103,20 @@ ship* shipCreate(int32_t inX, int32_t inY) {
 	}
 	_shipThrustRefCount++;
 
+	tempShip->partsys = particle_system_create();
+	if(tempShip->partsys != NULL) {
+		tempShip->partsys->tick_func = _shipParticleTick;
+		tempShip->partsys->draw_func = _shipParticleDraw;
+	}
+
+	_shipParticleColorInit();
+
 	return tempShip;
 }
 
 void shipDelete(ship* inShip) {
+	if(inShip == NULL)
+		return;
 	_shipThrustRefCount--;
 	if(_shipThrustRefCount == 0) {
 		sound_stop(0);
@@ -71,6 +126,8 @@ void shipDelete(ship* inShip) {
 		wav_delete(_shipBoostSound);
 		_shipBoostSound = NULL;
 	}
+	if(inShip->partsys != NULL)
+		particle_system_delete(inShip->partsys);
 	free(inShip);
 }
 
@@ -86,25 +143,19 @@ void shipDraw(ship* inShip, int32_t inOffX, int32_t inOffY) {
 	fix16_t tempSin = fix16_sin(inShip->angle);
 	fix16_t tempCos = fix16_cos(inShip->angle);
 
-	if(inShip->thrust_visible > 0) {
-		gfx_color tempThrustColor = gfx_color_rgb(0xFF, (0x1F + (rand() & 0x3F)), 0x00);
-		tempPointsX[0] = (tempX - (tempCos * 2));
-		tempPointsY[0] = (fix16_from_int(gameDisplay->height) - (tempY + (tempSin * 2)));
-		tempPointsX[1] = (tempX + (tempCos * 2));
-		tempPointsY[1] = (fix16_from_int(gameDisplay->height) - (tempY - (tempSin * 2)));
-		tempPointsX[2] = (tempX - (tempSin * inShip->thrust_visible));
-		tempPointsY[2] = (fix16_from_int(gameDisplay->height) - (tempY - (tempCos * inShip->thrust_visible)));
-		gfx_tri_fill_draw(fix16_to_int(tempPointsX[0]), fix16_to_int(tempPointsY[0]), fix16_to_int(tempPointsX[1]), fix16_to_int(tempPointsY[1]), fix16_to_int(tempPointsX[2]), fix16_to_int(tempPointsY[2]), tempThrustColor);
-	}
+	if(inShip->partsys != NULL)
+		particle_system_draw(inShip->partsys, inOffX, inOffY);
 
-	tempPointsX[0] = (tempX - (tempCos * 4));
-	tempPointsY[0] = (fix16_from_int(gameDisplay->height) - (tempY + (tempSin * 4)));
-	tempPointsX[1] = (tempX + (tempCos * 4));
-	tempPointsY[1] = (fix16_from_int(gameDisplay->height) - (tempY - (tempSin * 4)));
-	tempPointsX[2] = (tempX + (tempSin * 16));
-	tempPointsY[2] = (fix16_from_int(gameDisplay->height) - (tempY + (tempCos * 16)));
-	gfx_tri_fill_draw(fix16_to_int(tempPointsX[0]), fix16_to_int(tempPointsY[0]), fix16_to_int(tempPointsX[1]), fix16_to_int(tempPointsY[1]), fix16_to_int(tempPointsX[2]), fix16_to_int(tempPointsY[2]), gfx_color_rgb(0x7F, 0x7F, 0x7F));
-	gfx_tri_draw(fix16_to_int(tempPointsX[0]), fix16_to_int(tempPointsY[0]), fix16_to_int(tempPointsX[1]), fix16_to_int(tempPointsY[1]), fix16_to_int(tempPointsX[2]), fix16_to_int(tempPointsY[2]), gfx_color_rgb(0xFF, 0xFF, 0xFF));
+	if(!inShip->exploding) {
+		tempPointsX[0] = (tempX - (tempCos * 4));
+		tempPointsY[0] = (fix16_from_int(gameDisplay->height) - (tempY + (tempSin * 4)));
+		tempPointsX[1] = (tempX + (tempCos * 4));
+		tempPointsY[1] = (fix16_from_int(gameDisplay->height) - (tempY - (tempSin * 4)));
+		tempPointsX[2] = (tempX + (tempSin * 16));
+		tempPointsY[2] = (fix16_from_int(gameDisplay->height) - (tempY + (tempCos * 16)));
+		gfx_tri_fill_draw(fix16_to_int(tempPointsX[0]), fix16_to_int(tempPointsY[0]), fix16_to_int(tempPointsX[1]), fix16_to_int(tempPointsY[1]), fix16_to_int(tempPointsX[2]), fix16_to_int(tempPointsY[2]), gfx_color_rgb(0x7F, 0x7F, 0x7F));
+		gfx_tri_draw(fix16_to_int(tempPointsX[0]), fix16_to_int(tempPointsY[0]), fix16_to_int(tempPointsX[1]), fix16_to_int(tempPointsY[1]), fix16_to_int(tempPointsX[2]), fix16_to_int(tempPointsY[2]), gfx_color_rgb(0xFF, 0xFF, 0xFF));
+	}
 }
 
 ship_level_point shipLevelCollision(ship* inShip, level* inLevel) {
@@ -139,6 +190,22 @@ bool shipDamage(ship* inShip, int32_t inVelocity) {
 
 	uint32_t tempDamage = (inVelocity >> 12);
 	if(inShip->hp <= tempDamage) {
+		fix16_t tempMagnitude = fix16_one;
+		tempMagnitude += fix16_div(inShip->fuel, inShip->fuel_max);
+		tempMagnitude += fix16_div((tempDamage - inShip->hp), inShip->hp_max);
+
+		uintptr_t i;
+		for(i = 0; i < (uint32_t)fix16_mul(1024, tempMagnitude); i++) {
+			fix16_t tempAngle = fix16_mul((rand() & 0xFFFF), (1 << fix16_pi));
+			fix16_t tempVel   = fix16_mul((rand() & 0xFFFF), tempMagnitude);
+
+			fix16_t tempVelX = fix16_mul(tempVel, fix16_sin(tempAngle));
+			fix16_t tempVelY = fix16_mul(tempVel, fix16_cos(tempAngle));
+
+			particle_system_add(inShip->partsys, particle_create(0xFFFF, inShip->x, inShip->y, tempVelX, tempVelY));
+		}
+
+		inShip->exploding = true;
 		inShip->hp = 0;
 		return false;
 	}
@@ -152,96 +219,130 @@ bool shipTick(ship* inShip, level* inLevel) {
 
 	bool tempOut = false;
 
-	int32_t  tempGravity  = (inLevel == NULL ? (1 << 12) : inLevel->gravity);
-	int32_t  tempWind     = 0;
-	fract32_t  tempFriction = fract32_create(127, 128);
+	if(!inShip->exploding) {
+		int32_t  tempGravity  = (inLevel == NULL ? (1 << 12) : inLevel->gravity);
+		int32_t  tempWind     = 0;
+		fract32_t  tempFriction = fract32_create(127, 128);
 
-	if(control_check(CONTROL_DPAD_LEFT).pressed)
-		inShip->angle -= (fix16_pi >> 6);
-	if(control_check(CONTROL_DPAD_RIGHT).pressed)
-		inShip->angle += (fix16_pi >> 6);
+		if(control_check(CONTROL_DPAD_LEFT).pressed)
+			inShip->angle -= (fix16_pi >> 6);
+		if(control_check(CONTROL_DPAD_RIGHT).pressed)
+			inShip->angle += (fix16_pi >> 6);
 
-	fix16_t tempSin = fix16_sin(inShip->angle);
-	fix16_t tempCos = fix16_cos(inShip->angle);
+		fix16_t tempSin = fix16_sin(inShip->angle);
+		fix16_t tempCos = fix16_cos(inShip->angle);
 
-	if(control_check(CONTROL_TRIGGER_LEFT).pressed) {
-		if(inShip->fuel >= 1) {
-			inShip->fuel--;
-			inShip->vel_x -= fix16_mul(tempCos, inShip->thrust_x);
-			inShip->vel_y += fix16_mul(tempSin, inShip->thrust_x);
+		if(control_check(CONTROL_TRIGGER_LEFT).pressed) {
+			if(inShip->fuel >= 1) {
+				inShip->fuel--;
+				inShip->vel_x -= fix16_mul(tempCos, inShip->thrust_x);
+				inShip->vel_y += fix16_mul(tempSin, inShip->thrust_x);
+			}
 		}
-	}
-	if(control_check(CONTROL_TRIGGER_RIGHT).pressed) {
-		if(inShip->fuel >= 1) {
-			inShip->fuel--;
-			inShip->vel_x += fix16_mul(tempCos, inShip->thrust_x);
-			inShip->vel_y -= fix16_mul(tempSin, inShip->thrust_x);
+		if(control_check(CONTROL_TRIGGER_RIGHT).pressed) {
+			if(inShip->fuel >= 1) {
+				inShip->fuel--;
+				inShip->vel_x += fix16_mul(tempCos, inShip->thrust_x);
+				inShip->vel_y -= fix16_mul(tempSin, inShip->thrust_x);
+			}
 		}
-	}
 
-	if((inShip->fuel >= 256) && control_just_pressed(CONTROL_BUTTON_B)) {
-		inShip->fuel -= 256;
-		inShip->vel_x += fix16_mul(tempSin, inShip->thrust_y) << 6;
-		inShip->vel_y += fix16_mul(tempCos, inShip->thrust_y) << 6;
-		inShip->thrust_visible = 32;
-		sound_play(*_shipBoostSound, false);
-	} else if((inShip->fuel >= 4) && (control_check(CONTROL_BUTTON_A).pressed)) {
-		inShip->fuel -= 4;
-		inShip->vel_x += fix16_mul(tempSin, inShip->thrust_y);
-		inShip->vel_y += fix16_mul(tempCos, inShip->thrust_y);
-		if(inShip->thrust_visible < 8)
-			inShip->thrust_visible++;
-		else if(inShip->thrust_visible > 8)
-			inShip->thrust_visible--;
-		if(_shipThrustLoop == 0)
+
+
+		uint32_t tempFuelCost = fix16_mul(4, inShip->thrust_power);
+		if(tempFuelCost > inShip->fuel) {
+			inShip->thrust_power = fix16_div(inShip->fuel, 4);
+			inShip->fuel = 0;
+		} else
+			inShip->fuel -= tempFuelCost;
+
+		fix16_t tempThrustX = fix16_mul(fix16_mul(tempSin, inShip->thrust_y), inShip->thrust_power);
+		fix16_t tempThrustY = fix16_mul(fix16_mul(tempCos, inShip->thrust_y), inShip->thrust_power);
+
+		if((inShip->partsys != NULL) && (inShip->thrust_power > 0)) {
+			uintptr_t tempPAge = 16;
+			uintptr_t tempPCnt = ((inShip->thrust_power <= (fix16_one >> 1)) ? 4 : fix16_mul(8, inShip->thrust_power));
+			fix16_t tempPVelX = inShip->vel_x - tempThrustX;
+			fix16_t tempPVelY = inShip->vel_y - tempThrustY;
+
+			uintptr_t i;
+			for(i = 0; i < tempPCnt; i++) {
+				fix16_t tempVelH = (0x7FFF - (rand() & 0xFFFF));
+				fix16_t tempVelV = (0x3FFF - (rand() & 0x7FFF));
+				fix16_t tempVelX = tempPVelX + tempVelH;
+				fix16_t tempVelY = tempPVelY + tempVelV;
+				particle_system_add(inShip->partsys, particle_create(tempPAge, inShip->x, inShip->y, tempVelX, tempVelY));
+			}
+		}
+
+		inShip->vel_x += tempThrustX;
+		inShip->vel_y += tempThrustY;
+
+		if((inShip->thrust_power > 0) && (_shipThrustLoop == 0))
 			_shipThrustLoop = sound_play(*_shipThrustSound, true);
-	} else {
-		if(inShip->thrust_visible > 0)
-			inShip->thrust_visible--;
-		if(_shipThrustLoop != 0) {
+		else if((inShip->thrust_power == 0) && (_shipThrustLoop != 0)){
 			sound_stop(_shipThrustLoop);
 			_shipThrustLoop = 0;
 		}
-	}
 
-	inShip->vel_x += tempWind;
-	inShip->vel_y -= tempGravity;
-	inShip->vel_x  = fract32_smul(inShip->vel_x, tempFriction);
-	inShip->vel_y  = fract32_smul(inShip->vel_y, tempFriction);
+		if(control_just_pressed(CONTROL_BUTTON_B))
+			inShip->thrust_power = fix16_one << 5;
+		else if(control_check(CONTROL_BUTTON_A).pressed && (inShip->thrust_power <= fix16_one))
+			inShip->thrust_power = fix16_one;
+		else if(inShip->thrust_power > 0)
+			inShip->thrust_power = 0;
 
-	inShip->x += inShip->vel_x;
-	if((inShip->x - (4 << 16)) < 0) {
-		inShip->x = (4 << 16);
-		inShip->vel_x = 0;
-	} if(inShip->x + (4 << 16) >= (int32_t)inLevel->width) {
-		inShip->x = (inLevel->width - ((4 << 16) + 1));
-		inShip->vel_x = 0;
-	}
-	ship_level_point tempHit = shipLevelCollision(inShip, inLevel);
-	if(inShip->vel_x > 0) {
-		if(tempHit.right_y > 0) {
-			inShip->x = (tempHit.right_x - ((4 << 16) + 1));
-			inShip->vel_x = (0 - fract32_smul(inShip->vel_x, fract32_create(1, 4)));
+
+
+		inShip->vel_x += tempWind;
+		inShip->vel_y -= tempGravity;
+		inShip->vel_x  = fract32_smul(inShip->vel_x, tempFriction);
+		inShip->vel_y  = fract32_smul(inShip->vel_y, tempFriction);
+
+		inShip->x += inShip->vel_x;
+		if((inShip->x - (4 << 16)) < 0) {
+			inShip->x = (4 << 16);
+			inShip->vel_x = 0;
+		} if(inShip->x + (4 << 16) >= (int32_t)inLevel->width) {
+			inShip->x = (inLevel->width - ((4 << 16) + 1));
+			inShip->vel_x = 0;
 		}
-	} else {
-		if(tempHit.left_y > 0) {
-			shipDamage(inShip, inShip->vel_x);
-			inShip->x = (tempHit.left_x + ((4 << 16) + 1));
-			inShip->vel_x = (0 - fract32_smul(inShip->vel_x, fract32_create(1, 4)));
-		}
-	}
-
-	inShip->y += inShip->vel_y;
-	tempHit = shipLevelCollision(inShip, inLevel);
-	if(inShip->y < tempHit.high) {
-		if(tempHit.land) {
-			tempOut = true;
+		ship_level_point tempHit = shipLevelCollision(inShip, inLevel);
+		if(inShip->vel_x > 0) {
+			if(tempHit.right_y > 0) {
+				inShip->x = (tempHit.right_x - ((4 << 16) + 1));
+				inShip->vel_x = (0 - fract32_smul(inShip->vel_x, fract32_create(1, 4)));
+			}
 		} else {
-			shipDamage(inShip, inShip->vel_y);
+			if(tempHit.left_y > 0) {
+				shipDamage(inShip, inShip->vel_x);
+				inShip->x = (tempHit.left_x + ((4 << 16) + 1));
+				inShip->vel_x = (0 - fract32_smul(inShip->vel_x, fract32_create(1, 4)));
+			}
 		}
-		inShip->y = tempHit.high;
-		inShip->vel_y = (0 - fract32_smul(inShip->vel_y, fract32_create(1, 4)));
+
+		inShip->y += inShip->vel_y;
+		tempHit = shipLevelCollision(inShip, inLevel);
+		if(inShip->y < tempHit.high) {
+			if(tempHit.land) {
+				tempOut = true;
+			} else {
+				shipDamage(inShip, inShip->vel_y);
+			}
+			inShip->y = tempHit.high;
+			inShip->vel_y = (0 - fract32_smul(inShip->vel_y, fract32_create(1, 4)));
+		}
+
+		uint32_t tempAvgVel = ((inShip->vel_x < 0 ? -inShip->vel_x : inShip->vel_x) + (inShip->vel_y < 0 ? -inShip->vel_y : inShip->vel_y));//fix16_sqrt((inShip->vel_x * inShip->vel_x) + (inShip->vel_y * inShip->vel_y));
+		inShip->avg_vel = ((inShip->avg_vel * 15) + tempAvgVel) >> 4;
+	} else {
+		if((inShip->partsys == NULL) || (inShip->partsys->list == NULL))
+			inShip->dead = true;
 	}
+
+	if(inShip->partsys != NULL)
+		particle_system_tick(inShip->partsys);
+
 	return tempOut;
 }
 

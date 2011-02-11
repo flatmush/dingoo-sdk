@@ -15,12 +15,12 @@ SOURCE    = .
 INCLUDE   = -I$(DINGOO_SDK)/include -I../lib -I$(MIPSTOOLS)/mipsel-linux/include -I$
 
 W_OPTS    = -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions
-CPP_OPTS  = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
-CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
-CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
+CPP_OPTS  = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) $(ASTROLANDER_FGL_BONUS_GRAPHICS_FLAG) -D_DEBUG -DMPU_JZ4740 -c
+CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) $(ASTROLANDER_FGL_BONUS_GRAPHICS_FLAG) -D_DEBUG -DMPU_JZ4740 -c
+CC_OPTS_A = $(CC_OPTS) $(ASTROLANDER_FGL_BONUS_GRAPHICS_FLAG) -D_ASSEMBLER_
 
 LIB_PATH  = $(DINGOO_SDK)/lib
-LIBS      = -lfgl -lsml -lc -ljz4740 -lgcc
+LIBS      = $(ASTROLANDER_FGL_BONUS_GRAPHICS_LIB) -lsml -lc -ljz4740 -lgcc
 
 LD_SCRIPT = $(DINGOO_SDK)/lib/dingoo.xn
 LD_OPTS   = -nodefaultlibs --script $(LD_SCRIPT) -L$(LIB_PATH) $(LIBS) -o $(APP_NAME).elf
@@ -59,6 +59,15 @@ $(OBJ_C) : %.o : %.c
 
 $(OBJ_S) : %.o : %.S
 	$(CC) $(CC_OPTS_A) -o $@ $<
+
+
+
+# Rules to make bonus version
+
+.phony : bonus
+
+bonus :
+	make ASTROLANDER_FGL_BONUS_GRAPHICS_LIB="-lfgl" ASTROLANDER_FGL_BONUS_GRAPHICS_FLAG="-DFGL_BONUS_GRAPHICS"
 
 
 

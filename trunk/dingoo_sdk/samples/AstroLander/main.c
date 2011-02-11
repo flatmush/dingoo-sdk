@@ -14,6 +14,10 @@
 #include <sml/fixmath.h>
 #include <sml/sound.h>
 
+#ifdef FGL_BONUS_GRAPHICS
+#include <fgl/fgl.h>
+#endif
+
 #include "game.h"
 #include "ship.h"
 #include "level.h"
@@ -44,7 +48,6 @@ int main(int argc, char** argv) {
 
 	control_init();
 	gameDisplay = display_create(320, 240, 320, (DISPLAY_FORMAT_RGB565 | DISPLAY_BUFFER_STATIC), NULL, NULL);
-	//gameDisplay = display_create(640, 480, 640, (DISPLAY_FORMAT_RGB565 | DISPLAY_STRETCH | DISPLAY_FILTER_LINEAR), NULL, NULL);
 	if(gameDisplay == NULL) {
 		control_term();
 		return ref;
@@ -53,14 +56,51 @@ int main(int argc, char** argv) {
 	sound_init();
 	gameVolume = sound_volume_set(gameVolume);
 
-	gfx_render_target_clear(gfx_color_rgb(0x00, 0x00, 0x00));
+
+	#ifdef FGL_BONUS_GRAPHICS
+	// Initialize fgl
+	gameDisplayTex = (fgl_texture*)malloc(sizeof(fgl_texture));
+	if(gameDisplayTex == NULL) {
+		control_term();
+		display_delete(gameDisplay);
+		gfx_term();
+		return ref;
+	}
+	gameDisplayTex->width    = gameDisplay->stride;
+	gameDisplayTex->height   = gameDisplay->height;
+	gameDisplayTex->reserved = 0;
+	gameDisplayTex->data     = gameDisplay->buffer;
+	gameDisplayTex->mipmap   = NULL;
+	fgl_draw_buffer_set(gameDisplayTex);
+
+	fgl_matrix_mode_set(FGL_MATRIX_VIEWPORT);
+	fgl_matrix_identity();
+	fgl_viewport(0, 0, fgl_fix16_from_int(gameDisplay->width), fgl_fix16_from_int(gameDisplay->height));
+	fgl_matrix_mode_set(FGL_MATRIX_PROJECTION);
+	fgl_matrix_identity();
+	fgl_perspective((fgl_fix16_pi >> 3), fgl_fix16_div(fgl_fix16_from_int(gameDisplay->width), fgl_fix16_from_int(gameDisplay->height)), fgl_fix16_one, fgl_fix16_from_int(1024));
+	fgl_matrix_mode_set(FGL_MATRIX_VIEW);
+	fgl_matrix_identity();
+	fgl_matrix_mode_set(FGL_MATRIX_MODEL);
+	fgl_matrix_identity();
+
+	fgl_disable(FGL_DEPTH_TEST);
+	fgl_disable(FGL_DEPTH_WRITE);
+	fgl_enable(FGL_CULL_FACE);
+	fgl_enable(FGL_TEXTURE_2D);
+	fgl_clear(FGL_COLOR_BUFFER_BIT);
+	#else
+	gfx_render_target_clear(COLOR_BLACK);
+	#endif
+
+
+
 	display_flip(gameDisplay);
 	control_lock(timer_resolution / 4);
 
 	char tempString[256];
 
 	gameFont   = gfx_font_load("font.tga", COLOR_BLACK);
-	//gameFont   = gfx_font_load_from_buffer(font, font_size, COLOR_BLACK);
 	gameSplash = gfx_tex_load_tga("splash.tga");
 	gameScores = scoreListLoad("scores.dat");
 
@@ -121,6 +161,7 @@ int main(int argc, char** argv) {
 								break;
 							}
 							gameTime += gameTickRate;
+							backgroundTick(gameBackground);
 							if(shipTick(gameShip, gameLevel)) {
 								gameLandingScore = shipLandScore(gameShip, gameLevel, gameLevelNo);
 								gameScore += gameLandingScore.total;
@@ -128,7 +169,7 @@ int main(int argc, char** argv) {
 								control_lock(timer_resolution / 4);
 								break;
 							}
-							if((gameShip == NULL) || (gameShip->hp == 0) || ((gameShip->fuel <= 1) && (gameShip->vel_y < (1 << 14)))) {
+							if((gameShip == NULL) || gameShip->dead || ((gameShip->fuel <= 1) && (gameShip->avg_vel < (1 << 14)))) {
 								gameModeSub = GAME_MODE_GAME_CRASHED;
 							}
 							break;
@@ -190,7 +231,11 @@ int main(int argc, char** argv) {
 
 		switch(gameMode) {
 			case GAME_MODE_SPLASH:
-				gfx_render_target_clear(gfx_color_rgb(0x00, 0x00, 0x00));
+				#ifdef FGL_BONUS_GRAPHICS
+				fgl_clear(FGL_COLOR_BUFFER_BIT);
+				#else
+				gfx_render_target_clear(COLOR_BLACK);
+				#endif
 				gfx_tex_draw(((gameDisplay->width - gameSplash->width) >> 1), ((gameDisplay->height - gameSplash->height) >> 1), gameSplash);
 				gfx_font_print_center(((gameDisplay->height + gameSplash->height) >> 1) + (gfx_font_height(gameFont) << 1), gameFont, "A Flatmush Game");
 				sprintf(tempString, "Ver: %lu.%lu.%lu", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION);

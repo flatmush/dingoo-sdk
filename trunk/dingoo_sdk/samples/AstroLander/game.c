@@ -9,6 +9,8 @@
 #include <sml/graphics.h>
 #include <sml/sound.h>
 
+#include "particle.h"
+
 
 
 #ifndef max
@@ -21,7 +23,7 @@
 
 
 
-gfx_font* gameFont       = NULL;
+gfx_font*    gameFont    = NULL;
 gfx_texture* gameSplash  = NULL;
 
 uint8_t         gameMode     = GAME_MODE_SPLASH;
@@ -32,8 +34,8 @@ uint32_t    gameTime       = 0;
 uint32_t    gameLives      = 5;
 uint32_t    gameScore      = 0;
 uint32_t    gameLevelNo    = 1;
-uint32_t    gameDifficulty = GAME_DIFFICULTY_EASY;
-char        gameDifficultyStrings[4][32] = { "EASY", "MEDIUM", "HARD", "ULTRA" };
+uint32_t    gameDifficulty = GAME_DIFFICULTY_NORMAL;
+char        gameDifficultyStrings[4][32] = { "EASY", "NORMAL", "HARD", "ULTRA" };
 
 level*      gameLevel      = NULL;
 ship*       gameShip       = NULL;
@@ -48,6 +50,11 @@ display*  gameDisplay  = NULL;
 timer*    gameTimer    = NULL;
 uint32_t  gameTickRate = (timer_resolution / 30);
 bool      gameRunning  = true;
+
+#ifdef FGL_BONUS_GRAPHICS
+fgl_texture* gameDisplayTex = NULL;
+uint16_t*    gameDepthBuff  = NULL;
+#endif
 
 
 

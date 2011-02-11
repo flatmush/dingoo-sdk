@@ -8,6 +8,10 @@
 #include <sml/display.h>
 #include <sml/graphics.h>
 
+#ifdef FGL_BONUS_GRAPHICS
+#include <fgl/fgl.h>
+#endif
+
 #include "ship.h"
 #include "level.h"
 #include "background.h"
@@ -66,9 +70,14 @@ extern uintptr_t   gameScoreListOffset;
 extern uintptr_t gameVolume;
 extern uintptr_t gameVolumeShow;
 
-extern display*  gameDisplay;
-extern timer*    gameTimer;
-extern uint32_t  gameTickRate;
-extern bool      gameRunning;
+extern display*     gameDisplay;
+extern timer*       gameTimer;
+extern uint32_t     gameTickRate;
+extern bool         gameRunning;
+
+#ifdef FGL_BONUS_GRAPHICS
+extern fgl_texture* gameDisplayTex;
+extern uint16_t*    gameDepthBuff;
+#endif
 
 #endif
