@@ -25,12 +25,14 @@ cd $DINGOO_SDK/src/libc && make clean && make headers
 cd $DINGOO_SDK/src/libm && make clean && make headers
 cd $DINGOO_SDK/src/libstdc++ && make clean && make headers
 cd $DINGOO_SDK/src/sml && make clean && make headers
+cd $DINGOO_SDK/src/smlgui && make clean && make headers
 cd $DINGOO_SDK/src/modplay && make clean && make headers
 cd $DINGOO_SDK/src/zlib && make clean && make headers
 cd $DINGOO_SDK/src/libpng && make clean && make headers
 cd $DINGOO_SDK/src/freetype && make clean && make headers
 cd $DINGOO_SDK/src/tremor && make clean && make headers
 cd $DINGOO_SDK/src/libmikmod/dingoo && make clean && make headers
+cd $DINGOO_SDK/src/libmad && make clean && make headers
 cd $DINGOO_SDK/src/SDL && make clean && make headers
 
 cd $DINGOO_SDK/src/jz4740 && make
@@ -38,12 +40,14 @@ cd $DINGOO_SDK/src/libc && make
 cd $DINGOO_SDK/src/libm && make
 cd $DINGOO_SDK/src/libstdc++ && make
 cd $DINGOO_SDK/src/sml && make
+cd $DINGOO_SDK/src/smlgui && make
 cd $DINGOO_SDK/src/modplay && make
 cd $DINGOO_SDK/src/zlib && make
 cd $DINGOO_SDK/src/libpng && make
 cd $DINGOO_SDK/src/freetype && make
 cd $DINGOO_SDK/src/tremor && make
 cd $DINGOO_SDK/src/libmikmod/dingoo && make
+cd $DINGOO_SDK/src/libmad && make
 cd $DINGOO_SDK/src/SDL && make
 
 rm -f $DINGOO_SDK/lib/libgcc.a
