@@ -4,16 +4,26 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "particle.h"
 
 
 typedef struct {
 	int32_t     x, y;
 	int32_t     vel_x, vel_y;
 	int32_t     angle;
+
+	uint32_t    avg_vel;
+
 	uint32_t    hp, hp_max;
 	uint32_t    fuel, fuel_max;
+
 	uint32_t    thrust_x, thrust_y;
-	uint32_t    thrust_visible;
+	int32_t     thrust_power;
+
+	bool        exploding;
+	bool        dead;
+
+	particle_system* partsys;
 } ship;
 
 typedef struct {
