@@ -72,9 +72,21 @@ The dingoo SDK is now installed.
 Linux users will need to do the following:
 	- Download mipsel-4.1.2-nopic.tar.bz2
 	- Install these compiler tools to an appropriate place.
-	- Set the environment variable MIPSTOOLS to the location of your mips compiler tools.
-	- Set the environment variable DINGOO_SDK to this directory.
-	- Set the environment variable PATH to "$PATH:$MIPSTOOLS/bin"
+	- Set environment variables:
+		- Set the environment variable MIPSTOOLS to the location of your mips compiler tools.
+		- Set the environment variable DINGOO_SDK to this directory.
+		- Set the environment variable PATH to "$PATH:$MIPSTOOLS/bin"
+
+	  Example (assuming compiler and SDK in current directory):
+
+		MIPSTOOLS=`pwd`/mipsel-4.1.2-nopic
+		export MIPSTOOLS
+
+		DINGOO_SDK=`pwd`/dingoo-sdk/dingoo_sdk
+		export DINGOO_SDK
+
+		PATH="$PATH:$MIPSTOOLS/bin"
+
 	- Type "cd $DINGOO_SDK && sh ./install"
 
 The dingoo SDK is now installed.
