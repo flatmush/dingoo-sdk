@@ -1,5 +1,7 @@
 #summary Notes on Dingoo SDL
 
+http://dingoo-sdk.googlecode.com/svn/wiki/images/dingoo-a320_small.png
+
 = Keybindings =
 
 Native Dingo SDL key/button bindings are the same as the Dingux SDL bindings, viz.
