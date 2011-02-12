@@ -83,17 +83,24 @@ The dingoo SDK is now installed.
 
 1.3 - Updating
 
-Delete your current SDK directory and replace it with the newly downloaded SDK, then simply re-run the install script.
+To update your current SDK, download the newest version and overwrite your current install,
+then type:
+	make install
 
-For minor library changes it is possible to just re-make each of the new libs, but a full re-install is advised.
+This can take a while, if you only want to install core libraries or just ignore samples then the following options are quicker.
+	make install_core_libs # Just installs the core libraries
+	make install_core      # Just installs the core libraries and samples
+
+On the other hand if you want a complete installation including compiled samples and tests then run:
+	make install_full
 
 
 
 1.4 - Building the documentation
 
-To build the documentation, you need to run: doxygen $DINGOO_SDK/src/Doxyfile
+To build the documentation, you need to run:
+	make -C $DINGOO_SDK documentation
 HTML and XML documentation is saved to $DINGOO_SDK/doc/html and $DINGOO_SDK/doc/xml, respectively. You can easily modify the Doxyfile to include other formats as you need them, but the HTML documentation is the most user-friendly, just open $DINGOO_SDK/doc/html/index.html in your web browser.
-
 
 
 
@@ -107,3 +114,6 @@ Type the following commands:
 	cd <sample dir>
 	make
 Now copy the .app file to your dingoo along with any required data files (.tga files usually).
+
+To compile all the samples at once type:
+	make -C $DINGOO_SDK samples
