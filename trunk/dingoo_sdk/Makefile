@@ -27,6 +27,7 @@ CORE_SAMPLES = \
 	ListDirectory\
 	MineSweeper\
 	posix_readdir\
+	printf_replacement\
 	sml_audio_demo\
 	sml_mixer_demo\
 	sml_overclock\
