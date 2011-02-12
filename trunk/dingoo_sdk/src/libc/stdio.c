@@ -28,6 +28,7 @@ typedef enum {
 typedef struct {
 	_file_type_e type;
 	void*        data;
+	bool         eof;
 } _file_t;
 
 typedef struct {
@@ -113,6 +114,8 @@ FILE* fopen(const char* filename, const char* mode) {
 		return NULL;
 	}
 
+	tempFile->eof = false;
+
 	return (FILE*)tempFile;
 }
 
@@ -156,10 +159,15 @@ int _fseek(FILE* stream, long int offset, int origin) {
 	{
 		int pos = fsys_fseek((FILE*)tempFile->data, offset, origin);
 		//we can detect success only when SET mode
-		if(origin == FSYS_SEEK_SET)
-			return pos == offset ? 0 : -1; // Fix for non-standard behavior
-		else
+		if(origin == FSYS_SEEK_SET) {
+			if(pos != offset)
+				return -1;
+			tempFile->eof = false;
+			return 0; // Fix for non-standard behavior
+		} else {
+			tempFile->eof = false;
 			return 0;
+		}
 	}
 
 	if(tempFile->type == _file_type_mem) {
@@ -232,17 +240,7 @@ int feof(FILE* stream) {
 		return 0;
 	if(stream == _serial)
 		return 0;
-
-	_file_t* tempFile = (_file_t*)stream;
-
-	if(tempFile->type == _file_type_file)
-		return fsys_feof((FILE*)tempFile->data);
-	if(tempFile->type == _file_type_mem) {
-		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
-		return (tempFileMem->offset >= tempFileMem->size);
-	}
-
-	return 0;
+	return (((_file_t*)stream)->eof ? 1 : 0);
 }
 
 
@@ -262,8 +260,17 @@ int _fread(void* ptr, size_t size, size_t count, FILE* stream) {
 
 	_file_t* tempFile = (_file_t*)stream;
 
-	if(tempFile->type == _file_type_file)
-		return fsys_fread(ptr, size, count, (FILE*)tempFile->data);
+	if(tempFile->type == _file_type_file) {
+		if(fsys_feof((FILE*)tempFile->data) && (size != 0) && (count != 0)) {
+			tempFile->eof = true;
+			return 0;
+		}
+
+		int ret = fsys_fread(ptr, size, count, (FILE*)tempFile->data);
+		if((ret < 0) || ((size_t)ret < count))
+			tempFile->eof = true;
+		return ret;
+	}
 
 	if(tempFile->type == _file_type_mem) {
 		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
@@ -272,8 +279,10 @@ int _fread(void* ptr, size_t size, size_t count, FILE* stream) {
 			return -1;
 
 		uintptr_t tempMaxCount = ((tempFileMem->size - tempFileMem->offset) / size);
-		if(count > tempMaxCount)
+		if(count > tempMaxCount) {
 			count = tempMaxCount;
+			tempFile->eof = true;
+		}
 
 		memcpy(ptr, (void*)((uintptr_t)tempFileMem->base + tempFileMem->offset), (size * count));
 		tempFileMem->offset += (size * count);
@@ -302,8 +311,17 @@ int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
 
 	_file_t* tempFile = (_file_t*)stream;
 
-	if(tempFile->type == _file_type_file)
-		return fsys_fwrite(ptr, size, count, (FILE*)tempFile->data);
+	if(tempFile->type == _file_type_file) {
+		if(fsys_feof((FILE*)tempFile->data) && (size != 0) && (count != 0)) {
+			tempFile->eof = true;
+			return 0;
+		}
+
+		int ret = fsys_fwrite(ptr, size, count, (FILE*)tempFile->data);
+		if((ret < 0) || ((size_t)ret < count))
+			tempFile->eof = true;
+		return ret;
+	}
 
 	if(tempFile->type == _file_type_mem) {
 		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
@@ -312,8 +330,10 @@ int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
 			return -1;
 
 		uintptr_t tempMaxCount = ((tempFileMem->size - tempFileMem->offset) / size);
-		if(count > tempMaxCount)
+		if(count > tempMaxCount) {
 			count = tempMaxCount;
+			tempFile->eof = true;
+		}
 
 		memcpy((void*)((uintptr_t)tempFileMem->base + tempFileMem->offset), ptr, (size * count));
 		tempFileMem->offset += (size * count);
@@ -334,11 +354,11 @@ int fflush(FILE* stream) {
 }
 
 void clearerr(FILE *stream) {
-
 	_file_t* tempFile = (_file_t*)stream;
 
 	if(tempFile->type == _file_type_file)
 		fsys_clearerr((FILE*)tempFile->data);
+	tempFile->eof = false;
 }
 
 void rewind(FILE *stream) {
@@ -348,9 +368,13 @@ void rewind(FILE *stream) {
 
 
 
-int remove(const char* filename)
-{
-	return fsys_remove((char*)filename);
+int remove(const char* filename) {
+	char* tempPath = _file_path(filename);
+	if(tempPath == NULL)
+		return fsys_remove((char*)filename);
+	int ret = fsys_remove(tempPath);
+	free(tempPath);
+	return ret;
 }
 
 FILE* fmemopen(void* buf, size_t size, const char* mode) {
@@ -365,6 +389,7 @@ FILE* fmemopen(void* buf, size_t size, const char* mode) {
 
 	tempFile->type = _file_type_mem;
 	tempFile->data = (void*)tempFileMem;
+	tempFile->eof  = false;
 
 	tempFileMem->alloc = (buf == NULL);
 
