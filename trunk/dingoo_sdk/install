@@ -2,6 +2,9 @@
 
 if [ ! -d "$DINGOO_SDK" ]; then
 	echo "DINGOO_SDK environment variable not set/valid."
+	echo "To fix this temporarily type:"
+	echo "	export DINGOO_SDK=`pwd`"
+	echo "Edit your cygwin.bat or .bashrc file to set this properly."
 	exit 0
 fi
 
@@ -14,41 +17,10 @@ if [ -d "$WINDIR" ]; then
 	SET nodosfilewarning
 	$DINGOO_SDK/tools/mipstools_fix/mipstools_fix
 else
-	rm -f $DINGOO_SDK/tools/elf2app/elf2app
-	cc $DINGOO_SDK/tools/elf2app/src/*.c -o $DINGOO_SDK/tools/elf2app/elf2app
-	rm -f $DINGOO_SDK/tools/bin2h/bin2h
-	cc $DINGOO_SDK/tools/bin2h/src/bin2h.c -o $DINGOO_SDK/tools/bin2h/bin2h
+	make tools
 fi
 
-cd $DINGOO_SDK/src/jz4740 && make clean && make headers
-cd $DINGOO_SDK/src/libc && make clean && make headers
-cd $DINGOO_SDK/src/libm && make clean && make headers
-cd $DINGOO_SDK/src/libstdc++ && make clean && make headers
-cd $DINGOO_SDK/src/sml && make clean && make headers
-cd $DINGOO_SDK/src/smlgui && make clean && make headers
-cd $DINGOO_SDK/src/modplay && make clean && make headers
-cd $DINGOO_SDK/src/zlib && make clean && make headers
-cd $DINGOO_SDK/src/libpng && make clean && make headers
-cd $DINGOO_SDK/src/freetype && make clean && make headers
-cd $DINGOO_SDK/src/tremor && make clean && make headers
-cd $DINGOO_SDK/src/libmikmod/dingoo && make clean && make headers
-cd $DINGOO_SDK/src/libmad && make clean && make headers
-cd $DINGOO_SDK/src/SDL && make clean && make headers
-
-cd $DINGOO_SDK/src/jz4740 && make
-cd $DINGOO_SDK/src/libc && make
-cd $DINGOO_SDK/src/libm && make
-cd $DINGOO_SDK/src/libstdc++ && make
-cd $DINGOO_SDK/src/sml && make
-cd $DINGOO_SDK/src/smlgui && make
-cd $DINGOO_SDK/src/modplay && make
-cd $DINGOO_SDK/src/zlib && make
-cd $DINGOO_SDK/src/libpng && make
-cd $DINGOO_SDK/src/freetype && make
-cd $DINGOO_SDK/src/tremor && make
-cd $DINGOO_SDK/src/libmikmod/dingoo && make
-cd $DINGOO_SDK/src/libmad && make
-cd $DINGOO_SDK/src/SDL && make
+make install
 
 rm -f $DINGOO_SDK/lib/libgcc.a
 cp $MIPSTOOLS/lib/gcc/mipsel-linux/*/libgcc.a $DINGOO_SDK/lib
@@ -59,7 +31,7 @@ OUTPUT_FORMAT("elf32-tradlittlemips")
 SECTIONS
 {
     .dingoo 0x80A00000 :
-    { 
+    {
         dingoo.o (.text)
         *(.text*)
         *(.rodata*)
