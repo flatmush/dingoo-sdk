@@ -311,17 +311,8 @@ int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
 
 	_file_t* tempFile = (_file_t*)stream;
 
-	if(tempFile->type == _file_type_file) {
-		if(fsys_feof((FILE*)tempFile->data) && (size != 0) && (count != 0)) {
-			tempFile->eof = true;
-			return 0;
-		}
-
-		int ret = fsys_fwrite(ptr, size, count, (FILE*)tempFile->data);
-		if((ret < 0) || ((size_t)ret < count))
-			tempFile->eof = true;
-		return ret;
-	}
+	if(tempFile->type == _file_type_file)
+		return fsys_fwrite(ptr, size, count, (FILE*)tempFile->data);
 
 	if(tempFile->type == _file_type_mem) {
 		_file_mem_t* tempFileMem = (_file_mem_t*)tempFile->data;
