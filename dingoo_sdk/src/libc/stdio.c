@@ -553,3 +553,46 @@ int mkdir(const char *path, mode_t mode) {
 
 	return ret;
 }
+
+/*
+** also not a good location, perhaps move to dirent they share similar code....
+** (Partially) emulate POSIX stat()
+** On success, zero is returned. On error, -1 is returned
+*/
+int stat(const char *path, struct stat *buf)
+{
+    char* tempPath = NULL;
+    int res = -1;
+    fsys_file_info_t info;
+    
+    /* dumb sanity checks */
+    if (path == NULL)
+        return -1;
+    
+    if (buf == NULL)
+        return -1;
+    
+    /* normalize path before starting */
+    tempPath = _file_path(path);  /* FIXME memory fragmentation is a very real possibilty here :-( stat() will be called ALOT */
+    if(tempPath == NULL)
+        tempPath = (char *) path;
+    
+    // TODO check for trailing slashes? see opendir() code
+
+    memset(buf, 0, sizeof(struct stat));
+    
+    res = fsys_findfirst(tempPath, -1 /* All object types */, &info);
+    if(res == 0)
+    {
+        buf->st_mode = info.attributes; /* or clean up and assign manually.... */
+        buf->st_size = (off_t) info.size; /* st_size is signed, data from fsys* is unsigned */
+        buf->st_mtime = info.time;
+    }
+    
+    fsys_findclose(&info); /* not sure about this... */
+
+    if(tempPath != path)
+        free(tempPath);  /* FIXME memory fragmentation is a very real possibilty here :-( stat() will be called ALOT */
+
+    return res;
+}
