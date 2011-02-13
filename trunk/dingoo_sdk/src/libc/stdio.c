@@ -372,6 +372,29 @@ int remove(const char* filename) {
 	return ret;
 }
 
+int rename(const char *oldpath, const char *newpath) {
+	int ret = 0;
+	char* tempOldPath = NULL;
+	char* tempNewPath = NULL;
+    
+	tempOldPath = _file_path(oldpath);
+	if(tempOldPath == NULL)
+		tempOldPath = (char *) oldpath;
+    
+	tempNewPath = _file_path(newpath);
+	if(tempNewPath == NULL)
+		tempNewPath = (char *) newpath;
+    
+	ret = fsys_rename(tempOldPath, tempNewPath);
+    
+	if(tempOldPath != oldpath)
+		free(tempOldPath);
+	if(tempNewPath != newpath)
+		free(tempNewPath);
+    
+	return ret;
+}
+
 FILE* fmemopen(void* buf, size_t size, const char* mode) {
 	if(mode == NULL)
 		return NULL;
@@ -418,6 +441,7 @@ FILE* fmemopen(void* buf, size_t size, const char* mode) {
 
 
 void perror(const char* prefix) {
+	// TODO (void) prefix; /* avoid not used warnings */
 	//_fprintf(stderr, "%s: %s", prefix, strerror(errno));
 }
 
@@ -519,6 +543,7 @@ int fputs(const char* str, FILE* stream) {
 int mkdir(const char *path, mode_t mode) {
 	int ret;
 	char* tempPath = _file_path(path);
+	(void) mode; /* avoid not used warnings */
 	if(tempPath == NULL) {
 		ret = fsys_mkdir(path);
 	} else {

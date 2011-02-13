@@ -28,6 +28,16 @@ extern void       fsys_clearerr(FSYS_FILE*);
 extern int        fsys_removeW(const wchar_t*);
 #define fsys_remove(inFile) fsys_removeW(__to_unicode_le(inFile))
 
+/*
+** fsys_rename() - rename file or directory
+** On success, zero is returned. On error, -1 is returned.
+*/
+extern int fsys_rename(const char *oldpath, const char *newpath);
+/*
+** not yet tested.... 
+extern int fsys_renameW(const wchar_t *oldpath, const wchar_t *newpath);
+*/
+
 extern int        fsys_mkdir(const char*);
 
 
