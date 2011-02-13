@@ -56,6 +56,7 @@ extern FILE* fmemopen(void* buf, size_t size, const char* mode);
 
 extern int rename(const char *oldpath, const char *newpath);
 extern int remove(const char* filename);
+#define unlink remove
 
 extern int   getc(FILE* stream);
 extern int   getchar();
