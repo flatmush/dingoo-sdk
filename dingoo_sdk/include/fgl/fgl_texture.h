@@ -12,18 +12,18 @@ extern "C"
 #include <fgl/fgl_color.h>
 
 typedef struct {
-	uint8_t      width, height;
+	uint16_t     width, height;
 	uint32_t     reserved;
 	fgl_color_t* data;
 	void*        mipmap;
 } fgl_texture;
 
-#define fgl_texture_texel(inTexture, inX, inY) ((inTexture)->data[((inY) << (inTexture)->width) + (inX)])
+#define fgl_texture_texel(inTexture, inX, inY) ((inTexture)->data[((inY) * (inTexture)->width) + (inX)])
 
 extern fgl_texture  _fgl_texture_default;
 extern fgl_texture* _fgl_texture;
 
-extern fgl_texture* fgl_texture_create(uint8_t inWidth, uint8_t inHeight);
+extern fgl_texture* fgl_texture_create(uint16_t inWidth, uint16_t inHeight);
 extern void         fgl_texture_delete(fgl_texture* inTexture);
 
 extern fgl_texture* fgl_texture_load_tga(const char* inPath);
