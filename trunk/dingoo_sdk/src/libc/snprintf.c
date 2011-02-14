@@ -1210,8 +1210,25 @@ static int add_cnk_list_entry(struct pr_chunk_x **list,
 }
 #endif
 
+int _sprintf(char *str,const char *fmt,...)
+{
+	va_list ap;
+	int ret;
+    
+	va_start(ap, fmt);
+	ret = vsnprintf(NULL, 0, fmt, ap);
+	va_end(ap);
+	if (ret < 0) return ret;
+
+	va_start(ap, fmt);
+	ret = vsnprintf(str, ret+1, fmt, ap);
+	va_end(ap);
+
+	return ret;
+}
+
 #ifndef HAVE_C99_VSNPRINTF
- /*int printf(const char *fmt, ...)
+int _printf(const char *fmt, ...)
 {
 	va_list ap;
 	int ret;
@@ -1228,7 +1245,7 @@ static int add_cnk_list_entry(struct pr_chunk_x **list,
 	free(s);
 
 	return ret;
-}*/
+}
 #endif
 
 #ifndef HAVE_C99_VSNPRINTF
