@@ -1,4 +1,5 @@
 #summary Non-comprehensive list of games and applications built using some version of the SDK.
+#labels Featured
 = Known Games and Applications =
 == Games ==
   * [http://code.google.com/p/dingoo-sdk/downloads/list AstroLander] (included with the SDK)
