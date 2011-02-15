@@ -4,7 +4,7 @@
 #include <setjmp.h>
 #include <ctype.h>
 
-
+extern char* _file_path(const char* inPath); /* from stdio.c  */
 
 uint32_t _rand_x = 0x12345678UL;
 uint32_t _rand_a = 39916801UL;
@@ -169,4 +169,64 @@ double atof(const char* str) {
 			out += (double)(*str - '0') * j;
 	}
 	return minus ? -out : out;
+}
+
+/*
+**  realpath()
+**  
+**  On success, the realpath() function returns the address of the resulting
+**  absolute pathname, which is resolved_name if it was non-NULL, or the
+**  address of newly allocated memory.  If an error occurs, realpath()
+**  returns NULL.  If resolved_name was non-NULL, it will contains the path-
+**  name which caused the problem.
+**  
+**  WARNING POSIX difference
+**  The realpath() function will resolve both absolute and relative paths and
+**  return the absolute pathname corresponding to file_name.
+**  In POSIX All components of file_name must exist when realpath() is called.
+**  This version makes no such checks!
+**  
+*/
+char * realpath(const char * file_name, char *resolved_name)
+{
+    char* temp_path = NULL;
+    
+    if (file_name == NULL)
+    {
+        return NULL;
+    }
+    
+    /*
+    ** NOTE this makes use of existing _file_path() routine
+    **  this is inefficient and could cause memory fragmentation
+    ** Also _file_path() can't handle pathalogically difficult
+    ** input params such as:
+    **      1\\\
+    **      d2\\\1
+    **      d2\.\..\1
+    **      .\.
+    **      .\.\
+    **      .\.\.\ - etc.
+    **      \dir - etc (no drive letter
+    **      A:\dir\..
+    **      
+    **  It may be worth cloning a comptible license
+    **  implementation of realpath and changing to support
+    **  '\\' instead of '/' uclibc is LGPL so could be
+    **  suitable source.
+    */
+    temp_path = _file_path(file_name);
+    if (temp_path == NULL)
+    {
+        temp_path = (char *) file_name;
+    }
+
+    if (resolved_name != NULL)
+    {
+        strcpy(resolved_name, temp_path);
+        if (temp_path != file_name)
+            free(temp_path);
+        temp_path = resolved_name;
+    }
+    return temp_path;
 }
