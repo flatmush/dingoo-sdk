@@ -25,8 +25,8 @@ void draw_cube() {
 		tempVerts[i].x = ((i & 1) ? 1 : -1) << 16;
 		tempVerts[i].y = ((i & 2) ? 1 : -1) << 16;
 		tempVerts[i].z = ((i & 4) ? 1 : -1) << 16;
-		tempVerts[i].u = (1 << ((i & 1) ? 0 : _fgl_texture->width)) - 1;
-		tempVerts[i].v = (1 << ((i & 2) ? 0 : _fgl_texture->height)) - 1;
+		tempVerts[i].u = ((i & 1) ? 0 : (_fgl_texture->width - 1));
+		tempVerts[i].v = ((i & 2) ? 0 : (_fgl_texture->height - 1));
 		tempVerts[i].c = 0xFFFF;
 	}
 
@@ -105,14 +105,14 @@ int main(int argc, char** argv) {
 	control_init();
 	appTimer = timer_create();
 
-	fgl_texture* tempDispTex = fgl_texture_create(9, 8);
-	display* appDisplay = display_create(320, 240, 512, (DISPLAY_FILTER_NEAREST | DISPLAY_FORMAT_RGB565), tempDispTex->data, NULL);
+	fgl_texture* tempDispTex = fgl_texture_create(320, 240);
+	display* appDisplay = display_create(320, 240, 320, (DISPLAY_FILTER_NEAREST | DISPLAY_FORMAT_RGB565), tempDispTex->data, NULL);
 	if(appDisplay == NULL)
 		return EXIT_FAILURE;
 
 	fgl_draw_buffer_set(tempDispTex);
 	fgl_texture* tempRenderTarget = fgl_draw_buffer_get();
-	uint16_t* tempDepth = (uint16_t*)malloc(2 << (tempRenderTarget->width + tempRenderTarget->height));
+	uint16_t* tempDepth = (uint16_t*)malloc(tempRenderTarget->width * tempRenderTarget->height * 2);
 	if(tempDepth != NULL)
 		fgl_depth_buffer_set(tempDepth);
 	fgl_enable(FGL_DEPTH_TEST);
