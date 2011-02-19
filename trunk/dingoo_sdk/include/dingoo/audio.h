@@ -57,7 +57,6 @@ extern void  waveout_reset();
 extern int   waveout_ioctl(void*, unsigned int cmd, unsigned long arg);
 extern int   waveout_can_write();
 extern int   waveout_set_volume(unsigned int vol);
-extern int   waveout_get_volume(unsigned int);
 
 // The following values are educated guesses.
 extern void* wavein_open(void*);
