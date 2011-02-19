@@ -190,6 +190,7 @@ double atof(const char* str) {
 char * realpath(const char * file_name, char *resolved_name)
 {
     char* temp_path = NULL;
+    int tmp_len=0;
     
     if (file_name == NULL)
     {
@@ -208,6 +209,7 @@ char * realpath(const char * file_name, char *resolved_name)
     **      .\.\
     **      .\.\.\ - etc.
     **      \dir - etc (no drive letter
+    **      A:\\dir
     **      A:\dir\..
     **      
     **  It may be worth cloning a comptible license
@@ -215,10 +217,31 @@ char * realpath(const char * file_name, char *resolved_name)
     **  '\\' instead of '/' uclibc is LGPL so could be
     **  suitable source.
     */
-    temp_path = _file_path(file_name);
-    if (temp_path == NULL)
+    tmp_len = strlen(file_name);
+    if (tmp_len == 2 && file_name[1] == ':')
     {
-        temp_path = (char *) file_name;
+        /*
+        ** we have a drive letter with no path,
+        ** _file_path() does not handle this
+        ** NOTE this sanity check may be appropriate
+        ** to _file_path()
+        */
+        temp_path = malloc(tmp_len + 2);
+        strcpy(temp_path, file_name);
+        temp_path[2] = '\\';
+    }
+    else if (tmp_len == 3 && file_name[1] == ':' && file_name[2] == '\\')
+    {
+        temp_path = malloc(tmp_len + 1);
+        strcpy(temp_path, file_name);
+    }
+    else
+    {
+        temp_path = _file_path(file_name);
+        if (temp_path == NULL)
+        {
+            temp_path = (char *) file_name;
+        }
     }
 
     if (resolved_name != NULL)

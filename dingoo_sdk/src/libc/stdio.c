@@ -386,6 +386,8 @@ int rename(const char *oldpath, const char *newpath) {
 		tempNewPath = (char *) newpath;
     
 	ret = fsys_rename(tempOldPath, tempNewPath);
+	if (ret != 0)
+		errno = EACCES;
     
 	if(tempOldPath != oldpath)
 		free(tempOldPath);
@@ -564,6 +566,8 @@ int stat(const char *path, struct stat *buf)
     char* tempPath = NULL;
     int res = -1;
     fsys_file_info_t info;
+    int tmp_len=0;
+    char abs_path_str[FILENAME_MAX];
     
     /* dumb sanity checks */
     if (path == NULL)
@@ -573,13 +577,24 @@ int stat(const char *path, struct stat *buf)
         return -1;
     
     /* normalize path before starting */
-    tempPath = _file_path(path);  /* FIXME memory fragmentation is a very real possibilty here :-( stat() will be called ALOT */
+    tempPath = realpath(path, abs_path_str);
     if(tempPath == NULL)
-        tempPath = (char *) path;
+        return -1;
     
-    // TODO check for trailing slashes? see opendir() code
-
     memset(buf, 0, sizeof(struct stat));
+
+    tmp_len = strlen(path);
+    if ((tmp_len == 2 || tmp_len == 3) && path[1] == ':')
+    {
+        /*
+        ** we have a drive letter (that may or may not have a slash)
+        ** fsys_findfirst() treats this is a disk label
+        */
+        buf->st_mode = S_IFDIR;
+        return 0;
+    }
+
+    // TODO check for trailing slashes? see opendir() code
     
     res = fsys_findfirst(tempPath, -1 /* All object types */, &info);
     if(res == 0)
@@ -590,9 +605,6 @@ int stat(const char *path, struct stat *buf)
     }
     
     fsys_findclose(&info); /* not sure about this... */
-
-    if(tempPath != path)
-        free(tempPath);  /* FIXME memory fragmentation is a very real possibilty here :-( stat() will be called ALOT */
 
     return res;
 }
