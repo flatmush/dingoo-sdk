@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 
 typedef struct {
@@ -92,4 +94,87 @@ char *getcwd(char *buf, size_t size) {
 	buf[requiredSize - 1] = '\0';
 
 	return buf;
+}
+
+/*
+** chdir()
+**
+** Upon successful completion, a value of 0 is returned.  Otherwise, a value
+** of -1 is returned
+*/
+int chdir(const char *path)
+{
+    /*
+    ** NOTE this needs to be called after _app_path_init()
+    ** first time this routine is called new memory will be allocated
+    ** GameMain() is currently responsible for free'ing it.
+    ** 
+    ** if chdir() is called, it is likely to be called again, and again, .....
+    ** allocate max path len so we don't waste time realloc()'ing and
+    ** avoid memory fragmentation. For simplicity simply use a
+    ** "called more than once" flag rather than use additional buffers
+    */
+    
+    static unsigned char called_before=0;
+    char * res_str=NULL;
+    char abs_path_str[FILENAME_MAX];
+    int tmp_len=0;
+    struct stat st;
+    
+    if (called_before == 0)
+    {
+        free(_app_path);
+        _app_path = malloc(FILENAME_MAX);
+        if (_app_path == NULL)
+        {
+            errno = ENOMEM;
+            /*
+            ** _app_path is used everywhere for file IO, further file io
+            ** calls (such as fopen) will crash, unable to recover
+            */
+            exit(1);
+            return -1;
+        }
+        called_before = 1;
+    }
+    
+    /* attempt to sanitize the path */
+    res_str = realpath(path, abs_path_str);
+    if (res_str == NULL)
+    {
+        return -1;
+        errno = EIO;
+    }
+    
+    /*  ensure there is a (single) trailing slash on the path */
+    tmp_len = strlen(abs_path_str);
+    res_str = abs_path_str + (tmp_len-1); /* last char in string */
+    
+    /* remove slashes \ */
+    while (res_str > abs_path_str && *res_str == '\\')
+        res_str--;
+    
+    if (*res_str != '\\')
+    {
+        res_str++;
+        *res_str = '\\';
+        res_str++;
+        *res_str = '\0';
+    }
+    
+    /*
+    ** make sure sanitized path is a directory
+    ** NOTE stat() makes calls to _file_path() (which may use _app_path)
+    */
+    stat(abs_path_str, &st);
+    if (S_ISDIR(st.st_mode))
+    {
+        strncpy(_app_path, abs_path_str, sizeof(abs_path_str));
+        return 0;
+    }
+    else
+    {
+        errno = ENOTDIR;
+        return -1;
+    }
 }
