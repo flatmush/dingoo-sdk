@@ -20,6 +20,7 @@
   * [http://code.google.com/p/nzeemin-opensrc/ Tower Toppler]
 
 == Emulators ==
+  * [http://noname.c64.org/csdb/release/?id=98704 VICE 2.3]
   * [http://www.portabledev.com/pages/dingoo/jeuxdev.-perso/smsgoo.php SmsGGOO]  (Sega Master System and Game Gear)
   * [http://boards.dingoonity.org/dingoo-releases/smsplus-beta/ SMSPLUS SDL (with SML for sound)]  (Sega Master System and Game Gear)
   * [http://franck.charlet.pagesperso-orange.fr/games.html dingear] Sega Master System, uses hardware scaling and bilinear filtering (NOTE explicitly overclocks) 
