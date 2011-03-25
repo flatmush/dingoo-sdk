@@ -178,3 +178,16 @@ int chdir(const char *path)
         return -1;
     }
 }
+
+int isatty(int fildes)
+{
+	if((fildes < 0) || (fildes >= _fd_count) || (_fd_list[fildes].stream == NULL)) {
+		errno = EBADF;
+	}
+	else
+	{
+        	errno = ENOTTY;
+
+	}
+	return 0;
+}
