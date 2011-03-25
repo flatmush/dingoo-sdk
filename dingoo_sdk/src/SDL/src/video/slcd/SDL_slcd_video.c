@@ -36,8 +36,18 @@
 
 #include <dingoo/slcd.h>
 #include <dingoo/cache.h>
+#include <dingoo/jz4740.h>
 
 #define SLCDVID_DRIVER_NAME "slcd"
+
+#define EXTRA_DMA_CHANNEL 5
+#define is_lcd_active() \
+	((REG_LCD_CFG & LCD_CFG_LCDPIN_MASK) >> LCD_CFG_LCDPIN_BIT)
+
+/* statics */
+
+static uint32_t lcd_frame;
+static int wait_for_dma_copy = 0;
 
 /* Initialization/Query functions */
 static int SLCD_VideoInit(_THIS, SDL_PixelFormat *vformat);
@@ -71,6 +81,7 @@ static void SLCD_DeleteDevice(SDL_VideoDevice *device)
 static SDL_VideoDevice *SLCD_CreateDevice(int devindex)
 {
 	SDL_VideoDevice *device;
+	(void)devindex;
 
 	/* Initialize all variables that we clean on shutdown */
 	device = (SDL_VideoDevice *)SDL_malloc(sizeof(SDL_VideoDevice));
@@ -128,6 +139,10 @@ int SLCD_VideoInit(_THIS, SDL_PixelFormat *vformat)
 {
 	int i;
 
+	/* get lcd memory for DMA */
+
+	lcd_frame = ((uint32_t)(lcd_get_frame()));
+
 	/* Initialize all variables that we clean on shutdown */
 	for ( i=0; i<SDL_NUMMODES; ++i ) {
 		SDL_modelist[i] = SDL_malloc(sizeof(SDL_Rect));
@@ -154,6 +169,8 @@ int SLCD_VideoInit(_THIS, SDL_PixelFormat *vformat)
 
 SDL_Rect **SLCD_ListModes(_THIS, SDL_PixelFormat *format, Uint32 flags)
 {
+	(void)flags;
+
 	if(format->BitsPerPixel != 16)
  		return NULL;
 
@@ -210,70 +227,206 @@ SDL_Surface *SLCD_SetVideoMode(_THIS, SDL_Surface *current,
 /* We don't actually allow hardware surfaces other than the main one */
 static int SLCD_AllocHWSurface(_THIS, SDL_Surface *surface)
 {
+	(void)this;
+	(void)surface;
 	return(-1);
 }
 static void SLCD_FreeHWSurface(_THIS, SDL_Surface *surface)
 {
+	(void)this;
+	(void)surface;
 	return;
 }
 
 /* We need to wait for vertical retrace on page flipped displays */
 static int SLCD_LockHWSurface(_THIS, SDL_Surface *surface)
 {
+	(void)this;
+	(void)surface;
 	return(0);
 }
 
 static void SLCD_UnlockHWSurface(_THIS, SDL_Surface *surface)
 {
+	(void)this;
+	(void)surface;
 	return;
+}
+
+static void SLCD_dma_copy_part(unsigned long dest, unsigned long source, int y_start, int y_size)
+{
+	unsigned long offset;
+	unsigned long size;
+
+
+	offset = 320 * y_start;
+	size = 320 * y_size;
+
+	if(wait_for_dma_copy)
+		while(!(REG_DMAC_DCCSR(EXTRA_DMA_CHANNEL)&DMAC_DCCSR_TT));
+	/* Disable DMA channel while configuring. */
+	REG_DMAC_DCCSR(EXTRA_DMA_CHANNEL)=0;
+
+	/* DMA request source is SLCD.*/
+	REG_DMAC_DRSR(EXTRA_DMA_CHANNEL)=DMAC_DRSR_RS_AUTO;
+
+	/* Set source, target and count.*/
+	REG_DMAC_DSAR(EXTRA_DMA_CHANNEL)=(source + offset)&0x1fffffff;
+	REG_DMAC_DTAR(EXTRA_DMA_CHANNEL)=(dest + offset)&0x1fffffff;
+	REG_DMAC_DTCR(EXTRA_DMA_CHANNEL)=size/16;
+
+	/*
+	 * Source address increment, source width 32 bit,
+	 * destination width 32 bit
+	 * block transfer mode, no interrupt.
+	 */
+	REG_DMAC_DCMD(EXTRA_DMA_CHANNEL)=DMAC_DCMD_SAI|DMAC_DCMD_SWDH_32|
+	DMAC_DCMD_DWDH_32|DMAC_DCMD_DAI|DMAC_DCMD_DS_32BYTE|DMAC_DCMD_TM;
+
+	/* No DMA descriptor used.*/
+	REG_DMAC_DCCSR(EXTRA_DMA_CHANNEL)|=DMAC_DCCSR_NDES;
+
+	/* Set enable bit to start DMA.*/
+	REG_DMAC_DCCSR(EXTRA_DMA_CHANNEL)|=DMAC_DCCSR_EN;
 }
 
 static void SLCD_UpdateRects(_THIS, int numrects, SDL_Rect *rects)
 {
-	if (this->hidden->buffer == NULL)
-		return;
-
 	// Will probably crash if user provides out of boundaries rects,
 	// but according to docs that's the user's responsibility to check
 
-	int i, j;
-	for (i = 0; i < numrects; i++)
+	int i;
+	int lcd_active;
+	
+	if (this->hidden->buffer == NULL)
+		return;
+	lcd_active = is_lcd_active();
+	
+	/* no dma copy active */
+	wait_for_dma_copy = 0;
+	
+	__dcache_writeback_all();
+        if(lcd_active)
 	{
-		int consecutive = rects[i].w;
-		int skipBetween = 320 - consecutive;
-		int rows = rects[i].h;
-		int start = (rects[i].y * 320) + rects[i].x;
-
-		uint16_t* tempDispBuff16 = (uint16_t*)lcd_get_frame();
-		uint16_t* tempDrawBuff16 = (uint16_t*)this->hidden->buffer;
-		uint16_t* tempDispEnd16;
-
-		tempDispBuff16 += start;
-		tempDrawBuff16 += start;
-
-		while (rows > 0)
+		/* Wait for transfer terminated bit of LCD DMA */
+		while(!(REG_DMAC_DCCSR(0)&DMAC_DCCSR_TT));
+	}
+	if ((!lcd_active) || (numrects != 1) || (rects[0].w != 320) || (rects[0].h < 128))
+	{ 
+		for (i = 0; i < numrects; i++)
 		{
-			tempDispEnd16 = tempDispBuff16;
-			tempDispEnd16 += consecutive;
-
-			while(tempDispBuff16 < tempDispEnd16)
+			
+			if (rects[i].w == 320)
 			{
-				*(tempDispBuff16++) = *(tempDrawBuff16++);
+				/* consecutive memory, copy with dma */
+				SLCD_dma_copy_part(lcd_frame,
+					(uint32_t)(this->hidden->buffer),
+					rects[i].y,
+					rects[i].h);
 			}
+			else
+			{
+				int start = (rects[i].y * 320) + rects[i].x;
+				int consecutive = rects[i].w;
+				int skipBetween = 320 - consecutive;
+				int rows = rects[i].h;
 
-			tempDispBuff16 += skipBetween;
-			tempDrawBuff16 += skipBetween;
+				uint16_t* tempDispBuff16 = (uint16_t*)lcd_frame;
+				uint16_t* tempDrawBuff16 = (uint16_t*)this->hidden->buffer;
+				uint16_t* tempDispEnd16;
 
-			rows--;
+				tempDispBuff16 += start;
+				tempDrawBuff16 += start;
+
+				while (rows > 0)
+				{
+					tempDispEnd16 = tempDispBuff16;
+					tempDispEnd16 += consecutive;
+
+					while(tempDispBuff16 < tempDispEnd16)
+					{
+						*(tempDispBuff16++) = *(tempDrawBuff16++);
+					}
+
+					tempDispBuff16 += skipBetween;
+					tempDrawBuff16 += skipBetween;
+
+					rows--;
+				}
+				__dcache_writeback_all();
+			}
 		}
 	}
+	else
+	{
+		/* big part of screen update, flip screen and make inverse copy */
+		uint32_t temp;
+		int last_line;
 
-	__dcache_writeback_all();
-	lcd_set_frame();
+		/* swap screen buffers */
+		temp = lcd_frame;
+		lcd_frame = (uint32_t)(this->hidden->buffer);
+		this->hidden->buffer = (void *)lcd_frame;
+		
+		if (rects[0].y > 0)
+			SLCD_dma_copy_part(lcd_frame, (uint32_t)(this->hidden->buffer), 0, rects[0].y);
+		last_line = rects[0].h  + rects[0].y;
+		if (last_line < 240)
+			SLCD_dma_copy_part(lcd_frame, (uint32_t)(this->hidden->buffer), last_line, 240 - last_line);
+	}
+	
+
+        if(lcd_active)
+	{
+		
+
+		/* use asynchronous DMA for displaying to LCD */
+
+		/* Enable DMA on the SLCD.*/
+		REG_SLCD_CTRL=1;
+
+		/* Disable DMA channel while configuring. */
+		REG_DMAC_DCCSR(0)=0;
+
+		/* DMA request source is SLCD. */
+		REG_DMAC_DRSR(0)=DMAC_DRSR_RS_SLCD;
+
+		/* Set source, target and count.*/
+		REG_DMAC_DSAR(0)=lcd_frame & 0x01ffffff;
+		REG_DMAC_DTAR(0)=SLCD_FIFO&0x1fffffff;
+		REG_DMAC_DTCR(0)=320*240*2/16;
+
+		/*
+		 * Source address increment, source width 32 bit,
+		 * destination width 16 bit, data unit size 16 bytes,
+		 * block transfer mode, no interrupt.
+		 */
+		REG_DMAC_DCMD(0)=DMAC_DCMD_SAI|DMAC_DCMD_SWDH_32|
+		DMAC_DCMD_DWDH_16|DMAC_DCMD_DS_16BYTE|DMAC_DCMD_TM;
+	
+		/* No DMA descriptor used.*/
+		REG_DMAC_DCCSR(0)|=DMAC_DCCSR_NDES;
+	
+		/* Set enable bit to start DMA.*/
+		REG_DMAC_DCCSR(0)|=DMAC_DCCSR_EN;
+		
+        }
+	else
+	{
+		/* use standard function for output via VIDEO OUT */
+        	lcd_set_frame();
+        }
+	/* wait for last dma transfer finished */
+	if(wait_for_dma_copy)
+		while(!(REG_DMAC_DCCSR(EXTRA_DMA_CHANNEL)&DMAC_DCCSR_TT));
 }
 
 int SLCD_SetColors(_THIS, int firstcolor, int ncolors, SDL_Color *colors)
 {
+	(void)this;
+	(void)firstcolor;
+	(void)ncolors;
+	(void)colors;
 	/* do nothing of note. */
 	return(1);
 }
