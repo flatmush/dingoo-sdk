@@ -47,7 +47,6 @@
 /* statics */
 
 static uint32_t lcd_frame;
-static void **current_ptr;
 static int wait_for_dma_copy = 0;
 
 /* Initialization/Query functions */
@@ -220,7 +219,6 @@ SDL_Surface *SLCD_SetVideoMode(_THIS, SDL_Surface *current,
 	this->hidden->h = current->h = height;
 	current->pitch = current->w * (bpp / 8);
 	current->pixels = this->hidden->buffer;
-	current_ptr = &(current->pixels);
 	/* We're done */
 	return(current);
 }
@@ -369,7 +367,7 @@ static void SLCD_UpdateRects(_THIS, int numrects, SDL_Rect *rects)
 		/* swap screen buffers */
 		temp = lcd_frame;
 		lcd_frame = (uint32_t)(this->hidden->buffer);
-		*current_ptr = this->hidden->buffer = (void *)temp;
+		this->screen->pixels = this->hidden->buffer = (void *)temp;
 		
 
 		if (rects[0].y > 0)
@@ -443,6 +441,7 @@ int SLCD_SetColors(_THIS, int firstcolor, int ncolors, SDL_Color *colors)
 void SLCD_VideoQuit(_THIS)
 {
 	int i;
+	uint32_t lcd_initial_frame;
 
 	/* Free video mode lists */
 	for ( i=0; i<SDL_NUMMODES; ++i ) {
@@ -451,15 +450,25 @@ void SLCD_VideoQuit(_THIS)
 			SDL_modelist[i] = NULL;
 		}
 	}
+	lcd_initial_frame = (uint32_t)lcd_get_frame();
 
-	if (this->screen->pixels != NULL)
+	if (lcd_initial_frame == lcd_frame)
 	{
-		SDL_free(this->screen->pixels);
-		this->screen->pixels = NULL;
-	}
+		if (this->screen->pixels != NULL)
+		{
+			SDL_free(this->screen->pixels);
+		}
+        }
+        else
+        {
+		if ((void *)lcd_frame != NULL)
+		{
+			SDL_free((void *)lcd_frame);
+		}
+        }
+	this->screen->pixels = NULL;
 	SDLC_wait_display_done();
-	lcd_frame = (uint32_t)lcd_get_frame();
-	REG_DMAC_DSAR(0)= lcd_frame & 0x01ffffff;
+	REG_DMAC_DSAR(0)= lcd_initial_frame & 0x01ffffff;
 	/* disable extra dma channel */
 	REG_DMAC_DCCSR(EXTRA_DMA_CHANNEL)=0;
 	lcd_set_frame();
