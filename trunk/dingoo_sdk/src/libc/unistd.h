@@ -19,6 +19,8 @@ extern ssize_t write(int fildes, const void* buf, size_t nbyte);
 extern int chdir(const char *path);
 extern char *getcwd(char *buf, size_t size);
 
+extern int isatty(int fildes);
+
 #ifdef __cplusplus
 }
 #endif
