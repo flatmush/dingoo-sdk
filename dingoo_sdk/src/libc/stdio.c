@@ -541,6 +541,11 @@ int fputs(const char* str, FILE* stream) {
 	return 0;
 }
 
+int puts(const char* s)
+{
+	return fputs((s), stdout) ;
+}
+
 // Maybe not the best place for this, but it's the most convinient for now
 int mkdir(const char *path, mode_t mode) {
 	int ret;
