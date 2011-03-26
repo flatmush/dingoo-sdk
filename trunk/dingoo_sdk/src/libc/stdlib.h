@@ -49,6 +49,9 @@ extern double strtod(const char *string, char **endPtr);
 
 extern char * realpath(const char * file_name, char * resolved_name);
 
+extern long strtol(const char *nptr, char **endptr, int ibase);
+extern unsigned long strtoul(const char *nptr, char **endptr, int ibase);
+
 #ifdef __cplusplus
 }
 #endif

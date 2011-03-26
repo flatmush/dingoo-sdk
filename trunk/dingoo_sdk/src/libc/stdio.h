@@ -75,6 +75,7 @@ extern int sscanf(const char *text, const char *fmt, ...);
 #define getc fgetc
 #define putc fputc
 #define getchar() fgetc(stdin)
+#define putchar(c) putc((c), stdout)	 
 
 #ifdef __cplusplus
 }
