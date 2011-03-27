@@ -1189,6 +1189,16 @@ static int add_cnk_list_entry(struct pr_chunk_x **list,
 {
 	return dopr(str, count, fmt, args);
 }
+
+int vfprintf(FILE *stream, const char *format, va_list ap)
+{
+    static char buf[4096];
+    int size;
+
+    size = vsnprintf(buf, sizeof(buf), format, ap);
+    return fwrite(buf, size, 1, stream);
+}
+
 #endif
 
 /* yes this really must be a ||. Don't muck with this (tridge)

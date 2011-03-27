@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <locale.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 
 
 
@@ -145,6 +146,49 @@ int fclose(FILE* stream) {
 	return res;
 }
 
+extern _fd_t* _fd_list;
+extern int _fd_count;
+
+FILE *fdopen(int fd, const char *mode) {
+    if ((fd >= _fd_count) || (_fd_list[fd].stream == NULL))
+    	return NULL;
+    switch (_fd_list[fd].flags & 3)
+    {
+    	case O_RDONLY:
+        	if (strchr(mode, 'w') != NULL)
+                	return NULL;
+        	break;
+        case O_WRONLY:
+        	if (strchr(mode, 'r') != NULL)
+                	return NULL;
+        	break;
+        case O_RDWR:
+        	if ((strchr(mode, 'r') == NULL)
+                || (strchr(mode, 'w') == NULL))
+                	return NULL;
+        	break;
+        default:
+        	return NULL;
+    }
+    return _fd_list[fd].stream;
+}
+
+int fileno(FILE *f) {
+    int fd;
+    for (fd=0; fd < _fd_count; ++fd)
+    {
+    	if (_fd_list[fd].stream == f)
+        {
+        	return fd;
+        }
+    }
+    return -1;
+}
+
+void setbuf(FILE *stream, char *buf) {
+	(void)stream;
+        (void)buf;
+}
 
 
 int _fseek(FILE* stream, long int offset, int origin) {
@@ -440,9 +484,8 @@ FILE* fmemopen(void* buf, size_t size, const char* mode) {
 	return (FILE*)tempFile;
 }
 
-
-
 void perror(const char* prefix) {
+	(void)prefix;
 	// TODO (void) prefix; /* avoid not used warnings */
 	//_fprintf(stderr, "%s: %s", prefix, strerror(errno));
 }

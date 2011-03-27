@@ -75,7 +75,9 @@ typedef unsigned long uintptr_t;*/
 #define HAVE_STRLEN 1
 #define HAVE_STRLCPY 1
 #define HAVE_STRLCAT 1
+#ifndef HAVE_STRDUP
 #define HAVE_STRDUP 1
+#endif
 #define HAVE_STRCHR 1
 #define HAVE_STRRCHR 1
 #define HAVE_STRSTR 1
