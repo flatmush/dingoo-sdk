@@ -33,6 +33,7 @@ extern int vsnprintf (char *str, size_t count, const char *fmt, va_list args);
 extern int snprintf(char *str,size_t count,const char *fmt,...);
 extern int vasprintf(char **ptr, const char *format, va_list ap);
 extern int asprintf(char **ptr, const char *format, ...);
+extern int vfprintf(FILE *stream, const char *format, va_list ap);
 
 extern void   perror(const char* prefix);
 
@@ -41,6 +42,9 @@ extern void   perror(const char* prefix);
 
 extern FILE* fopen(const char* filename, const char* mode);
 extern int  fclose(FILE* stream);
+extern FILE *fdopen(int fd, const char *mode);
+extern int fileno(FILE *f);
+extern void setbuf(FILE *stream, char *buf);
 
 extern int      fseek(FILE* stream, long int offset, int origin);
 extern void     rewind(FILE *stream);

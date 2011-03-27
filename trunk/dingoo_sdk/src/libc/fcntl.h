@@ -44,6 +44,11 @@ extern "C"
 extern int open(const char* path, int oflag, ...);
 extern int fcntl(int fildes, int cmd, ...);
 
+typedef struct {
+	FILE* stream;
+	int   flags;
+} _fd_t;
+
 #ifdef __cplusplus
 }
 #endif
