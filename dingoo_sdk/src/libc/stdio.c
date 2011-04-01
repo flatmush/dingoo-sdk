@@ -485,8 +485,8 @@ FILE* fmemopen(void* buf, size_t size, const char* mode) {
 }
 
 void perror(const char* prefix) {
-	(void)prefix;
-	// TODO (void) prefix; /* avoid not used warnings */
+	(void) prefix; /* avoid not used warnings */
+	// TODO implement using something like:
 	//_fprintf(stderr, "%s: %s", prefix, strerror(errno));
 }
 
