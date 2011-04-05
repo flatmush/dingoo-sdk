@@ -82,7 +82,7 @@ char* _app_path_init(const char* inPath) {
 		if((inPath[i] == '\\') || (inPath[i] == '/'))
 			j = i + 1;
 	}
-	_app_path = (char*)malloc(j + 1);
+	_app_path = (char*)malloc(FILENAME_MAX);
 	if(_app_path == NULL)
 		return NULL;
 	strncpy(_app_path, inPath, j);
