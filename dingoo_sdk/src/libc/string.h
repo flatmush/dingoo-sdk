@@ -39,10 +39,10 @@ extern void *memmove(void *outDest, const void *inSrc, size_t inLength);
 extern void *memset(void *outDest, int inValue, size_t inLength);
 extern int  memcmp(const void *s1, const void *s2, size_t n);
 
-#define strcmp(x, y) _strcmp(x, y)
-#define stricmp(x, y) _stricmp(x, y)
-#define strnicmp(x, y, z) _strnicmp(x, y, z)
-
+#define strcmp(x, y) _strcmp((x), (y))
+#define stricmp(x, y) _stricmp((x), (y))
+#define strnicmp(x, y, z) _strnicmp((x), (y), (z))
+#define bzero(x,y) memset((x), 0, (y))
 #ifdef __cplusplus
 }
 #endif
