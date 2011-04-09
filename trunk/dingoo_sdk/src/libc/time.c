@@ -7,3 +7,10 @@ clock_t clock() {
 time_t time(time_t* timer) {
 	return -1;
 }
+
+static struct tm tm_storage;
+
+struct tm* localtime(const time_t* timer)
+{
+	return &tm_storage;
+}

@@ -21,7 +21,15 @@ typedef struct {
 extern char* _app_path; /* from entry_point.c */
 extern char* _file_path(const char* inPath); /* from stdio.c  */
 
-
+static unsigned char D_Type(unsigned int fsys_attributes)
+{
+	if(FSYS_ISDIR(fsys_attributes))
+		return DT_DIR;
+	else if(FSYS_ISFILE(fsys_attributes))
+		return DT_REG;
+	else
+		return DT_UNKNOWN;
+}
 
 DIR* opendir(const char* name) {
 	char* tempPath = NULL;
@@ -65,7 +73,7 @@ DIR* opendir(const char* name) {
 		/* TODO hide attributes & FSYS_ATTR_DISKLABEL ?*/
 		tempDir->cur_entry.d_ino  = tempDir->info.handle;
 		strcpy(tempDir->cur_entry.d_name, tempDir->info.name);
-		tempDir->cur_entry.d_type = tempDir->info.attributes;
+		tempDir->cur_entry.d_type = D_Type(tempDir->info.attributes);
 	}
 	tempDir->was_read = false;
 
@@ -112,7 +120,7 @@ struct dirent* readdir(DIR* dir) {
 	/* TODO hide attributes & FSYS_ATTR_DISKLABEL ?*/
 	tempDir->cur_entry.d_ino  = tempDir->info.handle;
 	strcpy(tempDir->cur_entry.d_name, tempDir->info.name);
-	tempDir->cur_entry.d_type = tempDir->info.attributes;
+	tempDir->cur_entry.d_type = D_Type(tempDir->info.attributes);
 
 	return &(tempDir->cur_entry);
 }

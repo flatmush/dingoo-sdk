@@ -11,12 +11,14 @@ extern "C"
 
 struct dirent {
 	ino_t d_ino;
-	unsigned int d_type; /* NOTE using the same type that fsys uses for file type mask; unsigned int  attributes;*/
+	unsigned char d_type;
 	char d_name[FILENAME_MAX];
 };
 
-#define DT_DIR FSYS_ATTR_DIR
-#define DT_REG FSYS_ATTR_FILE /* Not sure if this is a suitable mapping */
+enum { DT_UNKNOWN = 0, DT_DIR = 4, DT_REG = 8 };
+#define DT_UNKNOWN DT_UNKNOWN
+#define DT_DIR DT_DIR
+#define DT_REG DT_REG
 
 typedef void DIR;
 
