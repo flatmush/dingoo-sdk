@@ -14,3 +14,8 @@ struct tm* localtime(const time_t* timer)
 {
 	return &tm_storage;
 }
+
+time_t mktime(struct tm *tm)
+{
+    return 0;
+}

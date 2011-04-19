@@ -31,6 +31,7 @@ extern clock_t clock();
 
 extern time_t time(time_t* timer); //stub
 extern struct tm* localtime(const time_t* timer); //stub
+extern time_t mktime(struct tm *tm); //stub
 
 #ifdef __cplusplus
 }
