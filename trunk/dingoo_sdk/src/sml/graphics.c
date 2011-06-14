@@ -17,7 +17,11 @@
 inline uint16_t _abs_s16(int16_t inVal) { return (inVal >= 0 ? inVal : -inVal); }
 
 inline gfx_color gfx_color_rgb(uint8_t inRed, uint8_t inGreen, uint8_t inBlue) {
-		return ((inRed & 0xF8) << 8) | ((inGreen & 0xFC) << 3) | ((inBlue & 0xF8) >> 3);
+	#ifdef SML_COLOR_32BIT
+	return (inRed << 24) | (inGreen << 16) | (inBlue << 8);
+	#else
+	return ((inRed & 0xF8) << 8) | ((inGreen & 0xFC) << 3) | ((inBlue & 0xF8) >> 3);
+	#endif
 }
 
 inline gfx_color gfx_color_rand(uint8_t inRed, uint8_t inGreen, uint8_t inBlue) {
@@ -58,10 +62,15 @@ bool gfx_render_target_set(gfx_texture* inTexture) {
 }
 
 void gfx_render_target_clear(gfx_color inColor) {
-	uint32_t  tempPixelColor = (inColor << 16) | inColor;
+	#ifdef SML_COLOR_32BIT
+	uint32_t tempPixelColor = inColor;
+	#else
+	uint32_t tempPixelColor = (inColor << 16) | inColor;
+	#endif
+
 	uint32_t* tempLineStart = (uint32_t*)gfx_render_target->address;
 	uint32_t* tempBlockEnd;
-	tempBlockEnd = (uint32_t*)((uintptr_t)gfx_render_target->address + (gfx_render_target->width * gfx_render_target->height * 2));
+	tempBlockEnd = (uint32_t*)((uintptr_t)gfx_render_target->address + (gfx_render_target->width * gfx_render_target->height * sizeof(gfx_color)));
 	while(tempLineStart < tempBlockEnd) {
 		*(tempLineStart++) = tempPixelColor;
 		*(tempLineStart++) = tempPixelColor;
@@ -79,7 +88,7 @@ void gfx_render_target_swap() {
 
 gfx_texture* gfx_tex_allocate(uint32_t width, uint32_t height) {
 	gfx_texture* tempTexture = NULL;
-	tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (width * height * 2));
+	tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (width * height * sizeof(gfx_color)));
 	if (tempTexture == NULL) {
 		return NULL;
 	}
@@ -122,7 +131,7 @@ gfx_texture* _gfx_tex_load_tga(FILE* tempFile) {
 
 	bool upside_down = ((tga_descriptor & 0x20) == 0);
 
-	gfx_texture* tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (tga_width * tga_height * 2));
+	gfx_texture* tempTexture = (gfx_texture*)malloc(sizeof(gfx_texture) + (tga_width * tga_height * sizeof(gfx_color)));
 	if(tempTexture == NULL) {
 		fclose(tempFile);
 		return NULL;
@@ -133,7 +142,7 @@ gfx_texture* _gfx_tex_load_tga(FILE* tempFile) {
 
 	uintptr_t i, j, k;
 	uint8_t tempColor[3];
-	uint16_t* tempTexPtr = tempTexture->address;
+	gfx_color* tempTexPtr = tempTexture->address;
 	for(j = 0; j < tga_height; j++) {
 		k  = (upside_down ? (tga_height - (j + 1)) : j);
 		k *= tga_width;
@@ -201,7 +210,7 @@ bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {
 
 	uintptr_t i;
 	uint8_t tempColor[3];
-	uint16_t* tempTexPtr = inTexture->address;
+	gfx_color* tempTexPtr = inTexture->address;
 	for(i = 0; i < (tga_width * tga_height); i++) {
 		tempColor[0]  = ((tempTexPtr[i] >> 8) & 0xF8);
 		tempColor[0] |= (tempColor[0] >> 5);
@@ -230,7 +239,7 @@ void gfx_tex_delete(gfx_texture* inTexture) {
 inline void gfx_point_draw(int16_t inX, int16_t inY, gfx_color inColor) {
 	if((inX < 0) || (inX >= gfx_render_target->width) || (inY < 0) || (inY >= gfx_render_target->height))
 		return;
-	uint16_t* tempPtr = (uint16_t*)(gfx_render_target->address);
+	gfx_color* tempPtr = (gfx_color*)(gfx_render_target->address);
 	tempPtr[(inY * gfx_render_target->width) + inX] = inColor;
 }
 
@@ -260,16 +269,16 @@ void _gfx_line_draw_h(int16_t inX0, int16_t inX1, int16_t inY, gfx_color inColor
 	inX1 -= inX0;
 
 	if(((inX0 | inX1) & 1) == 0) {
-		uint32_t* tempStart32 = (uint32_t*)((uintptr_t)gfx_render_target->address + (((inY * gfx_render_target->width) + inX0) << 1));
-		uint32_t* tempEnd32   = (uint32_t*)((uintptr_t)tempStart32 + (inX1 << 1));
+		uint32_t* tempStart32 = (uint32_t*)((uintptr_t)gfx_render_target->address + (((inY * gfx_render_target->width) + inX0) * sizeof(gfx_color)));
+		uint32_t* tempEnd32   = (uint32_t*)((uintptr_t)tempStart32 + (inX1 * sizeof(gfx_color)));
 		uint32_t  tempColor32 = (inColor << 16) | inColor;
 		while(tempStart32 < tempEnd32)
 			*(tempStart32++) = tempColor32;
 		return;
 	}
 
-	uint16_t* tempStart16 = (uint16_t*)((uintptr_t)gfx_render_target->address + (((inY * gfx_render_target->width) + inX0) << 1));
-	uint16_t* tempEnd16   = (uint16_t*)((uintptr_t)tempStart16 + (inX1 << 1));
+	uint16_t* tempStart16 = (uint16_t*)((uintptr_t)gfx_render_target->address + (((inY * gfx_render_target->width) + inX0) * sizeof(gfx_color)));
+	uint16_t* tempEnd16   = (uint16_t*)((uintptr_t)tempStart16 + (inX1 * sizeof(gfx_color)));
 	while(tempStart16 < tempEnd16)
 		*(tempStart16++) = inColor;
 }
@@ -297,8 +306,8 @@ void _gfx_line_draw_v(int16_t inX, int16_t inY0, int16_t inY1, gfx_color inColor
 		inY1 = gfx_render_target->height;
 	inY1 -= inY0;
 
-	uint16_t* tempStart = (uint16_t*)((uintptr_t)gfx_render_target->address + (((inY0 * gfx_render_target->width) + inX) << 1));
-	uint16_t* tempEnd   = (uint16_t*)((uintptr_t)tempStart + ((inY1 * gfx_render_target->width) << 1));
+	uint16_t* tempStart = (uint16_t*)((uintptr_t)gfx_render_target->address + (((inY0 * gfx_render_target->width) + inX) * sizeof(gfx_color)));
+	uint16_t* tempEnd   = (uint16_t*)((uintptr_t)tempStart + ((inY1 * gfx_render_target->width) * sizeof(gfx_color)));
 	while(tempStart < tempEnd) {
 		*tempStart = inColor;
 		tempStart += gfx_render_target->width;
@@ -306,7 +315,7 @@ void _gfx_line_draw_v(int16_t inX, int16_t inY0, int16_t inY1, gfx_color inColor
 }
 
 void _gfx_line_draw(int16_t inX0, int16_t inY0, int16_t inX1, int16_t inY1, gfx_color inColor) {
-	uint16_t* tempBuffer = (uint16_t*)gfx_render_target->address;
+	gfx_color* tempBuffer = (gfx_color*)gfx_render_target->address;
 	int32_t tempDrawX, tempDrawY;
 	if(ABS(inY1 - inY0) >= ABS(inX1 - inX0)) {
 		int32_t tempX[2] = { inX0, inX1 };
@@ -351,7 +360,7 @@ void _gfx_line_draw(int16_t inX0, int16_t inY0, int16_t inX1, int16_t inY1, gfx_
 }
 
 void _gfx_line_draw_clipped(int16_t inX0, int16_t inY0, int16_t inX1, int16_t inY1, gfx_color inColor) {
-	uint16_t* tempBuffer = (uint16_t*)gfx_render_target->address;
+	gfx_color* tempBuffer = (gfx_color*)gfx_render_target->address;
 	int32_t tempDrawX, tempDrawY;
 	if(ABS(inY1 - inY0) >= ABS(inX1 - inX0)) {
 		int32_t tempX[2] = { inX0, inX1 };
@@ -483,7 +492,7 @@ void gfx_rect_draw(int16_t inX, int16_t inY, int16_t inWidth, int16_t inHeight, 
 		inHeight = -inHeight;
 	}
 
-	uint16_t* tempBuffer = (uint16_t*)gfx_render_target->address;
+	gfx_color* tempBuffer = (gfx_color*)gfx_render_target->address;
 	uintptr_t i, j;
 	j = 0;
 	for(j = inY, i = (inX > 0 ? inX : 0); (i < gfx_render_target->width) && (i < (inX + inWidth)); i++)
@@ -525,7 +534,7 @@ void gfx_rect_fill_draw(int16_t inX, int16_t inY, int16_t inWidth, int16_t inHei
 	if((inY + inHeight) > gfx_render_target->height)
 		inHeight = (gfx_render_target->height - inY);
 
-	uint16_t* tempBuffer = (uint16_t*)gfx_render_target->address;
+	gfx_color* tempBuffer = (gfx_color*)gfx_render_target->address;
 	uintptr_t i, j;
 	for(j = inY; (j < gfx_render_target->height) && (j < (inY + inHeight)); j++) {
 		for(i = inX; (i < gfx_render_target->width) && (i < (inX + inWidth)); i++) {
@@ -613,7 +622,7 @@ void _gfx_tri_fill_draw_clipped(int16_t inX0, int16_t inY0, int16_t inX1, int16_
 	int32_t tempStartX = tempX[0];
 	int32_t tempStartY = inY0;
 	int32_t tempEndX   = tempX[0];
-	uint16_t* tempBuffer = (uint16_t*)(gfx_render_target->address);
+	gfx_color* tempBuffer = (gfx_color*)(gfx_render_target->address);
 	tempBuffer = &tempBuffer[inY0 * gfx_render_target->width];
 	if(tempDx[0] > tempDx[1]) {
 		for(; tempStartY < inY1; tempStartY++, tempBuffer = &tempBuffer[gfx_render_target->width], tempStartX += tempDx[1], tempEndX += tempDx[0]) {
@@ -638,7 +647,7 @@ void _gfx_tri_fill_draw_clipped(int16_t inX0, int16_t inY0, int16_t inX1, int16_
 		}
 		tempStartX = tempX[1];
 		tempStartY = inY1;
-		tempBuffer = (uint16_t*)(gfx_render_target->address);
+		tempBuffer = (gfx_color*)(gfx_render_target->address);
 		tempBuffer = &tempBuffer[inY1 * gfx_render_target->width];
 		for(; tempStartY < inY2; tempStartY++, tempBuffer = &tempBuffer[gfx_render_target->width], tempStartX += tempDx[2], tempEndX += tempDx[1]) {
 			if((tempStartY < 0) || (tempStartY >= gfx_render_target->height))
@@ -700,7 +709,7 @@ void _gfx_tri_fill_draw(int16_t inX0, int16_t inY0, int16_t inX1, int16_t inY1, 
 	int32_t tempStartX = tempX[0];
 	int32_t tempStartY = inY0;
 	int32_t tempEndX   = tempX[0];
-	uint16_t* tempBuffer = (uint16_t*)(gfx_render_target->address);
+	gfx_color* tempBuffer = (gfx_color*)(gfx_render_target->address);
 	tempBuffer = &tempBuffer[inY0 * gfx_render_target->width];
 	if(tempDx[0] > tempDx[1]) {
 		for(; tempStartY < inY1; tempStartY++, tempBuffer = &tempBuffer[gfx_render_target->width], tempStartX += tempDx[1], tempEndX += tempDx[0]) {
@@ -719,7 +728,7 @@ void _gfx_tri_fill_draw(int16_t inX0, int16_t inY0, int16_t inX1, int16_t inY1, 
 		}
 		tempStartX = tempX[1];
 		tempStartY = inY1;
-		tempBuffer = (uint16_t*)(gfx_render_target->address);
+		tempBuffer = (gfx_color*)(gfx_render_target->address);
 		tempBuffer = &tempBuffer[inY1 * gfx_render_target->width];
 		for(; tempStartY < inY2; tempStartY++, tempBuffer = &tempBuffer[gfx_render_target->width], tempStartX += tempDx[2], tempEndX += tempDx[1]) {
 			for(i = (tempStartX >> 16); i < (tempEndX >> 16); i++)
@@ -746,8 +755,8 @@ void gfx_tex_draw(int16_t inX, int16_t inY, gfx_texture* inTexture) {
 	if(inTexture == NULL)
 		return;
 
-	uint16_t* tempBuffer = gfx_render_target->address;
-	uint16_t* tempTexture = inTexture->address;
+	gfx_color* tempBuffer = gfx_render_target->address;
+	gfx_color* tempTexture = inTexture->address;
 
 	int16_t x, y, i, j;
 	for(j = 0, y = inY; (j < inTexture->height) && (y < gfx_render_target->height); j++, y++) {
@@ -854,8 +863,8 @@ void gfx_font_print(int16_t inX, int16_t inY, gfx_font* inFont, char* inString) 
 	if((inFont == NULL) || (inString == NULL) || (inFont->texture == NULL))
 		return;
 
-	uint16_t* tempBuffer = gfx_render_target->address;
-	uint16_t* tempFont = inFont->texture->address;
+	gfx_color* tempBuffer = gfx_render_target->address;
+	gfx_color* tempFont = inFont->texture->address;
 	uint8_t*  tempChar;
 	int16_t   tempX = inX;
 	int16_t   tempY = inY;
@@ -901,13 +910,11 @@ void gfx_font_print(int16_t inX, int16_t inY, gfx_font* inFont, char* inString) 
 	}
 }
 
-void gfx_font_print_center(int16_t inY, gfx_font* inFont, char* inString)
-{
+void gfx_font_print_center(int16_t inY, gfx_font* inFont, char* inString) {
 	gfx_font_print_center_ex(inY, gfx_render_target->width, 0, inFont, inString);
 }
 
-void gfx_font_print_center_ex(int16_t inY, int16_t areaWidth, int16_t offsetX, gfx_font* inFont, char* inString)
-{
+void gfx_font_print_center_ex(int16_t inY, int16_t areaWidth, int16_t offsetX, gfx_font* inFont, char* inString) {
 	int16_t tempX = ((areaWidth - gfx_font_width(inFont, inString)) >> 1) + offsetX;
 	gfx_font_print(tempX, inY, inFont, inString);
 }
