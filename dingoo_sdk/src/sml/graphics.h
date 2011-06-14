@@ -16,25 +16,25 @@ extern "C"
 #ifdef SML_COLOR_32BIT
 typedef uint32_t gfx_color;
 
-static gfx_color COLOR_RED     = 0xFF000000;
-static gfx_color COLOR_GREEN   = 0x00FF0000;
-static gfx_color COLOR_BLUE    = 0x0000FF00;
-static gfx_color COLOR_YELLOW  = 0xFFFF0000;
-static gfx_color COLOR_MAGENTA = 0xFF00FF00;
-static gfx_color COLOR_TEAL    = 0x00FFFF00;
-static gfx_color COLOR_BLACK   = 0x00000000;
-static gfx_color COLOR_WHITE   = 0xFFFFFF00;
+static const gfx_color COLOR_RED     = 0xFF000000;
+static const gfx_color COLOR_GREEN   = 0x00FF0000;
+static const gfx_color COLOR_BLUE    = 0x0000FF00;
+static const gfx_color COLOR_YELLOW  = 0xFFFF0000;
+static const gfx_color COLOR_MAGENTA = 0xFF00FF00;
+static const gfx_color COLOR_TEAL    = 0x00FFFF00;
+static const gfx_color COLOR_BLACK   = 0x00000000;
+static const gfx_color COLOR_WHITE   = 0xFFFFFF00;
 #else
 typedef uint16_t gfx_color;
 
-static gfx_color COLOR_RED     = 0xf800;
-static gfx_color COLOR_GREEN   = 0x07e0;
-static gfx_color COLOR_BLUE    = 0x001f;
-static gfx_color COLOR_YELLOW  = 0xffe0;
-static gfx_color COLOR_MAGENTA = 0xf81f;
-static gfx_color COLOR_TEAL    = 0x07ff;
-static gfx_color COLOR_BLACK   = 0x0000;
-static gfx_color COLOR_WHITE   = 0xffff;
+static const gfx_color COLOR_RED     = 0xf800;
+static const gfx_color COLOR_GREEN   = 0x07e0;
+static const gfx_color COLOR_BLUE    = 0x001f;
+static const gfx_color COLOR_YELLOW  = 0xffe0;
+static const gfx_color COLOR_MAGENTA = 0xf81f;
+static const gfx_color COLOR_TEAL    = 0x07ff;
+static const gfx_color COLOR_BLACK   = 0x0000;
+static const gfx_color COLOR_WHITE   = 0xffff;
 #endif
 
 extern inline gfx_color gfx_color_rgb(uint8_t inRed, uint8_t inGreen, uint8_t inBlue);
