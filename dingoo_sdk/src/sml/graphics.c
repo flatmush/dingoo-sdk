@@ -212,12 +212,18 @@ bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {
 	uint8_t tempColor[3];
 	gfx_color* tempTexPtr = inTexture->address;
 	for(i = 0; i < (tga_width * tga_height); i++) {
+		#ifdef SML_COLOR_32BIT
+		tempColor[0]  = (tempTexPtr[i] >> 16);
+		tempColor[1]  = (tempTexPtr[i] >> 8);
+		tempColor[2]  = (tempTexPtr[i]);
+		#else
 		tempColor[0]  = ((tempTexPtr[i] >> 8) & 0xF8);
 		tempColor[0] |= (tempColor[0] >> 5);
 		tempColor[1]  = ((tempTexPtr[i] >> 3) & 0xFC);
 		tempColor[1] |= (tempColor[1] >> 6);
 		tempColor[2]  = ((tempTexPtr[i] << 3) & 0xF8);
 		tempColor[2] |= (tempColor[2] >> 5);
+		#endif
 		fwrite(&tempColor[2], 1, 1, tempFile);
 		fwrite(&tempColor[1], 1, 1, tempFile);
 		fwrite(&tempColor[0], 1, 1, tempFile);
