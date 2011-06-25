@@ -16,14 +16,14 @@ extern "C"
 #ifdef SML_COLOR_32BIT
 typedef uint32_t gfx_color;
 
-static const gfx_color COLOR_RED     = 0xFF000000;
-static const gfx_color COLOR_GREEN   = 0x00FF0000;
-static const gfx_color COLOR_BLUE    = 0x0000FF00;
-static const gfx_color COLOR_YELLOW  = 0xFFFF0000;
-static const gfx_color COLOR_MAGENTA = 0xFF00FF00;
-static const gfx_color COLOR_TEAL    = 0x00FFFF00;
+static const gfx_color COLOR_RED     = 0x00FF0000;
+static const gfx_color COLOR_GREEN   = 0x0000FF00;
+static const gfx_color COLOR_BLUE    = 0x000000FF;
+static const gfx_color COLOR_YELLOW  = 0x00FFFF00;
+static const gfx_color COLOR_MAGENTA = 0x00FF00FF;
+static const gfx_color COLOR_TEAL    = 0x0000FFFF;
 static const gfx_color COLOR_BLACK   = 0x00000000;
-static const gfx_color COLOR_WHITE   = 0xFFFFFF00;
+static const gfx_color COLOR_WHITE   = 0x00FFFFFF;
 #else
 typedef uint16_t gfx_color;
 
