@@ -178,9 +178,19 @@ bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {
 	if((inPath == NULL) || (inTexture == NULL) || (inTexture->address == NULL))
 		return false;
 
-	FILE* tempFile = fopen(inPath, "wb");
-	if(tempFile == NULL)
-		return false;
+	bool useBuffer = false;
+	FILE* tempFile = NULL;
+	int bufSize = 18 + inTexture->width * inTexture->height * 3;
+	uint8_t* tempBuf = (uint8_t*)malloc(bufSize);
+	if (tempBuf == NULL) {
+		tempFile = fopen(inPath, "wb");
+		if(tempFile == NULL)
+			return false;
+	}
+	else {
+		tempFile = fmemopen(tempBuf, bufSize, "wb");
+		useBuffer = true;
+	}
 
 	uint8_t  tga_ident_size = 0;
 	uint8_t  tga_color_map_type = 0;
@@ -228,6 +238,19 @@ bool gfx_tex_save_tga(const char* inPath, gfx_texture* inTexture) {
 		fwrite(&tempColor[1], 1, 1, tempFile);
 		fwrite(&tempColor[0], 1, 1, tempFile);
 	}
+
+	if (useBuffer) {
+		fclose(tempFile);
+		tempFile = fopen(inPath, "wb");
+		if(tempFile == NULL) {
+			free(tempBuf);
+			return false;
+		}
+
+		fwrite(tempBuf, bufSize, 1, tempFile);
+		free(tempBuf);
+	}
+
 	fclose(tempFile);
 
 	return true;
