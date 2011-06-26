@@ -11,7 +11,7 @@ extern "C"
 #include <stddef.h>
 #include <sml/display.h>
 
-
+#define SML_COLOR_32BIT
 
 #ifdef SML_COLOR_32BIT
 typedef uint32_t gfx_color;
