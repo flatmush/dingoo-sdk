@@ -18,7 +18,7 @@ inline uint16_t _abs_s16(int16_t inVal) { return (inVal >= 0 ? inVal : -inVal); 
 
 inline gfx_color gfx_color_rgb(uint8_t inRed, uint8_t inGreen, uint8_t inBlue) {
 	#ifdef SML_COLOR_32BIT
-	return 0x00FFFFFF & ((inRed << 16) | (inGreen << 8) | (inBlue));
+	return (inRed << 16) | (inGreen << 8) | (inBlue);
 	#else
 	return ((inRed & 0xF8) << 8) | ((inGreen & 0xFC) << 3) | ((inBlue & 0xF8) >> 3);
 	#endif
