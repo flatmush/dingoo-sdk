@@ -3,7 +3,9 @@
 
 #include <sml/fixmath.h>
 
+#ifdef FGL_BONUS_GRAPHICS
 #include <fgl/fgl.h>
+#endif
 
 
 
