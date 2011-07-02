@@ -13,17 +13,16 @@ extern "C"
 #define OS_DEL_NO_PEND 0
 #define OS_DEL_ALWAYS  1
 
-#define OS_NO_ERR 0x0
+#define OS_NO_ERR       0
+#define OS_PRIO_EXIST   40
+#define OS_PRIO_ERR     41
+#define OS_PRIO_INVALID 42
 
 typedef void OS_EVENT;
 typedef unsigned int OS_STK;
 
 extern uint32_t  OSTimeGet();
 extern void      OSTimeDly(uint16_t ticks);
-
-#define OS_PRIO_EXIST   0x40
-#define OS_PRIO_ERR     0x41
-#define OS_PRIO_INVALID 0x42
 
 extern uint8_t   OSTaskCreate(void (*task)(void* data), void* data, OS_STK* stack, uint8_t priority);
 extern uint8_t   OSTaskDel(uint8_t priority);
