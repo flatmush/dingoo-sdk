@@ -32,7 +32,11 @@ void (*_audio_callback)() = NULL;
 
 void _audio_thread(void* inDummy) {
 	while(!_audio_thread_kill) {
+#ifdef CC1800
+		if(_audio_pause) {
+#else
 		if(_audio_pause || !waveout_can_write()) {
+#endif
 			OSTimeDly(1);
 			continue;
 		}
@@ -134,7 +138,11 @@ void mtaudio_buffer_set(void* inBuffer, uintptr_t inSize, uint8_t inChannels, ui
 		_audio_buffer_channels = inChannels;
 		_audio_buffer_volume   = inVolume;
 	} else if(inVolume != _audio_buffer_volume) {
+#ifdef CC1800
+		SYSSetVolume(inVolume);
+#else
 		waveout_set_volume(inVolume);
+#endif
 		_audio_buffer_volume = inVolume;
 	}
 
