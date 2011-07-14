@@ -1259,7 +1259,11 @@ int _printf(const char *fmt, ...)
 #endif
 
 #ifndef HAVE_C99_VSNPRINTF
+#ifdef MPU_JZ4740
 int _fprintf(FILE *stream, const char *fmt, ...)
+#else
+int fprintf(FILE *stream, const char *fmt, ...)
+#endif
 {
 	va_list ap;
 	int ret;
