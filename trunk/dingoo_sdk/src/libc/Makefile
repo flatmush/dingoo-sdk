@@ -22,17 +22,18 @@ SOURCE    = . ./sys
 INCLUDE   = -I. -I./include -I$(DINGOO_SDK)/include
 
 ifeq ($(platform),CC1800)
-	DEFINES   = -DCC1800 -DHAVE_LONG_LONG
+	DEFINES   = -DMPU_CC1800 -DHAVE_LONG_LONG
 	W_OPTS    = -Wall -Wextra -fno-pic -pipe -O2 -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -mcpu=arm926ej-s -mabi=apcs-gnu -mfpu=fpa
-	CC_OPTS   = -c -g -O2 $(INCLUDE) $(W_OPTS) $(DEFINES)
 	CPP_OPTS  =	-c -g -O2 -fno-exceptions -fno-rtti $(INCLUDE) $(W_OPTS) $(DEFINES)
+	CC_OPTS   = -c -g -O2 $(INCLUDE) $(W_OPTS) $(DEFINES)
+	CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
 
 	LIB_PATH  = $(DINGOO_SDK)/lib/cc1800
 else
 	DEFINES   = -D_DEBUG -DMPU_JZ4740 -DHAVE_LONG_LONG
 	W_OPTS    = -Wall -Wextra -mips32 -mno-abicalls -fno-pic -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin
-	CPP_OPTS  = -c -G0 -O3 $(INCLUDE) $(W_OPTS) $(DEFINES)
-	CC_OPTS   = -c -G0 -O3 -fno-exceptions -fno-rtti $(INCLUDE) $(W_OPTS)
+	CPP_OPTS  = -c -G0 -O3 -fno-exceptions -fno-rtti $(INCLUDE) $(W_OPTS) $(DEFINES)
+	CC_OPTS   = -c -G0 -O3 $(INCLUDE) $(W_OPTS) $(DEFINES)
 	CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
 
 	LIB_PATH  = $(DINGOO_SDK)/lib
