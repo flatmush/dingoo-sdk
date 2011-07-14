@@ -40,6 +40,7 @@ extern _PVFV __CTOR_END__[];
 extern _PVFV __DTOR_LIST__[];
 extern _PVFV __DTOR_END__[];
 
+#ifdef MPU_JZ4740
 extern int _fread(void* ptr, size_t size, size_t count, FILE* stream);
 extern int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
 extern int _fseek(FILE* stream, long int offset, int origin);
@@ -75,6 +76,7 @@ void* dl_patch(void* inOld, void* inNew) {
 	*((uint32_t*)inOld) = (0x08000000 | (((uint32_t)inNew >> 2) & 0x03FFFFFF));
 	return tempOld;
 }
+#endif
 
 char* _app_path_init(const char* inPath) {
 	uintptr_t i, j;
@@ -98,7 +100,36 @@ void initterm(const _PVFV* beg, const _PVFV* end) {
 	}
 }
 
+#ifdef MPU_CC1800
+// Linker symbols for BSS section
+extern void* _fbss;
+extern void* _end;
+
+void init_bss() {
+	uint32_t* p = &_fbss;
+	uint32_t* pEnd = &_end;
+	while (p < pEnd)
+	{
+		*(p++) = 0;
+	}
+
+	FlushDCache();
+	InvalidICache();
+}
+#endif
+
+#ifdef MPU_JZ4740
 int GameMain(char* respath) {
+#endif
+#ifdef MPU_CC1800
+int AppMain(wchar_t* respath, void* unknown) {
+#endif
+
+#ifdef MPU_CC1800
+	init_bss();
+#endif
+
+#ifdef MPU_JZ4740
 	// Patch functions to use our own fixed versions
 	__fread  = dl_patch(&fread, &_fread);
 	__fwrite = dl_patch(&fwrite, &_fwrite);
@@ -118,6 +149,7 @@ int GameMain(char* respath) {
 
 	__dcache_writeback_all();
 	__icache_invalidate_all(); // Invalidate I-Cache to update jump table entries.
+#endif
 
 	if(!_memsys_init())
 		return EXIT_FAILURE;
@@ -157,6 +189,7 @@ int GameMain(char* respath) {
 	free(tempPath);
 	_memsys_cleanup();
 
+#ifdef MPU_JZ4740
 	// Revert patches, probably un-needed.
 	dl_patch(&fread, __fread);
 	dl_patch(&fwrite, __fwrite);
@@ -176,6 +209,7 @@ int GameMain(char* respath) {
 
 	__dcache_writeback_all();
 	__icache_invalidate_all(); // Invalidate I-Cache to update jump table entries.
+#endif
 
 	return tempOut;
 }
