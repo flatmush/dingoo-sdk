@@ -1220,7 +1220,11 @@ int vfprintf(FILE *stream, const char *format, va_list ap)
 }
 #endif
 
+#ifdef MPU_JZ4740
 int _sprintf(char *str,const char *fmt,...)
+#else
+int sprintf(char *str,const char *fmt,...)
+#endif
 {
 	va_list ap;
 	int ret;

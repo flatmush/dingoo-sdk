@@ -25,17 +25,16 @@ extern FILE* stdin;
 extern FILE* stdout;
 extern FILE* stderr;
 
-extern int    fprintf(FILE*, const char*, ...);
-extern int    printf(const char*, ...);
-int    sprintf(char*, const char*, ...);
-
+extern int fprintf(FILE*, const char*, ...);
+extern int printf(const char*, ...);
+extern int sprintf(char*, const char*, ...);
 extern int vsnprintf (char *str, size_t count, const char *fmt, va_list args);
 extern int snprintf(char *str,size_t count,const char *fmt,...);
 extern int vasprintf(char **ptr, const char *format, va_list ap);
 extern int asprintf(char **ptr, const char *format, ...);
 extern int vfprintf(FILE *stream, const char *format, va_list ap);
 
-extern void   perror(const char* prefix);
+extern void perror(const char* prefix);
 
 //#define printf(...) fprintf(stdout, __VA_ARGS__)
 //#define eprintf(...) fprintf(stderr, __VA_ARGS__)
