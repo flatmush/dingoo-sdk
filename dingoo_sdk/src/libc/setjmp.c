@@ -1,5 +1,6 @@
 #include "setjmp.h"
 
+#ifdef MPU_JZ4740
 int setjmp(jmp_buf env) {
 	asm (
 		"sw  $2,   4(%0);"
@@ -74,3 +75,22 @@ void longjmp(jmp_buf env, int value) {
 		: : "r"((uintptr_t*)env), "r"(value)
 		);
 }
+#endif
+
+#ifdef MPU_CC1800
+int setjmp(jmp_buf env) {
+	asm (
+		"stmia   r0, {r4, r5, r6, r7, r8, r9, r10, fp, sp, lr};"
+		"mov     r0, #0;"
+        "mov     pc, lr;"
+		);
+}
+
+void longjmp(jmp_buf env, int value) {
+	asm (
+		"ldmia   r0, {r4, r5, r6, r7, r8, r9, r10, fp, sp, lr};"
+        "mov     r0, r1;"
+        "mov     pc, lr;"
+		);
+}
+#endif
