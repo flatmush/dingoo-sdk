@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <math.h>
+#include <setjmp.h>
 
 #include <dingoo/ucos2.h>
 #include <dingoo/entry.h>
@@ -37,7 +38,7 @@
 #define TEST_SUCCEEDED 0
 #define TEST_FAILED    255
 
-#define NMBR_OF_TESTS 5
+#define NMBR_OF_TESTS 6
 uint16_t curAddTest = 0;
 
 gfx_font*    gameFont            = NULL;
@@ -362,6 +363,54 @@ uint8_t testTexture() {
 	return 0;
 }
 
+jmp_buf jumpState;
+int trackSetJmp = 0;
+
+void routineOne() {
+    longjmp(jumpState, 1);
+}
+
+void routineTwo() {    
+    longjmp(jumpState, 2);
+}
+
+uint8_t testSetJmp() {
+	int jmpResult = setjmp(jumpState);
+
+	switch(jmpResult) {
+		case 0:
+			if (trackSetJmp != 0)
+				break;
+
+			trackSetJmp++;
+			routineOne();
+			trackSetJmp = 11; // Should not happen
+			break;
+		case 1:
+			if (trackSetJmp != 1)
+				break;
+
+			trackSetJmp++;
+			routineTwo();
+			trackSetJmp = 12; // Should not happen
+			break;
+		case 2:
+			if (trackSetJmp != 2)
+				break;
+
+			trackSetJmp++;
+			break;
+		default:
+			trackSetJmp = 13; // Should not happen
+	}
+    
+	if (trackSetJmp == 0)
+		return 14;
+	if (trackSetJmp == 3)
+		return 0;
+	return trackSetJmp;
+}
+
 
 int main(int argc, char** argv) {
 	int ref = EXIT_SUCCESS;
@@ -395,6 +444,7 @@ int main(int argc, char** argv) {
 	test[2] = testMath;
 	test[3] = testSprite;
 	test[4] = testTexture;
+	test[5] = testSetJmp;
 
 	uint32_t tempTick    = 0;
 	uint32_t tempPauseOS = 0;
