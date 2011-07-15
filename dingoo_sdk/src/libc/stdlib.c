@@ -56,6 +56,7 @@ long int labs(long int n) {
 
 
 
+#ifdef MPU_JZ4740
 div_t div(int numerator, int denominator) {
 	div_t tempOut;
 	__asm__ volatile (
@@ -75,6 +76,7 @@ ldiv_t ldiv(long int numerator, long int denominator) {
 		: "=r"(tempOut.quot), "=r"(tempOut.rem) : "r"(numerator), "r"(denominator));
 	return tempOut;
 }
+#endif
 
 
 

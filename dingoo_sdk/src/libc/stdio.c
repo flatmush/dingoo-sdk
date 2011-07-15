@@ -191,7 +191,11 @@ void setbuf(FILE *stream, char *buf) {
 }
 
 
+#ifdef MPU_JZ4740
 int _fseek(FILE* stream, long int offset, int origin) {
+#else
+int fseek(FILE* stream, long int offset, int origin) {
+#endif
 	if((stream == stdin) || (stream == stdout) || (stream == stderr))
 		return -1;
 	if(stream == _serial)
@@ -289,7 +293,11 @@ int feof(FILE* stream) {
 
 
 
+#ifdef MPU_JZ4740
 int _fread(void* ptr, size_t size, size_t count, FILE* stream) {
+#else
+int fread(void* ptr, size_t size, size_t count, FILE* stream) {
+#endif
 	if((stream == stdout) || (stream == stderr))
 		return 0;
 	if(stream == stdin) {
@@ -336,7 +344,11 @@ int _fread(void* ptr, size_t size, size_t count, FILE* stream) {
 	return 0;
 }
 
+#ifdef MPU_JZ4740
 int _fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
+#else
+int fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
+#endif
 	if(stream == stdin)
 		return 0;
 	if(stream == stdout) {
@@ -528,7 +540,7 @@ char* gets(char* s) {
 int fgetc(FILE* stream) {
 	unsigned char c;
 
-	if (_fread(&c, 1, 1, stream) != 1)
+	if (fread(&c, 1, 1, stream) != 1)
 		return EOF;
 
 	return (int)c;
@@ -538,7 +550,7 @@ int fputc(int c, FILE* stream) {
 	if((c >= 256) || (c < -128))
 		return EOF;
 	char _c = (c > 127 ? (c - 256) : c);
-	if(_fwrite(&_c, 1, 1, stream) != 1)
+	if(fwrite(&_c, 1, 1, stream) != 1)
 		return EOF;
 	return c;
 }

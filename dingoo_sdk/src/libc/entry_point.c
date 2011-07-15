@@ -213,3 +213,11 @@ int AppMain(wchar_t* respath, void* unknown) {
 
 	return tempOut;
 }
+
+#ifdef MPU_CC1800
+// No idea what this is used for
+int DLLMain()
+{
+	return 0;
+}
+#endif

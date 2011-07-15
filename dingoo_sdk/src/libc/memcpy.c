@@ -1,7 +1,7 @@
 #include "string.h"
 #include <stdint.h>
 
-
+#ifdef MPU_JZ4740
 
 inline void _memcpy_1x1(void* dst, const void* src) {
 	asm(
@@ -344,3 +344,4 @@ void* _memcpy_fast(void* dst, const void* src, uintptr_t size) {
 
 	return dst;
 }
+#endif
