@@ -255,7 +255,11 @@ void* memchr (const void* inPtr, int inChar, size_t inLength) {
 	return NULL;
 }
 
+#ifdef MPU_JZ4740
 void* _memcpy(void* outDest, const void* inSrc, size_t inLength) {
+#else
+void* memcpy(void* outDest, const void* inSrc, size_t inLength) {
+#endif
 	if((outDest == NULL) || (inSrc == NULL))
 		return NULL;
 
@@ -327,7 +331,11 @@ void* memmove(void* outDest, const void* inSrc, size_t inLength) {
 	return outDest;
 }
 
+#ifdef MPU_JZ4740
 void* _memset(void* outDest, int inValue, size_t inLength) {
+#else
+void* memset(void* outDest, int inValue, size_t inLength) {
+#endif
 	if(outDest == NULL)
 		return NULL;
 	if((inValue >= 256) || (inValue < -128))
