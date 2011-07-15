@@ -3,7 +3,9 @@
 #include <stdint.h>
 #include <ctype.h>
 
+#ifdef MPU_JZ4740
 #include <jz4740/dma.h>
+#endif
 
 
 
