@@ -407,8 +407,11 @@ int fflush(FILE* stream) {
 void clearerr(FILE *stream) {
 	_file_t* tempFile = (_file_t*)stream;
 
+#ifdef MPU_JZ4740
 	if(tempFile->type == _file_type_file)
 		fsys_clearerr((FILE*)tempFile->data);
+#endif
+
 	tempFile->eof = false;
 }
 
