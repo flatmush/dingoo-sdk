@@ -36,10 +36,14 @@
 
 #include <dingoo/slcd.h>
 #include <dingoo/cache.h>
+
+#ifdef MPU_JZ4740
 #include <dingoo/jz4740.h>
+#endif
 
 #define SLCDVID_DRIVER_NAME "slcd"
 
+#ifdef MPU_JZ4740
 #define EXTRA_DMA_CHANNEL 5
 #define is_lcd_active() \
 	((REG_LCD_CFG & LCD_CFG_LCDPIN_MASK) >> LCD_CFG_LCDPIN_BIT)
@@ -48,6 +52,7 @@
 
 static uint32_t lcd_frame;
 static int wait_for_dma_copy = 0;
+#endif
 
 /* Initialization/Query functions */
 static int SLCD_VideoInit(_THIS, SDL_PixelFormat *vformat);
@@ -139,9 +144,11 @@ int SLCD_VideoInit(_THIS, SDL_PixelFormat *vformat)
 {
 	int i;
 
+#ifdef MPU_JZ4740
 	/* get lcd memory for DMA */
 
 	lcd_frame = ((uint32_t)(lcd_get_frame()));
+#endif
 
 	/* Initialize all variables that we clean on shutdown */
 	for ( i=0; i<SDL_NUMMODES; ++i ) {
@@ -161,7 +168,11 @@ int SLCD_VideoInit(_THIS, SDL_PixelFormat *vformat)
 	// Clear the screen to black, but don't actually update it to the display
 	// This is mostly useful for apps which does not update the whole screen,
 	// better to have those parts black than still seeing the launcher...
-	memset(lcd_get_frame(), 0, 320 * 240 * 2);
+#ifdef MPU_JZ4740
+		memset(lcd_get_frame(), 0, 320 * 240 * 2);
+#else
+		memset(LCDGetFB(), 0, 320 * 240 * 2);
+#endif
 
 	/* We're done! */
 	return(0);
@@ -223,6 +234,7 @@ SDL_Surface *SLCD_SetVideoMode(_THIS, SDL_Surface *current,
 	return(current);
 }
 
+#ifdef MPU_JZ4740
 static void SDLC_wait_display_done(void)
 {
         if(is_lcd_active())
@@ -231,13 +243,16 @@ static void SDLC_wait_display_done(void)
 		while(!(REG_DMAC_DCCSR(0)&DMAC_DCCSR_TT));
 	}
 }
+#endif
 
 /* We don't actually allow hardware surfaces other than the main one */
 static int SLCD_AllocHWSurface(_THIS, SDL_Surface *surface)
 {
 	(void)this;
 	(void)surface;
+#ifdef MPU_JZ4740
 	SDLC_wait_display_done();
+#endif
 	return(-1);
 }
 static void SLCD_FreeHWSurface(_THIS, SDL_Surface *surface)
@@ -252,7 +267,9 @@ static int SLCD_LockHWSurface(_THIS, SDL_Surface *surface)
 {
 	(void)this;
 	(void)surface;
+#ifdef MPU_JZ4740
 	SDLC_wait_display_done();
+#endif
 	return(0);
 }
 
@@ -263,6 +280,7 @@ static void SLCD_UnlockHWSurface(_THIS, SDL_Surface *surface)
 	return;
 }
 
+#ifdef MPU_JZ4740
 static void SLCD_wait_for_dma_copy(void)
 {
 	if (wait_for_dma_copy)
@@ -307,24 +325,30 @@ static void SLCD_dma_copy_part(unsigned long dest, unsigned long source, int y_s
 	REG_DMAC_DCCSR(EXTRA_DMA_CHANNEL)|=DMAC_DCCSR_EN;
 	wait_for_dma_copy = 1;
 }
+#endif
 
 static void SLCD_UpdateRects(_THIS, int numrects, SDL_Rect *rects)
 {
 	// Will probably crash if user provides out of boundaries rects,
 	// but according to docs that's the user's responsibility to check
 
+#ifdef MPU_JZ4740
 	int lcd_active;
-	int i;
 	int hidden_buffer_used;
+#endif
+	int i;
 
 	if (this->hidden->buffer == NULL)
 		return;
+
+#ifdef MPU_JZ4740
 	lcd_active = is_lcd_active();
 	
 	SDLC_wait_display_done();
 	
 	if ((!lcd_active) || (numrects != 1) || (rects[0].w != 320) || (rects[0].h < 128))
 	{
+#endif
 		for (i = 0; i < numrects; i++)
 		{	
 			int start = (rects[i].y * 320) + rects[i].x;
@@ -332,7 +356,12 @@ static void SLCD_UpdateRects(_THIS, int numrects, SDL_Rect *rects)
 			int skipBetween = 320 - consecutive;
 			int rows = rects[i].h;
 
+#ifdef MPU_JZ4740
 			uint16_t* tempDispBuff16 = (uint16_t*)lcd_frame;
+#else
+			uint16_t* tempDispBuff16 = (uint16_t*)LCDGetFB();
+#endif
+
 			uint16_t* tempDrawBuff16 = (uint16_t*)(this->hidden->buffer);;
 			uint16_t* tempDispEnd16;
 
@@ -355,6 +384,8 @@ static void SLCD_UpdateRects(_THIS, int numrects, SDL_Rect *rects)
 				rows--;
 			}
 		}
+
+#ifdef MPU_JZ4740
 		__dcache_writeback_all();
 		hidden_buffer_used = 0;
 	}
@@ -421,8 +452,14 @@ static void SLCD_UpdateRects(_THIS, int numrects, SDL_Rect *rects)
 	else
 	{
 		/* use standard function for output via VIDEO OUT */
-        	lcd_set_frame();
+		lcd_set_frame();
 	}
+#endif
+
+#ifdef MPU_CC1800
+	FlushDCache();
+	LCDFlushFB();
+#endif
 }
 
 int SLCD_SetColors(_THIS, int firstcolor, int ncolors, SDL_Color *colors)
@@ -450,6 +487,8 @@ void SLCD_VideoQuit(_THIS)
 			SDL_modelist[i] = NULL;
 		}
 	}
+
+#ifdef MPU_JZ4740
 	lcd_initial_frame = (uint32_t)lcd_get_frame();
 
 	if (lcd_initial_frame == lcd_frame)
@@ -458,18 +497,25 @@ void SLCD_VideoQuit(_THIS)
 		{
 			SDL_free(this->screen->pixels);
 		}
-        }
-        else
-        {
+	}
+	else
+	{
 		if ((void *)lcd_frame != NULL)
 		{
 			SDL_free((void *)lcd_frame);
 		}
-        }
+	}
 	this->screen->pixels = NULL;
 	SDLC_wait_display_done();
 	REG_DMAC_DSAR(0)= lcd_initial_frame & 0x01ffffff;
 	/* disable extra dma channel */
 	REG_DMAC_DCCSR(EXTRA_DMA_CHANNEL)=0;
 	lcd_set_frame();
+#else
+	if (this->screen->pixels != NULL)
+	{
+		SDL_free(this->screen->pixels);
+		this->screen->pixels = NULL;
+	}
+#endif
 }

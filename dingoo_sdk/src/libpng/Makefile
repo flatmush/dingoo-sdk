@@ -2,22 +2,45 @@
 
 LIB_NAME = png
 
+
+
 # Define the compiler settings here:
 
-CPP       = mipsel-linux-g++
-CC        = mipsel-linux-gcc
-AR        = mipsel-linux-ar
+ifeq ($(platform),CC1800)
+	CPP       = arm-none-eabi-g++
+	CC        = arm-none-eabi-gcc
+	AR        = arm-none-eabi-ar
+else
+	CPP       = mipsel-linux-g++
+	CC        = mipsel-linux-gcc
+	AR        = mipsel-linux-ar
+endif
+
+
 
 SOURCE    = .
-
 INCLUDE   = -I. -I$(DINGOO_SDK)/include -I$(DINGOO_SDK)/include/zlib
+DEFINES   = 
 
-W_OPTS    = -Wall -Wextra -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -fno-exceptions
-CPP_OPTS  = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
-CC_OPTS   = -G0 -O3 $(INCLUDE) -mips32 -mno-abicalls -fno-pic $(W_OPTS) -D_DEBUG -DMPU_JZ4740 -c
-CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
+ifeq ($(platform),CC1800)
+	_DEFINES  = -DMPU_CC1800 $(DEFINES)
+	W_OPTS    = -Wall -Wextra -fno-pic -pipe -O2 -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin -mcpu=arm926ej-s -mabi=apcs-gnu -mfpu=fpa
+	CPP_OPTS  =	-c -g -O2 -fno-exceptions -fno-rtti $(INCLUDE) $(W_OPTS) $(_DEFINES)
+	CC_OPTS   = -c -g -O2 $(INCLUDE) $(W_OPTS) $(_DEFINES)
+	CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
 
-LIB_PATH  = $(DINGOO_SDK)/lib
+	LIB_PATH  = $(DINGOO_SDK)/lib/cc1800
+else
+	_DEFINES  = -D_DEBUG -DMPU_JZ4740 $(DEFINES)
+	W_OPTS    = -Wall -Wextra -mips32 -mno-abicalls -fno-pic -finline-functions -fomit-frame-pointer -msoft-float -fno-builtin
+	CPP_OPTS  = -c -G0 -O3 -fno-exceptions -fno-rtti $(INCLUDE) $(W_OPTS) $(_DEFINES)
+	CC_OPTS   = -c -G0 -O3 $(INCLUDE) $(W_OPTS) $(_DEFINES)
+	CC_OPTS_A = $(CC_OPTS) -D_ASSEMBLER_
+
+	LIB_PATH  = $(DINGOO_SDK)/lib
+endif
+
+
 
 SRC_H = png.h pngconf.h
 

@@ -50,7 +50,9 @@ void SDL_Delay(Uint32 ms)
 	if (ms <= 5000)
 	{
 		OSTimeDly(ms / 10); // Not worth it using 10.01 for small values because of rounding
+#ifdef MPU_JZ4740
 		delay_ms(ms % 10);
+#endif
 	}
 	else
 	{
