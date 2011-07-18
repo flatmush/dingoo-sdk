@@ -94,31 +94,18 @@ void dingooSoundClearBuffers()
 		memset(dingooSoundBufferTotal, 0, dingooSoundBufferSize * SOUNDBUFFERS);
 }
 
-void dingooSoundVolumeIncrease()
-{
-	if (dingooSoundVolume < VOLUME_MAX)
-		dingooSoundVolume += VOLUME_STEP;
-
-	if (dingooSoundVolume > VOLUME_MAX)
-		dingooSoundVolume = VOLUME_MAX;
-
-	waveout_set_volume(dingooSoundVolume);
-}
-
-void dingooSoundVolumeDecrease()
-{
-	if (dingooSoundVolume > 0)
-		dingooSoundVolume -= VOLUME_STEP;
-
-	if (dingooSoundVolume < 0)
-		dingooSoundVolume = 0;
-
-	waveout_set_volume(dingooSoundVolume);
-}
-
 int8_t dingooSoundGetVolume()
 {
 	return dingooSoundVolume;
+}
+
+void _dingooSoundSetVolume(int8_t v)
+{
+#ifdef MPU_CC1800
+	SYSSetVolume(v);
+#else
+	waveout_set_volume(v);
+#endif
 }
 
 void dingooSoundSetVolume(int8_t v)
@@ -130,7 +117,29 @@ void dingooSoundSetVolume(int8_t v)
 	else
 		dingooSoundVolume = v;
 
-	waveout_set_volume(dingooSoundVolume);
+	_dingooSoundSetVolume(dingooSoundVolume);
+}
+
+void dingooSoundVolumeIncrease()
+{
+	if (dingooSoundVolume < VOLUME_MAX)
+		dingooSoundVolume += VOLUME_STEP;
+
+	if (dingooSoundVolume > VOLUME_MAX)
+		dingooSoundVolume = VOLUME_MAX;
+
+	_dingooSoundSetVolume(dingooSoundVolume);
+}
+
+void dingooSoundVolumeDecrease()
+{
+	if (dingooSoundVolume > 0)
+		dingooSoundVolume -= VOLUME_STEP;
+
+	if (dingooSoundVolume < 0)
+		dingooSoundVolume = 0;
+
+	_dingooSoundSetVolume(dingooSoundVolume);
 }
 
 void _dingooSoundPlay(void *none)

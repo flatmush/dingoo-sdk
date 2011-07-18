@@ -61,7 +61,7 @@ void SLCD_PumpEvents(_THIS)
 	if (!dingooIgnoreOSEvents)
 	{
 		// Quit on system events
-		if (_sys_judge_event(NULL) < 0)
+		if (sys_judge_event(NULL) < 0)
 		{
 			posted = SDL_PrivateQuit();
 		}
@@ -82,7 +82,9 @@ void SLCD_InitOSKeymap(_THIS)
 	for (i = 0; i < 32; i++)
 		keymap[i] = SDLK_UNKNOWN;
 
+#ifdef CONTROL_POWER
 	keymap[CONTROL_POWER] = SDLK_PAUSE;
+#endif
 	keymap[CONTROL_BUTTON_A] = SDLK_LCTRL;
 	keymap[CONTROL_BUTTON_B] = SDLK_LALT;
 	keymap[CONTROL_BUTTON_X] = SDLK_SPACE;
