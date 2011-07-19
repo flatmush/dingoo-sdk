@@ -13,7 +13,12 @@
 /* Sometimes it's necessary to define __LITTLE_ENDIAN explicitly
    but these catch some common cases. */
 
+/* While CC1800 is little endian, it seems like the high and low
+   words of doubles are swapped */
+
+#ifdef MPU_JZ4740
 #define __LITTLE_ENDIAN
+#endif
 
 #ifdef __LITTLE_ENDIAN
 #define __HI(x) *(1+(int*)&x)
