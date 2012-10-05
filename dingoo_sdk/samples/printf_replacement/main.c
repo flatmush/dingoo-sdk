@@ -1,6 +1,7 @@
 /*
 ** Demo on how to write to a file instead of stdout.
 ** Outputs to "stdout.txt" in current directory,
+** NOTE requires SDK version r315 or later (due to bug in fwrite).
 */
 
 #include <stdarg.h>
@@ -57,9 +58,7 @@ void debug_printf(char *fmt, ...)
     /* else nothing we can do except maybe print to screen */
     va_end(ap);
 }
-/*
 #define printf debug_printf
-*/
 #endif /* DINGOO_NATIVE */
 
 int main(int argc, char** argv)
