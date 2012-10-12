@@ -1,0 +1,62 @@
+# PCE emulator makefile
+# Dingoo Open Dingux SDK - clach04
+#
+# NOTE! Requires DINGUX_SDK environment variable to be set to Open Dingux
+#       location (typically this is "/opt/opendingux-toolchain").
+
+#   make -f Makefile.opendingux clean
+#   make -f Makefile.opendingux
+#   make -f Makefile.opendingux clean all
+
+# Global definitions
+
+
+EXE_PREFIX = mipsel-linux-
+CC        = ${EXE_PREFIX}gcc
+STRIP     = ${EXE_PREFIX}strip
+
+OBJS      = main.o SFont.o
+BIN       ?= sdl_hello_world.dge
+
+# Platform specific definitions 
+
+CFLAGS     += -DDINGOO_BUILD `${DINGUX_SDK}/usr/bin/sdl-config --cflags`
+
+INCLUDES   = 
+LIBS       = `${DINGUX_SDK}/usr/bin/sdl-config --libs`
+
+# optimize/performance flags
+# NOTE on my win32 cygwin env "-O2" (and 3) runs out of memory (on cpu.c): cc1: out of memory allocating 14192 bytes after a total of 402325504 bytes
+# NOTE on my win32 cygwin env "-O1" does not fail
+# O2 works on my linux build machine tool chain (compiler must be better, there is less ram on my linux machine)
+COPTFLAGS  += -O2 -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0 -mbranch-likely
+LDFLAGS = -Wl,--gc-sections
+
+CFLAGS     += ${COPTFLAGS}
+
+#DEBUG_BUILD = true
+ifdef DEBUG_BUILD
+	CFLAGS += -g
+	DO_STRIP = 
+else
+	DO_STRIP = ${STRIP} ${BIN}
+endif
+
+
+# Compilation:
+
+.SUFFIXES: .c .S
+
+%.o: %.c
+	${CC} ${CFLAGS} ${INCLUDES} -c -o $@ $<
+
+%.o: %.S
+	${AS} -o $@ $<
+
+all:	${OBJS}
+	${CC} ${OBJS} ${LDFLAGS} ${LIBS} -o ${BIN}  
+	${DO_STRIP}
+
+clean:
+	rm -f *.o ${BIN} 
+
