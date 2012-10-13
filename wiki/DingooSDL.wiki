@@ -26,17 +26,17 @@ See [http://code.google.com/p/pirate-dev/downloads/detail?name=keyCodes.zip keyC
 
 Sample C switch
 {{{
-    case  SDLK_UP:  /* Dingoo  D-pad up */
-    case  SDLK_DOWN:  /* Dingoo  D-pad down */
-    case  SDLK_LEFT:  /* Dingoo  D-pad left */
-    case  SDLK_RIGHT:  /* Dingoo  D-pad right */
-    case  SDLK_LCTRL:  /* Dingoo  A button */
-    case  SDLK_LALT:  /* Dingoo  B button */
-    case  SDLK_SPACE:  /* Dingoo  X button */
-    case  SDLK_LSHIFT:  /* Dingoo  Y button */
-    case  SDLK_RETURN:  /* Dingoo  START button */
-    case  SDLK_ESCAPE:  /* Dingoo  SELECT button */
-    case  SDLK_TAB:  /* Dingoo  Left shoulder */
-    case  SDLK_BACKSPACE:  /* Dingoo  Right shoulder */
-    case  SDLK_PAUSE:  /* Dingoo  POWER UP button */
+    case  SDLK_UP:          /* Dingoo  D-pad up */
+    case  SDLK_DOWN:        /* Dingoo  D-pad down */
+    case  SDLK_LEFT:        /* Dingoo  D-pad left */
+    case  SDLK_RIGHT:       /* Dingoo  D-pad right */
+    case  SDLK_LCTRL:       /* Dingoo  A button */
+    case  SDLK_LALT:        /* Dingoo  B button */
+    case  SDLK_SPACE:       /* Dingoo  X button */
+    case  SDLK_LSHIFT:      /* Dingoo  Y button */
+    case  SDLK_RETURN:      /* Dingoo  START button */
+    case  SDLK_ESCAPE:      /* Dingoo  SELECT button */
+    case  SDLK_TAB:         /* Dingoo  Left shoulder */
+    case  SDLK_BACKSPACE:   /* Dingoo  Right shoulder */
+    case  SDLK_PAUSE:       /* Dingoo  POWER UP button */
 }}}
