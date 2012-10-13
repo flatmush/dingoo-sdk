@@ -18,7 +18,7 @@ Native Dingo SDL key/button bindings are the same as the Dingux SDL bindings, vi
 || http://www.dingoowiki.com/images/e/e8/Select.png || SELECT button   || SDLK_ESCAPE ||
 || http://www.dingoowiki.com/images/f/fe/L.png || Left shoulder   || SDLK_TAB ||
 || http://www.dingoowiki.com/images/f/f7/R.png || Right shoulder  || SDLK_BACKSPACE ||
-|| ? || POWER UP button || SDLK_PAUSE ||
+|| ? || POWER UP button (NOTE OpenDingux uses HOLD instead) || SDLK_PAUSE ||
 
 Images in table from http://dingoowiki.com/index.php?title=Editing:Guidelines#Controls_section
 
