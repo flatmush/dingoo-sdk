@@ -91,7 +91,12 @@ int main(int argc, char *argv[])
 #define LOCK_FPS_TO_60FPS
 #undef LOCK_FPS_TO_60FPS
 #ifdef LOCK_FPS_TO_60FPS
-        /* Alternative is to sleep, however sleep may not have the expected granularity */
+        /*
+        ** Alternative is to sleep....
+        ** however sleep may not have the expected granularity (e.g. under native)
+        ** Check if 1/60th of a second has elapsed
+        ** 1 (sec) / 60 == 1000 (millisec) / 60 == 16.66666666666666.... ~16
+        */
         if ( currentTime - past >= 16 ) 
 #endif /* LOCK_FPS_TO_60FPS */
         { 
@@ -105,6 +110,9 @@ int main(int argc, char *argv[])
             FPS++; 
         }
 
+        /*
+        ** Every 1 second re-calculate FPS display string
+        */
         if ( currentTime - pastFPS >= 1000 )
         { 
             sprintf( buffer, "%d FPS", FPS );
