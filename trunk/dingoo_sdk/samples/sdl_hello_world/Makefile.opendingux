@@ -1,4 +1,4 @@
-# PCE emulator makefile
+# Simple SDL Hellow World with SFont makefile
 # Dingoo Open Dingux SDK - clach04
 #
 # NOTE! Requires DINGUX_SDK environment variable to be set to Open Dingux
@@ -29,7 +29,7 @@ LIBS       = `${DINGUX_SDK}/usr/bin/sdl-config --libs`
 # NOTE on my win32 cygwin env "-O2" (and 3) runs out of memory (on cpu.c): cc1: out of memory allocating 14192 bytes after a total of 402325504 bytes
 # NOTE on my win32 cygwin env "-O1" does not fail
 # O2 works on my linux build machine tool chain (compiler must be better, there is less ram on my linux machine)
-COPTFLAGS  += -O2 -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0 -mbranch-likely
+COPTFLAGS  += -O2 -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0
 LDFLAGS = -Wl,--gc-sections
 
 CFLAGS     += ${COPTFLAGS}
